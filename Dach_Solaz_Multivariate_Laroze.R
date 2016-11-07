@@ -14,8 +14,8 @@ library(plyr)
 
 rm(list=ls())
 
-setwd("C:/Users/Denise Laroze/Dropbox/Denise/Cheating/Why-we-Cheat-2016-master/Replication/Laroze rep package")
-#fig.path <- "Laroze rep package"
+setwd("  ")
+#fig.path <- ""
 
 
 
@@ -465,9 +465,9 @@ g
 ggsave(filename= "treatment_v_tax.pdf", path=fig.path, height=10, width=10)
 
 
-#########################
-##Percent evaded, period
-#########################
+#########################################
+##Percent evaded, period figure 6 Appendix
+########################################
 df<-ddply(mydf, .(treatment, period, grupo), summarize,  
           percevaded=mean(percevaded))
 

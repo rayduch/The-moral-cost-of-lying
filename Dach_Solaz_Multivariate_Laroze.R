@@ -19,12 +19,12 @@ setwd("C:/Users/Denise Laroze/Dropbox/Denise/Cheating/Why-we-Cheat-2016-master/R
 
 
 
-data <- read.dta("additional_data/base.dta")
-shock.data <- read.dta13("additional_data/shock.dta")
+data <- read.dta("base.dta")
+shock.data <- read.dta13("shock.dta")
 shock.data <- shock.data[shock.data$session >24, ]
-redis.data <- read.dta('additional_data/redistribution.dta')
+redis.data <- read.dta('redistribution.dta')
 
-non.fixed<-read.dta13('additional_data/MasterfileOxford2016e.dta')
+non.fixed<-read.dta13('MasterfileOxford2016e.dta')
 non.fixed<-subset(non.fixed, auditrate==0)
 non.fixed$percevaded <- (non.fixed$profitret - non.fixed$declared)/non.fixed$profitret
 

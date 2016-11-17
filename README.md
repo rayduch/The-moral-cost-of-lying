@@ -9,7 +9,7 @@ more in a classic die game in which they privately report the results of tossing
 
 This replication packages includes:
 
-Data:
+__Data:__ 
  - "MasterfileOxfordChile_20160506.dta", full dataset with all experimental sessions.
  - "MasterfileOxfordChile_20160506_b.dta", full dataset with recoding used for figures.
  - "base.dta", which includes 'baseline' and 'status' treatment sessions.
@@ -18,12 +18,12 @@ Data:
  - "MasterfileOxford2016e.dta", includes 'Non-Fixed' treatment sessions. 
  
  
- Code:
+__Code:__
  - "Bootstrap_replication.do", to reproduce the boostrap data used in figure 2.
  - "Dach_Solaz_Multivariate_Laroze.R", replication code for table 4, figure 4, and appendix material. 
  - "Duch_Solaz_Laroze_figures.R", replication code for other figures in the text.
  
- Manuscript:
+__Manuscript:__
  - PDF of the manuscript
  - Original .tex of the manuscript.
  

@@ -9,7 +9,7 @@ more in a classic die game in which they privately report the results of tossing
 
 This replication packages includes:
 
-__Data:__ 
+**Data:** 
  - "MasterfileOxfordChile_20160506.dta", full dataset with all experimental sessions.
  - "MasterfileOxfordChile_20160506_b.dta", full dataset with recoding used for figures.
  - "base.dta", which includes 'baseline' and 'status' treatment sessions.

@@ -8,6 +8,16 @@ for choices made in other games by the same subjects : High performance types gi
 more in a classic die game in which they privately report the results of tossing a die. 
 
 This replication packages includes:
+**Experimental ZTree code: To reproduce the experimental sessions** 
+ - Oxford 2012 MT - Baseline
+ - Oxford 2013 MT - Redistribution	
+ - Oxford 2013 MT - Status	
+ - Oxford 2015 MT - Shock	
+ - Oxford 2016 MT - Non-Fixed	
+ - Santiago 2015 MT - Baseline	
+ - Santiago 2015 MT - Shock	
+ - Santiago 2015 MT - Status	
+ - Santiago 2016 MT - Non-Fixed
 
 **Data:** 
  - "MasterfileOxfordChile_20160506.dta", full dataset with all experimental sessions.

@@ -14,11 +14,7 @@ This replication packages includes:
  - Oxford 2013 MT - Status	
  - Oxford 2015 MT - Shock	
  - Oxford 2016 MT - Non-Fixed	
- - Santiago 2015 MT - Baseline	
- - Santiago 2015 MT - Shock	
- - Santiago 2015 MT - Status	
- - Santiago 2016 MT - Non-Fixed
-
+ 
 **Data:** 
  - "MasterfileOxfordChile_20160506.dta", full dataset with all experimental sessions.
  - "MasterfileOxfordChile_20160506_b.dta", full dataset with recoding used for figures.

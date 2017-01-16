@@ -31,7 +31,7 @@ This replication packages includes:
  
 **Instructions:**
 
- The instructions for the different treatments are included in each of the folders. Within each treatment there were different sessions that varied with regards to the level of taxation (from 10-40%) and audit rate (0-100%). The instructions for each of these variations are the same and only vary with regards to the level of taxation and audit that was, correctly, informed. 
+ The instructions for the different treatments are included in each of the folders. Within each treatment there were different sessions that varied with regards to the level of taxation (from 10-40%) and audit rate (0-100%). The instructions for each of these variations only change with regards to the level of taxation and audit that was, correctly, informed. All the rest stayed the same. 
  
 **Manuscript:**
  - PDF of the manuscript

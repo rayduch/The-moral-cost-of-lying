@@ -24,15 +24,16 @@ This replication packages includes:
  - "MasterfileOxford2016e.dta", includes 'Non-Fixed' treatment sessions. 
  
  
-Code:
+**Code:**
  - "Bootstrap_replication.do", to reproduce the boostrap data used in figure 2.
  - "Dach_Solaz_Multivariate_Laroze.R", replication code for table 4, figure 4, and appendix material. 
  - "Duch_Solaz_Laroze_figures.R", replication code for other figures in the text.
  
-Instructions: 
+**Instructions:**
+
  The instructions for the different treatments are included in each of the folders. Within each treatment there were different sessions that varied with regards to the level of taxation (from 10-40%) and audit rate (0-100%). The instructions for each of these variations are the same and only vary with regards to the level of taxation and audit that was, correctly, informed. 
  
-Manuscript:
+**Manuscript:**
  - PDF of the manuscript
  - Original .tex of the manuscript.
  

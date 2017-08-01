@@ -14,10 +14,12 @@ library(plyr)
 
 rm(list=ls())
 
-setwd("C:/Users/Denise Laroze/Dropbox/CESS-Santiago/Denise/Cheating/Why-we-Cheat-2016-master/Replication/Laroze rep package")
+setwd("C:/Users/André Laroze/Dropbox/CESS-Santiago/Archive/Tax Compliance Experiments/Rep Material/Why-we-Cheat-2016-master/Replication/Laroze rep package")
 #fig.path <- "Laroze rep package"
 
-
+#-----------------------------
+# Data Management
+#----------------------------
 
 data <- read.dta("additional_data/base.dta")
 shock.data <- read.dta13("additional_data/shock.dta")
@@ -54,7 +56,7 @@ sub.data.2 <- subset(data,difsalaries == 1)
 
 
 ### Creating one general df
-kv<-c("sujeto", "grupo","cheat", "ncorrectret", "cost_comply", "percevaded", "percevaded.t", "safechoices", "period")
+kv<-c("sujeto", "grupo","cheat", "ncorrectret", "cost_comply", "percevaded", "percevaded.t", "safechoices", "period", "offerdg")
 
 base<-sub.data.1[, kv]
 base$receiveshock<-NA
@@ -85,22 +87,22 @@ rm(base, status, shock, red)
 ## model estimation, table 3 output
 ####################################
 
-m.bs <- lrm(formula = cheat ~ ncorrectret + cost_comply,# + ideology + gender + age_subject, 
+m.bs <- lrm(formula = cheat ~ ncorrectret + cost_comply + offerdg,# + ideology + gender + age_subject, 
          data=sub.data.1, x=T, y=T)
 m.bs.cl <- robcov(m.bs, sub.data.1$sujeto)
 
-m.bs.2 <- glm(formula = cheat ~ ncorrectret + cost_comply,# + ideology + gender + age_subject, 
+m.bs.2 <- glm(formula = cheat ~ ncorrectret + cost_comply + offerdg,# + ideology + gender + age_subject, 
             data=sub.data.1, family = binomial(link = "logit"))
 m.bs.aic<-round(m.bs.2$aic, 2)
 #m.bs.bic<-extractAIC(m.bs, k = log(n)) # for BIC
 
 
 m.st.full <- lrm( formula = cheat ~ ncorrectret + cost_comply +
-                    highsalary + HighsalaryAdd ,
+                    highsalary + HighsalaryAdd + offerdg,
                   data=sub.data.2, x=T, y=T)
 m.st.full.cl <- robcov(m.st.full, sub.data.2$sujeto)
 m.st.full.2 <- glm(formula = cheat ~ ncorrectret + cost_comply +
-                     highsalary + HighsalaryAdd ,
+                     highsalary + HighsalaryAdd + offerdg,
               data=sub.data.2, 
               family = binomial(link = "logit"))
 m.st.full.aic<-round(m.st.full.2$aic, 2)
@@ -109,21 +111,21 @@ m.st.full.aic<-round(m.st.full.2$aic, 2)
 
 
 m.sh.full <- lrm( formula = cheat ~ ncorrectret + cost_comply +
-                    receiveshock + receive_int,
+                    receiveshock + receive_int + offerdg,
                   data=shock.data, x=T, y=T)
 m.sh.full.cl <- robcov(m.sh.full, shock.data$sujeto)
 m.sh.full.2 <- glm(formula = cheat ~ ncorrectret + cost_comply +
-                     receiveshock + receive_int,
+                     receiveshock + receive_int + offerdg,
                    data=shock.data, 
                    family = binomial(link = "logit"))
 m.sh.full.aic<-round(m.sh.full.2$aic, 2)
 
 
 
-m.red <- lrm( formula = cheat ~ ncorrectret + cost_comply,
+m.red <- lrm( formula = cheat ~ ncorrectret + cost_comply + offerdg,
               data=redis.data, x=T, y=T)
 m.red.cl <- robcov(m.red, redis.data$sujeto)
-m.red.2 <- glm(formula = cheat ~ ncorrectret + cost_comply,
+m.red.2 <- glm(formula = cheat ~ ncorrectret + cost_comply + offerdg,
                data=redis.data,
                family = binomial(link = "logit"))
 m.red.aic<-round(m.red.2$aic, 2)
@@ -134,18 +136,28 @@ m.red.aic<-round(m.red.2$aic, 2)
 m.all <- lrm(formula = cheat ~ ncorrectret + cost_comply,# + ideology + gender + age_subject, 
              data=mydf, x=T, y=T)
 m.all.cl <- robcov(m.all, mydf$sujeto)
-m.all.2 <- glm(formula = cheat ~ ncorrectret + cost_comply,# + ideology + gender + age_subject, 
+m.all.2 <- glm(formula = cheat ~ ncorrectret + cost_comply + offerdg,# + ideology + gender + age_subject, 
                data=mydf,
                family = binomial(link = "logit"))
 m.all.aic<-round(m.all.2$aic, 2)
 
 
+m.all.ols <- ols(formula = percevaded ~ncorrectret + cost_comply + treatment*ncorrectret + offerdg,
+                 data=mydf, x=T, y=T)
+m.all.ols.cl <- robcov(m.all.ols, mydf$sujeto)
+m.all.ols.2 <- lm(formula = percevaded ~ncorrectret + cost_comply + treatment*ncorrectret + offerdg,
+                 data=mydf)
+
+m.all.r2<-summary(m.all.ols.2)$r.squared
+m.all.r2<-round(m.all.r2, 2)
+m.all.adj.r2<- summary(m.all.ols.2)$adj.r.squared
 
 
-m.inter <- lrm( formula = cheat ~ ncorrectret + cost_comply + treatment*ncorrectret,
+
+m.inter <- lrm( formula = cheat ~ ncorrectret + cost_comply + treatment*ncorrectret + offerdg,
               data=mydf, x=T, y=T)
 m.inter.cl <- robcov(m.inter, mydf$sujeto)
-m.inter.2 <- glm(formula = cheat ~ ncorrectret + cost_comply + treatment*ncorrectret,
+m.inter.2 <- glm(formula = cheat ~ ncorrectret + cost_comply + treatment*ncorrectret + offerdg,
                data=mydf,
                family = binomial(link = "logit"))
 m.inter.aic<-round(m.inter.2$aic, 2)
@@ -153,7 +165,7 @@ m.inter.aic<-round(m.inter.2$aic, 2)
 
 
 
-m.nf <- lrm( formula = cheat ~ ncorrectret + cost_comply,
+m.nf <- lrm( formula = cheat ~ ncorrectret + cost_comply + offerdg,
               data=non.fixed, x=T, y=T)
 m.nf.cl <- robcov(m.nf, non.fixed$sujeto)
 m.nf.2 <- glm(formula = cheat ~ ncorrectret + cost_comply,
@@ -166,34 +178,57 @@ m.nf.aic<-round(m.nf.2$aic, 2)
 
 
 
-stargazer(m.all.cl, m.inter.cl, m.bs.cl,  m.st.full.cl, m.sh.full.cl, m.red.cl, m.nf.cl,
-          add.lines=list(c("AIC", m.all.aic, m.inter.aic, m.bs.aic, m.st.full.aic, m.sh.full.aic, m.red.aic, m.nf.aic )),
-          dep.var.labels.include = F, keep.stat = c("n"),
-          model.numbers = F,
+stargazer(m.inter.cl, m.bs.cl,  m.st.full.cl, m.sh.full.cl, m.red.cl, m.nf.cl, m.all.ols.cl,
+          dep.var.labels.include = F,
+          keep.stat = c("n"),
+          add.lines=list(c("AIC", m.inter.aic, m.bs.aic, m.st.full.aic, m.sh.full.aic, m.red.aic, m.nf.aic, "" ),
+                         c("R squared", "", "", "", "", "", "", m.all.r2 )),
+          model.numbers = T,
           dep.var.caption = "",
-          star.char = c("", "", ""), 
+          #star.char = c("", "", ""),
           omit.table.layout = "n",
           type="text")
 
 
 
-stargazer(m.all.cl, m.inter.cl, m.bs.cl,  m.st.full.cl, m.sh.full.cl, m.red.cl, m.nf.cl,  dep.var.labels.include = F,
-          covariate.labels=c("\\# of Additions", "Cost of Compliance",
+stargazer(m.inter.cl, m.bs.cl,  m.st.full.cl, m.sh.full.cl, m.red.cl, m.nf.cl, m.all.ols.cl,
+          dep.var.labels.include = F,
+          covariate.labels=c("\\# of Additions", "Gains from Cheating",
                              "High Status", "Low Status", "No Shock", "Receive Shock", "Redistribute",
+                             "High Status","\\# of Additions X High Status",
+                             "Receive Shock","\\# of Additions X Receive Shock",
+                             "DG Offer",
                              "\\# of Additions X High Status", " \\# of Additions X Low Status", " \\# of Additions X No Shock", "\\# of Additions X Receive Shock", "\\# of Additions X Redistribute",
-                             "High Status","# of Additions X High Status",
-                             "Receive Shock","# of Additions X Receive Shock",
+                            
                              "Constant"),
           keep.stat = c("n"),
-          add.lines=list(c("AIC", m.all.aic, m.inter.aic, m.bs.aic, m.st.full.aic, m.sh.full.aic, m.red.aic, m.nf.aic )),
+          add.lines=list(c("AIC", m.inter.aic, m.bs.aic, m.st.full.aic, m.sh.full.aic, m.red.aic, m.nf.aic, "" ),
+                         c("R squared", "", "", "", "", "", "", m.all.r2 )),
           model.numbers = T,
           dep.var.caption = "",
           star.char = c("", "", ""),
           omit.table.layout = "n",
-          out="table3_08Nov2016.tex")
+          out="table3_25July2017.tex")
 
+#############################################
+#### Robustness test fixed effect model shock
+#############################################
 
+m.clogit<-clogit(formula = cheat ~ ncorrectret + cost_comply +
+            receiveshock + receive_int+ strata(sujeto),
+          data=shock.data )
 
+m.fe.logit<-glm(formula = cheat ~ ncorrectret + cost_comply +
+            receiveshock + receive_int + factor(sujeto),
+          data=shock.data, family = binomial(link = "logit") )
+
+stargazer(m.fe.logit, m.clogit, keep =  c("ncorrectret", "cost_comply" ,
+                                            "receiveshock" , "receive_int" ),
+          covariate.labels=c("\\# of Additions", "Cost of Compliance",
+                             "Receive Shock","# of Additions X Receive Shock",
+                             "Constant"),
+          add.lines=list(c("Estimation", "Subject FE", "Conditional Logit")),
+          out="table_appendix_fe_29Mar2017.tex")
 
 ######################################
 #### Period 1 models, Table 6 Appendix
@@ -482,8 +517,8 @@ stargazer(m.all.cl, m.inter.cl, m.bs.cl,  m.st.full.cl, m.sh.full.cl, m.red.cl, 
 ### Data Prep for Figure 4
 ###########################
 
-### Baseline Data
-m.bs <- lrm( formula = cheat ~ ncorrectret + cost_comply + safechoices,# + ideology + gender + age_subject, 
+### Baseline Data  #### Mistake in the code submitted to journal (safehoices, should not have been included)
+m.bs <- lrm( formula = cheat ~ ncorrectret + cost_comply, #+ safechoices,# + ideology + gender + age_subject, 
              data=sub.data.1, x=T, y=T)
 m.bs.cl<- robcov(m.bs, sub.data.1$sujeto)
 

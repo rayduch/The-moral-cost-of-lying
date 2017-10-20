@@ -21,13 +21,13 @@ This replication packages includes:
  - "base.dta", which includes 'baseline' and 'status' treatment sessions.
  - "shock.dta", includes 'shock' treatment sessions.
  - "redistribution.dta",  includes 'redistribution' treatment sessions.
- - "MasterfileOxford2016e.dta", includes 'Non-Fixed' treatment sessions. 
+ - "non_fixed_Oct2017.csv", includes 'Non-Fixed' treatment sessions with incentivized and fixed die payments. 
  
  
 **Code:**
  - "Bootstrap_replication.do", to reproduce the boostrap data used in figure 2.
- - "Dach_Solaz_Multivariate_Laroze.R", replication code for table 4, figure 4, and appendix material. 
- - "Duch_Solaz_Laroze_figures.R", replication code for other figures in the text.
+ - "Duch_Solaz_Laroze_figures.R", replication code for other figures and summary statistics in the text.
+- "Dach_Solaz_Multivariate_Laroze.R", replication code for table 4, figure 4, and appendix material. 
  
 **Instructions:**
 

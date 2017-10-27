@@ -18,7 +18,7 @@ library(plyr)
 
 rm(list=ls())
 
-setwd("C:/Users/André Laroze/Dropbox/CESS-Santiago/Archive/Tax Compliance Experiments/Rep Material/Laroze rep package")
+setwd("Your Directory")
 
 
 
@@ -68,14 +68,14 @@ dat$HighTax  <- as.numeric(apply(dat[,c("T20","T30", "T40")],1,sum)>0)
 ###########################################
 
 
-fixed.die <- read.csv("additional_data/fixed_die_sessions.csv", sep=";")
+fixed.die <- read.csv("fixed_die_sessions.csv", sep=";")
 names(fixed.die) <- tolower(names(fixed.die))
 #fixed.die<-subset(die_one, Treatment!=2 ) ### Eliminating test rounds, where RET==-1 (pushing down mean) and treatment/module==2
 
 ## Generating high performance variable
 
 
-kv<-c("sujeto", "session",  "grupo","cheat", "ncorrectret", "percevaded", "safechoices", "period", "offerdg", "auditrate",
+kv<-c("sujeto", "session",  "group","cheat", "ncorrectret", "percevaded", "safechoices", "period", "offerdg", "auditrate",
       "taxrate", "profitret", "highsalary", "shock", "receiveshock",
       "treatment_lab" ,  "treatment2_lab", "realdie"  , "die_type",
       "gender", "age_subject", "trust"  , "ideology", "init_pred"   ,      "avg_pred"
@@ -114,7 +114,7 @@ df<-ddply(df, c("sujeto"), mutate,
 )
 
 
-
+df$group_uid<-paste0(df$session, df$group)
 
 
 
@@ -232,7 +232,7 @@ p<-ggplot(boot.df, aes(x = treat, y = mean.diff) ) +
    geom_point(size = 4)  + #ylim(c(-0.7, 0.1)) +
    geom_errorbar(aes(ymax = u.ci, ymin = l.ci)) +
   geom_hline(yintercept=0, col="red") +
-  annotate("text", label = "Cl=372", x = 1, y = 0.12) +
+  annotate("text", label = "Cl=420", x = 1, y = 0.12) +
   annotate("text", label = "Cl=72", x = 2, y = 0.12) +
   annotate("text", label = "Cl=36", x = 7, y = 0.12) +
   annotate("text", label = "Cl=36", x = 8, y = 0.12) +
@@ -453,16 +453,146 @@ cdata$gender[cdata$gender==0]<-"Female"
 #### Appendix figures 
 ########################
 
+#############################
+### Figure A1 - N correct Sums
+#############################
 
 
-#######################
-#### Gender comparison
-#######################
+plot.df <- prop.table(table( mydf$treatment2_lab, mydf$ncorrectret), 1)
+plot.df<-as.data.frame(plot.df)
 
-dat2<-subset(dat, auditrate==0)
-dat2<-dat2[complete.cases(dat2$treatment_lab), ]
+names(plot.df)<-c("treatment2_lab", "ncorrectret", "Freq")
 
-cdata <- ddply(dat2, c("gender"), summarise,
+ggplot(plot.df, aes(x = ncorrectret, y = Freq)) + geom_bar(stat = "identity") + 
+  facet_wrap(~treatment2_lab) + ylab("Percent") + scale_y_continuous(labels = scales::percent) +
+  xlab("Number of Correct Additions") + theme(axis.text=element_text(size=6))
+
+ggsave("addition2.pdf", width = 8, height = 5)
+
+
+############################
+### Figure A2 - "In Duch_Solaz_Multivariate_Laroze.R"
+####################################
+### Figure A3 - Percent evaded, period 
+####################################
+
+plot.df<-mydf[, c("session", "treatment_lab", "treatment2_lab" ,"period", "group_uid", "percevaded")]
+
+plot.df$group_uid<-paste0(plot.df$treatment_lab, sep=".", plot.df$group_uid)
+plot.df$group_uid<-as.numeric(as.factor(plot.df$group_uid))
+
+
+#plot.df<-plot.df[ order(plot.df$group_uid), ]
+
+plot.df<-ddply(plot.df, .(treatment2_lab, period, group_uid), summarize,  
+          percevaded=mean(percevaded))
+
+g<-ggplot(plot.df, aes(x = period, y = percevaded*100, color = treatment2_lab))  + 
+  geom_line(size=1) + ylim(0,100) + ylab("Percent Evaded") + xlab("Period") + 
+  facet_wrap( ~ group_uid, ncol = 8) + scale_color_discrete(name="Treatment")
+g 
+
+ggsave(filename= "percevad_period_treatment.pdf", height=10, width=10)
+
+
+
+
+#########################################################################################
+### Figure A4: deviations in performance and cheating for low and high performance types DL
+#########################################################################################
+
+sub.dat <- mydf
+sub.dat$low_high <- 0
+sub.dat$low_high[sub.dat$perform_high == 1] <- 1
+sub.dat$low_high[sub.dat$perform_high == 1 & sub.dat$ncorrectret < 10] <- 2
+sub.dat$low_high[sub.dat$perform_high == 0] <- 3
+sub.dat$low_high[sub.dat$perform_high == 0 & sub.dat$ncorrectret > 12] <- 4
+
+sub.dat <- within(sub.dat, {avg_percevaded = ave(percevaded, sujeto)})
+
+sub.dat$diff_low <- 0
+sub.dat$diff_low[sub.dat$low_high == 2] <- sub.dat$percevaded[sub.dat$low_high == 2] - 
+  sub.dat$avg_percevaded[sub.dat$low_high == 2]
+
+sub.dat$diff_high <- 0
+sub.dat$diff_high[sub.dat$low_high == 4] <- sub.dat$percevaded[sub.dat$low_high == 4] - 
+  sub.dat$avg_percevaded[sub.dat$low_high == 4]
+
+sub.dat$diff_high2 <- round(sub.dat$diff_high * 5, 1)/5
+ggplot(sub.dat[sub.dat$low_high == 4, ], aes(x = diff_high2)) + 
+  geom_bar(aes(y = (..count..)/sum(..count..))) + 
+  xlab("Average Cheating Minus Cheating When Performance is High") +
+  ylab("Density")
+ggsave("hist_high2.pdf", width = 5, height = 4)
+
+sub.dat$diff_low2 <- round(sub.dat$diff_low * 2, 1)/2
+ggplot(sub.dat[sub.dat$low_high == 2, ], aes(x = diff_low2)) + 
+  geom_bar(aes(y = (..count..)/sum(..count..))) + 
+  xlab("Average Cheating Minus Cheating When Performance is Low") +
+  ylab("Density")
+ggsave("hist_low2.pdf", width = 5, height = 4)
+
+
+
+
+
+
+
+
+
+
+
+#################################
+### Figure A5 - Safe choices
+################################
+
+plot.df <- prop.table(table( mydf$treatment_lab, mydf$safechoices), 1)
+plot.df<-as.data.frame(plot.df)
+
+names(plot.df)<-c("treatment2_lab", "safechoices", "Freq")
+
+ggplot(plot.df, aes(x = safechoices, y = Freq)) + geom_bar(stat = "identity") + 
+  facet_wrap(~treatment2_lab) + ylab("Percent") + scale_y_continuous(labels = scales::percent) +
+  xlab("Number of Safe Choices Selected") + theme(axis.text=element_text(size=6))
+
+ggsave("risk_dist_preliminary.pdf", width = 5, height = 4)
+
+
+##################################################
+#### Figure A6 - Percent evaded per risk category
+##################################################
+
+#Risk aversion/seeking/neutrality
+rsk<-mydf
+
+rsk$risk<- NA
+rsk$risk[rsk$safechoice<=3]<-"Risk Taking"
+rsk$risk[rsk$safechoices>=4 & rsk$safechoices<=6]<-"Risk Neutral"
+rsk$risk[rsk$safechoices>=7]<-"Risk Averse"
+
+#mean percevaded, over(perform_high risk_averse_level)
+#Preparing dataframe for plot
+tgc <- summarySE(rsk, measurevar="percevaded", groupvars=c("treatment2_lab", "risk", "perform_high"))
+tgc<-tgc[!is.na(tgc$treatment2_lab),]
+
+tgc$perform_high[tgc$perform_high==1]<-"High Performance"
+tgc$perform_high[tgc$perform_high==0]<-"Low Performance"
+
+ggplot(tgc, aes(x = treatment2_lab, y = percevaded*100, colour= perform_high)) + 
+  geom_errorbar(aes(ymin=(percevaded-se)*100, ymax=(percevaded+se)*100), width=.1, position = position_dodge(width=0.3)) +
+  geom_line(position = position_dodge(width=0.3)) + ylab("Percent Evaded") + xlab("") +
+  geom_point(position = position_dodge(width=0.3))  + facet_wrap( ~ risk) +
+  scale_colour_manual(values = c("grey20", "grey50"), guide = guide_legend(title = "")) +
+  theme( legend.position="bottom", axis.text=element_text(size=10, angle = 90, hjust = 1))
+
+ggsave("perevaded_risk_treatment.pdf", width = 10, height = 7)
+
+
+####################################
+#### Figure A7 -  Gender comparison
+####################################
+
+cdata <- ddply(mydf, c("gender"), summarise,
                N.Gender    =  length(unique(sujeto)),
                Mean.cheat = mean(cheat),
                mean.percevaded = mean(percevaded)
@@ -471,7 +601,7 @@ cdata <- ddply(dat2, c("gender"), summarise,
 
 cdata$treatment_lab<-"All treatments"
 
-cdata2 <- ddply(dat2, c("treatment_lab", "gender"), summarise,
+cdata2 <- ddply(mydf, c("treatment_lab", "gender"), summarise,
                N.Gender    =  length(unique(sujeto)),
                Mean.cheat = mean(cheat),
                mean.percevaded = mean(percevaded)
@@ -485,7 +615,6 @@ cdata$gender[cdata$gender==1]<-"Male"
 cdata$gender[cdata$gender==0]<-"Female"
 
 
-
 ggplot(cdata, aes(x = treatment_lab, y = mean.percevaded*100, fill=gender)) + 
   geom_bar(position = position_dodge(), stat="identity") +
   scale_fill_manual("", values = c("grey20", "grey70")) +
@@ -494,14 +623,15 @@ ggplot(cdata, aes(x = treatment_lab, y = mean.percevaded*100, fill=gender)) +
 ggsave("cheat_gender.pdf", width = 7, height = 5)
 
 
-
+##############################################################################
 ## Bootstrap gender figure 
 ## values obtained from the boostrap estimations in "Boostrap_replication.do"
+##############################################################################
 
 treat<-c("All Treatments", "Baseline", "Status (Low)", "Status (High)", "Shock (No)", "Shock (Yes)", "Redistribution", "Non-fixed")
-mean.diff<-c(-.0733926 , .0412275, -.1908748, -.0709805, .0012624, .0068475 , -.0471375,  -.2058502)
-l.ci<-     c(-.145715 , -.1354555, -.3807535, -.2980666, -.205235, -.1614298, -.1919343, -.3646495 )
-u.ci<-     c( -.0010702, .2179105, -.0009961, .1561057, .2077598, .1751248 , .0976593, -.0470509 )
+mean.diff<-c(-.0867425 , .0412275, -.1908748, -.0709805, .0012624, .0068475 , -.0471375,  -.1918694)
+l.ci<-     c(-.1574071 , -.1354555, -.3807535, -.2980666, -.205235, -.1614298, -.1919343, -.3179846 )
+u.ci<-     c( -.016078, .2179105, -.0009961, .1561057, .2077598, .1751248 , .0976593, -.0657541 )
 
 
 boot.df<-data.frame(treat, mean.diff, l.ci,u.ci)
@@ -516,14 +646,14 @@ p<-ggplot(boot.df, aes(x = treat, y = mean.diff) ) +
   geom_point(size = 4)  + #ylim(c(-0.7, 0.1)) +
   geom_errorbar(aes(ymax = u.ci, ymin = l.ci)) +
   geom_hline(yintercept=0, col="red") +
-  annotate("text", label = "Cl=372", x = 1, y = 0.12) +
+  annotate("text", label = "Cl=420", x = 1, y = 0.12) +
   annotate("text", label = "Cl=72", x = 2, y = 0.12) +
   annotate("text", label = "Cl=36", x = 7, y = 0.12) +
   annotate("text", label = "Cl=36", x = 8, y = 0.12) +
   annotate("text", label = "Cl=56", x = 5, y = 0.12) +
   annotate("text", label = "Cl=56", x = 6, y = 0.12) +
   annotate("text", label = "Cl=84", x = 4, y = 0.12) +
-  annotate("text", label = "Cl=88", x = 3, y = 0.12) +
+  annotate("text", label = "Cl=136", x = 3, y = 0.12) +
   theme( axis.text=element_text(size=10, angle = 45, hjust = 1))
 p
 

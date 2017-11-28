@@ -1,5 +1,5 @@
-# Why-we-Cheat-2016
-Data and R Replication Code for Duch Solaz
+# Why we Cheat 2017
+Data and R Replication Code for Duch and Solaz
 We conduct tax compliance experiments in which subjects earn real money, are subject to a tax, and can lie about their earnings. 
 Performing better on incentivized real effort tasks results in more cheating.  Cheating rises as the tax rate increases; but the higher 
 levels of cheating by those who excelled at the tasks persists in high and low tax treatments.  This correlation persists when earnings 

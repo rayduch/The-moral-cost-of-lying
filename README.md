@@ -1,11 +1,7 @@
 # Once A Liar 2018
-Data and R Replication Code for Duch and Solaz
-We conduct tax compliance experiments in which subjects earn real money, are subject to a tax, and can lie about their earnings. 
-Performing better on incentivized real effort tasks results in more cheating.  Cheating rises as the tax rate increases; but the higher 
-levels of cheating by those who excelled at the tasks persists in high and low tax treatments.  This correlation persists when earnings 
-are associated with luck; the correlation persists in experimental treatments with more redistributive taxation.  The correlation persists
-for choices made in other games by the same subjects : High performance types give less in a conventional Dictator Game and also cheat
-more in a classic die game in which they privately report the results of tossing a die. 
+Data, and Stata/R Replication Code for Duch Laroze Zakharov 
+
+Lying is a puzzling phenomenon. It prevalent on both a grand scale and in mundane, day-to-day interactions, but for many people there are intrinsic costs that prevent them from distorting information to one's favor. The goal of this study is to investigate how these costs depend on the magnitude to which the truth is distorted. We observe over 1000 individuals from the U.K., Russia and Chile making over 10000 lying decisions in a public goods game, while varying the benefit of lying. We find that the incidence and magnitude of lying do not depend on the benefits, which is not consistent with the marginal cost of lying being increasing in the size of the lie. Instead, we find that some subjects tend to be maximal liars with very low intrinsic lying costs, while some others lie up to a threshold that is not very sensitive to the extrinsic benefits of lying. We argue that maximal and partial lying are distinct phenomena. First, in two countries out of three lying is not highly conditional on the behavior of other individuals. Second, both ability at a real effort task and selfish behavior in the Dictator Game are strong and consistent predictors of maximal, but not partial, lying. Finally, the reaction time for a partial lying decision was much longer than for either a maximal lie or an honest declaration. 
 
 This replication packages includes:
 **Experimental ZTree code: To reproduce the experimental sessions** 
@@ -16,24 +12,24 @@ This replication packages includes:
  - Oxford 2016 MT - Non-Fixed	
  
 **Data:** 
- - "MasterfileOxfordChile_20160506.dta", full dataset with all experimental sessions.
- - "MasterfileOxfordChile_20160506_b.dta", full dataset with recoding used for figures.
- - "base.dta", which includes 'baseline' and 'status' treatment sessions.
- - "shock.dta", includes 'shock' treatment sessions.
- - "redistribution.dta",  includes 'redistribution' treatment sessions.
- - "non_fixed_Oct2017.csv", includes 'Non-Fixed' treatment sessions with incentivized and fixed die payments. 
+ -  
+ - 
+ - 
+ - 
+ - 
+ -  
  
  
 **Code:**
- - "Bootstrap_replication.do", to reproduce the boostrap data used in figure 2.
- - "Duch_Solaz_Laroze_figures.R", replication code for other figures and summary statistics in the text.
-- "Dach_Solaz_Multivariate_Laroze.R", replication code for table 4, figure 4, and appendix material. 
+ - 
+ - 
+- 
  
 **Instructions:**
 
  The instructions for the different treatments are included in each of the folders. Within each treatment there were different sessions that varied with regards to the level of taxation (from 10-40%) and audit rate (0-100%). The instructions for each of these variations only change with regards to the level of taxation and audit that was, correctly, informed. All the rest stayed the same. 
  
 **Manuscript:**
- - PDF of the manuscript
- - Original .tex of the manuscript.
+ - 
+ - 
  

@@ -1,0 +1,45 @@
+{
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l*{3}{cc}}
+\hline\hline
+                &\multicolumn{2}{c}{Model 1} &\multicolumn{2}{c}{Model 2} &\multicolumn{2}{c}{Model 3} \\
+\hline
+RET rank        &   -0.502\sym{***}& (0.0580)&   -0.315\sym{***}& (0.0497)&   -0.309\sym{***}& (0.0491)\\
+RET deviation   &   0.0279\sym{***}&(0.00432)&   0.0258\sym{***}&(0.00428)&   0.0277\sym{***}&(0.00403)\\
+Male            &   0.0198         & (0.0323)&   0.0838\sym{***}& (0.0264)&   0.0797\sym{***}& (0.0261)\\
+Age             &  0.00751\sym{***}&(0.00264)&  0.00406         &(0.00247)&  0.00389         &(0.00249)\\
+Period          &   -0.158\sym{***}&(0.00278)&   -0.146\sym{***}&(0.00275)&  -0.0954\sym{***}&(0.00276)\\
+DG=0            &   -0.279\sym{***}& (0.0552)& -0.00200         & (0.0441)&   0.0287         & (0.0435)\\
+DG frac         &    0.205\sym{*}  &  (0.111)&    0.165\sym{*}  & (0.0865)&    0.183\sym{**} & (0.0848)\\
+Deduction 20\%  &    0.108\sym{***}& (0.0373)&   0.0792\sym{**} & (0.0308)&   0.0800\sym{***}& (0.0301)\\
+Deduction 30\%  &  -0.0524         & (0.0392)&  -0.0237         & (0.0322)&  -0.0243         & (0.0317)\\
+Deduction 40\%  &    0.249\sym{**} &  (0.102)&    0.220\sym{***}& (0.0756)&    0.212\sym{***}& (0.0738)\\
+Redistribution  &  0.00415         & (0.0663)&   0.0518         & (0.0514)&   0.0501         & (0.0506)\\
+Shock           &    0.166\sym{***}& (0.0562)&    0.169\sym{***}& (0.0477)&    0.159\sym{***}& (0.0460)\\
+Shock, yes      &    0.354\sym{***}& (0.0461)&    0.336\sym{***}& (0.0441)&    0.349\sym{***}& (0.0398)\\
+Status          &   -0.101         & (0.0677)&  -0.0673         & (0.0532)&  -0.0711         & (0.0518)\\
+Status, 200 ECU &    0.127         & (0.0849)&    0.103         & (0.0668)&    0.114\sym{*}  & (0.0653)\\
+Non-fixed       &    0.103\sym{**} & (0.0417)&    0.126\sym{***}& (0.0345)&    0.126\sym{***}& (0.0338)\\
+Russia          &   -0.120\sym{**} & (0.0494)&   -0.130\sym{***}& (0.0419)&   -0.147\sym{***}& (0.0414)\\
+UK              &   -0.502\sym{***}& (0.0413)&   -0.326\sym{***}& (0.0356)&   -0.322\sym{***}& (0.0350)\\
+Maximal lie this period&                  &         &    0.488\sym{***}& (0.0351)&                  &         \\
+Partial lie this period&                  &         &    0.836\sym{***}& (0.0334)&                  &         \\
+Maximal lie in period 1&                  &         &                  &         &    0.405\sym{***}& (0.0603)\\
+Partial lie in period 1&                  &         &                  &         &    1.275\sym{***}& (0.0482)\\
+Honest in period 1&                  &         &                  &         &    0.979\sym{***}& (0.0561)\\
+Max. lie this and previous period&                  &         &                  &         &   -0.465\sym{***}& (0.0381)\\
+Max. lie prev. period, part. lie this period&                  &         &                  &         &    0.511\sym{***}& (0.0647)\\
+Max. lie prev. period, honest this period&                  &         &                  &         &    0.406\sym{***}& (0.0935)\\
+Part. lie prev. period, max. lie this period&                  &         &                  &         &  -0.0162         & (0.0565)\\
+Part. lie this and previous period&                  &         &                  &         &    0.402\sym{***}& (0.0366)\\
+Part. lie prev. period, honest this period&                  &         &                  &         &    0.349\sym{***}& (0.0497)\\
+Honest prev. period, max. lie this period&                  &         &                  &         &  -0.0460         & (0.0708)\\
+Honest prev. period, part. lie this period&                  &         &                  &         &    0.500\sym{***}& (0.0539)\\
+Constant        &    2.659\sym{***}&  (0.101)&    2.008\sym{***}& (0.0939)&    2.065\sym{***}& (0.0899)\\
+\hline
+Observations    &    10714         &         &    10714         &         &    10714         &         \\
+\hline\hline
+\multicolumn{7}{p{15cm}}{\tiny OLS regression. Dependent variable is log reaction time in seconds for income declaration in a given round. Standard errors are clustered by subject. Baseline category for subject decision in Model 2 is honest behavior in this period. Baseline category for subject decision in Model 3 is honest behavior in this and previous period.}\\
+\multicolumn{7}{l}{\footnotesize \sym{*} \(p<0.10\), \sym{**} \(p<0.05\), \sym{***} \(p<0.01\)}\\
+\end{tabular}
+}

@@ -1,0 +1,35 @@
+{
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l*{4}{cc}}
+\hline\hline
+                &\multicolumn{2}{c}{Chile}   &\multicolumn{2}{c}{Russia}  &\multicolumn{2}{c}{UK}      &\multicolumn{2}{c}{All}     \\
+\hline
+Male            &    1.539\sym{***}&  (0.307)&    1.489\sym{***}&  (0.304)&    1.117\sym{***}&  (0.343)&    1.286\sym{***}&  (0.195)\\
+Age             &  -0.0454         & (0.0303)&  -0.0236         & (0.0414)&   -0.102\sym{***}& (0.0185)&  -0.0974\sym{***}& (0.0146)\\
+Period          &    0.152\sym{***}& (0.0147)&    0.164\sym{***}& (0.0165)&    0.112\sym{***}& (0.0142)&    0.138\sym{***}&(0.00836)\\
+DG=0            &    0.168         &  (0.785)&    0.229         &  (0.449)&    0.245         &  (0.622)&    0.506         &  (0.355)\\
+DG above 0      & 0.000159         &(0.000939)& -0.00221\sym{**} &(0.000933)& -0.00286\sym{**} &(0.00126)& -0.00185\sym{***}&(0.000632)\\
+Deadweight loss &                  &         &                  &         &    1.767\sym{***}&  (0.678)&    1.960\sym{***}&  (0.614)\\
+Redistribution  &                  &         &                  &         &    0.433         &  (0.577)&    0.606         &  (0.529)\\
+Russia          &                  &         &                  &         &                  &         &    2.481\sym{***}&  (0.280)\\
+UK              &                  &         &                  &         &                  &         &    3.206\sym{***}&  (0.308)\\
+Shock           &    0.510         &  (0.567)&    0.606         &  (0.494)&    1.236\sym{*}  &  (0.656)&    0.812\sym{**} &  (0.323)\\
+L.Shock=Yes     &   -0.177         &  (0.298)&   -0.452\sym{*}  &  (0.264)&   -0.378         &  (0.314)&   -0.347\sym{**} &  (0.176)\\
+Status          &    0.926         &  (0.570)&    0.752         &  (0.557)&    0.794         &  (0.617)&    0.680\sym{*}  &  (0.347)\\
+Status, 200 ECU &   -0.673         &  (0.622)&  -0.0390         &  (0.748)&    0.737         &  (0.816)&    0.102         &  (0.463)\\
+Non-fixed       &    1.416\sym{***}&  (0.479)&    1.231\sym{***}&  (0.424)&   -0.556         &  (0.504)&    0.455\sym{*}  &  (0.264)\\
+L.Dec. others, 1000&   0.0889         & (0.0828)&   -0.213\sym{*}  &  (0.112)&    0.118         &  (0.109)&   0.0147         & (0.0646)\\
+Norms           &   -0.153         &  (0.166)&    0.241\sym{*}  &  (0.142)&    0.361\sym{**} &  (0.171)&    0.222\sym{**} & (0.0942)\\
+Trust           &    0.317         &  (0.314)&   -0.516         &  (0.322)&   -0.466         &  (0.342)&   -0.257         &  (0.199)\\
+SafeChoices     &  -0.0385         & (0.0852)&   0.0525         & (0.0791)&  -0.0358         & (0.0849)&  -0.0107         & (0.0500)\\
+Ideology        &   0.0623         & (0.0708)&  -0.0853         & (0.0738)&    0.136\sym{*}  & (0.0718)&   0.0706         & (0.0433)\\
+Income          &   -0.319         &  (0.513)&   -0.607         &  (0.783)&   -0.234         &  (0.486)&   -0.216         &  (0.334)\\
+Constant        &    6.394\sym{***}&  (1.214)&    11.08\sym{***}&  (1.209)&    13.41\sym{***}&  (1.094)&    9.228\sym{***}&  (0.743)\\
+\hline
+Observations    &     2295         &         &     2304         &         &     3465         &         &     8064         &         \\
+\(R^{2}\)       &    0.145         &         &    0.158         &         &    0.163         &         &    0.273         &         \\
+\hline\hline
+\multicolumn{9}{p{17cm}}{\tiny Standard errors are clustered by subject. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game. Norms is the social norms index (see Table \ref{tab:norms}). SafeChoices if the number (0-10) of safe choices on the lottery task. Trust is whether the individual answered ``Most people can be trusted'' (versus ``You can't be too careful with people''). Income is the number of the individual's income bracket, rescaled between 0 and 1 (for Chile and the UK), and the individual's perceived income decile, rescaled between 0 and 1 (for Russia).}\\
+\multicolumn{9}{l}{\footnotesize \sym{*} \(p<0.10\), \sym{**} \(p<0.05\), \sym{***} \(p<0.01\)}\\
+\end{tabular}
+}

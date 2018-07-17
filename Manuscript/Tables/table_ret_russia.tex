@@ -1,0 +1,33 @@
+{
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{p{10cm}*{2}{cc}}
+\hline\hline
+                &\multicolumn{2}{c}{Average} &\multicolumn{2}{c}{Per round}\\
+\hline
+Male            &    1.402\sym{***}&  (0.310)&    1.429\sym{***}&  (0.304)\\
+Age             &  -0.0281         & (0.0417)&  -0.0283         & (0.0429)\\
+Period          &                  &         &    0.165\sym{***}& (0.0165)\\
+DG=0            &    0.230         &  (0.463)&    0.245         &  (0.452)\\
+DG above 0      & -0.00228\sym{**} &(0.000936)& -0.00235\sym{**} &(0.000921)\\
+Deduction 20\%  &    0.445         &  (0.327)&    0.493         &  (0.321)\\
+Deduction 30\%  &   0.0118         &  (0.466)&  -0.0483         &  (0.453)\\
+Shock           &    0.320         &  (0.453)&    0.515         &  (0.479)\\
+L.Shock=Yes     &                  &         &   -0.411         &  (0.265)\\
+Status          &    0.698         &  (0.597)&    0.801         &  (0.566)\\
+Status, 200 ECU &  -0.0503         &  (0.796)&   -0.142         &  (0.770)\\
+Non-fixed       &    1.165\sym{***}&  (0.432)&    1.240\sym{***}&  (0.425)\\
+L.Dec. others, 1000&                  &         &   -0.191\sym{*}  &  (0.112)\\
+Norms           &    0.244         &  (0.150)&    0.256\sym{*}  &  (0.146)\\
+Trusting behavior index&   0.0802         &  (0.164)&   0.0827         &  (0.160)\\
+SafeChoices     &   0.0743         & (0.0841)&   0.0606         & (0.0811)\\
+Ideology        &  -0.0961         & (0.0769)&  -0.0842         & (0.0737)\\
+Income          &   -0.563         &  (0.807)&   -0.644         &  (0.786)\\
+Constant        &    11.55\sym{***}&  (1.227)&    11.00\sym{***}&  (1.232)\\
+\hline
+Observations    &      256         &         &     2304         &         \\
+\(R^{2}\)       &    0.171         &         &    0.152         &         \\
+\hline\hline
+\multicolumn{5}{p{17cm}}{\tiny OLS regressions. Dependent variable is average performance over 10 rounds in the first model, and performance in a round for the second model. Robust standard errors for first model, standard errors clustered by subject for the second model. DG frac is the fraction of the 1000 ECU donated in the dictator game. Norms is the social norms index (see Table \ref{tab:norms}). SafeChoices if the number (0-10) of safe choices on the lottery task. Trusting behavior is the trusting behavior index (see Table \ref{tab:trust}). Income is the number of the individual's income bracket, rescaled between 0 and 1 (for Chile and the UK), and the individual's perceived income decile, rescaled between 0 and 1 (for Russia).}\\
+\multicolumn{5}{l}{\footnotesize \sym{*} \(p<0.10\), \sym{**} \(p<0.05\), \sym{***} \(p<0.01\)}\\
+\end{tabular}
+}

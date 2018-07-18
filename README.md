@@ -12,24 +12,21 @@ This replication packages includes:
  - Oxford 2016 MT - Non-Fixed	
  
 **Data:** 
- -  
- - 
- - 
- - 
- - 
- -  
+ -  UK Sessions: [1,18]; [28, 33]; [40, 42]
+ -  Chile Sessions: [19, 27]; [34, 39]; [43, 46] 
+ -  Russia Sessions: [47, 64]
+ -  For each of these sessions: z-tree code, doc instructions, xls data sets
  
  
 **Code:**
- - 
- - 
-- 
+ - STATA code for data analysis
+ - z-tree code for individual sessions
  
 **Instructions:**
 
  The instructions for the different treatments are included in each of the folders. Within each treatment there were different sessions that varied with regards to the level of taxation (from 10-40%) and audit rate (0-100%). The instructions for each of these variations only change with regards to the level of taxation and audit that was, correctly, informed. All the rest stayed the same. 
  
 **Manuscript:**
- - 
- - 
+ - once_a_liar_July_2018.pdf
+ - TeX files
  

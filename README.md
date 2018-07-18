@@ -16,6 +16,7 @@ This replication packages includes:
  -  Chile Sessions: [19, 27]; [34, 39]; [43, 46] 
  -  Russia Sessions: [47, 64]
  -  For each of these sessions: z-tree code, doc instructions, xls data sets
+ -  Comprehensive STATA dataset
  
  
 **Code:**

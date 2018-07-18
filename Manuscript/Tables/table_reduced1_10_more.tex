@@ -1,0 +1,45 @@
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l|cccccc|cc}
+\hline\hline
+&\multicolumn{6}{c|}{\bf All\space{}countries}&\multicolumn{2}{c}{\bf All\space{}countries}\\ &\multicolumn{6}{c|}{Mlogit, average marginal effects }&\multicolumn{2}{c}{OLS}\\
+                &\multicolumn{2}{c}{Maximal lying}&\multicolumn{2}{c}{Partial lying}&\multicolumn{2}{c|}{Honest}  &\multicolumn{2}{c}{Partial lying}\\
+\hline
+RET rank        &    0.259\sym{***}& (0.0392)&  -0.0774\sym{*}  & (0.0416)&   -0.181\sym{***}& (0.0405)&    0.120\sym{*}  & (0.0684)\\
+RET deviation   &-0.000352         &(0.00168)&  0.00371\sym{*}  &(0.00202)& -0.00336\sym{**} &(0.00171)&  0.00430         &(0.00305)\\
+Male            &   0.0581\sym{**} & (0.0229)&  -0.0880\sym{***}& (0.0242)&   0.0299         & (0.0230)&   0.0466         & (0.0387)\\
+Age             & -0.00560\sym{***}&(0.00207)&  0.00352\sym{*}  &(0.00206)&  0.00209         &(0.00186)&  0.00535\sym{*}  &(0.00310)\\
+Period          &   0.0177\sym{***}&(0.00145)&  -0.0112\sym{***}&(0.00158)& -0.00655\sym{***}&(0.00131)&  -0.0154\sym{***}&(0.00226)\\
+DG=0          &    0.306\sym{***}& (0.0536)&   -0.267\sym{***}& (0.0328)&  -0.0390         & (0.0477)&   -0.101         & (0.0743)\\
+DG frac         &   -0.169\sym{**} & (0.0854)&   -0.134\sym{*}  & (0.0767)&    0.303\sym{***}& (0.0737)&    0.293\sym{**} &  (0.113)\\
+Norms           &  -0.0333\sym{***}& (0.0118)&  0.00120         & (0.0130)&   0.0321\sym{**} & (0.0141)& -0.00159         & (0.0189)\\
+Trust         &-0.000127         & (0.0231)&-0.000216         & (0.0244)& 0.000343         & (0.0232)&  -0.0441         & (0.0390)\\
+SafeChoices     &  0.00559         &(0.00625)& -0.00187         &(0.00628)& -0.00372         &(0.00611)& 0.000928         &(0.00907)\\
+Ideology        &  0.00393         &(0.00520)&  0.00104         &(0.00537)& -0.00497         &(0.00559)&  -0.0246\sym{***}&(0.00789)\\
+Income          &   0.0982\sym{**} & (0.0402)&  -0.0326         & (0.0439)&  -0.0656         & (0.0399)&   0.0421         & (0.0883)\\
+Deduction 20\%&  -0.0468\sym{*}  & (0.0270)&   0.0342         & (0.0287)&   0.0126         & (0.0262)&  -0.0207         & (0.0382)\\
+Deduction 30\%&   0.0225         & (0.0303)&  -0.0302         & (0.0297)&  0.00775         & (0.0285)&  -0.0164         & (0.0456)\\
+Deduction 40\%&  -0.0380         & (0.0635)&   0.0223         & (0.0672)&   0.0157         & (0.0609)&    0.146         &  (0.167)\\
+Deduction 50\%&    0.159\sym{*}  & (0.0961)&  -0.0280         &  (0.100)&   -0.131\sym{*}  & (0.0700)&   -0.342\sym{***}& (0.0722)\\
+Deadweight loss&  -0.0643         & (0.0600)&  -0.0362         & (0.0668)&    0.100         & (0.0658)&  -0.0766         &  (0.149)\\
+Redistribution&   0.0905         & (0.0561)&  -0.0416         & (0.0534)&  -0.0490         & (0.0495)&   0.0465         &  (0.105)\\
+Russia        &    0.114\sym{***}& (0.0342)&    0.115\sym{***}& (0.0376)&   -0.229\sym{***}& (0.0275)&   0.0229         & (0.0531)\\
+UK            &    0.345\sym{***}& (0.0352)&   -0.147\sym{***}& (0.0371)&   -0.198\sym{***}& (0.0333)&  -0.0271         & (0.0771)\\
+Shock         &   0.0386         & (0.0403)&  -0.0108         & (0.0408)&  -0.0278         & (0.0413)&  -0.0380         & (0.0469)\\
+Shock, yes    &  -0.0168         & (0.0225)&   0.0342         & (0.0274)&  -0.0174         & (0.0251)&  -0.0170         & (0.0352)\\
+Status        &   0.0711         & (0.0460)&  0.00641         & (0.0496)&  -0.0775\sym{*}  & (0.0414)&  -0.0586         & (0.0550)\\
+Status, 200 ECU&  -0.0868\sym{*}  & (0.0515)&  -0.0588         & (0.0565)&    0.146\sym{**} & (0.0686)&   0.0421         & (0.0752)\\
+Non-fixed     &   0.0200         & (0.0322)&  -0.0410         & (0.0341)&   0.0210         & (0.0324)&   0.0249         & (0.0528)\\
+Constant        &                  &         &                  &         &                  &         &    0.268\sym{*}  &  (0.142)\\
+\hline
+Observations    &     8958         &         &     8958         &         &     8958         &         &     2072         &         \\
+D20=D30         &   0.0220         &         &   0.0377         &         &    0.873         &         &    0.918         &         \\
+D20=D40         &    0.891         &         &    0.858         &         &    0.959         &         &    0.310         &         \\
+D20=D50         &   0.0316         &         &    0.533         &         &   0.0447         &         &0.00000111         &         \\
+D30=D40         &    0.359         &         &    0.445         &         &    0.897         &         &    0.332         &         \\
+D30=D50         &    0.162         &         &    0.982         &         &   0.0554         &         &0.0000105         &         \\
+D40=D50         &   0.0685         &         &    0.655         &         &   0.0856         &         &  0.00313         &         \\
+Russia=UK       & 7.94e-11         &         & 2.94e-14         &         &    0.330         &         &    0.435         &         \\
+\hline\hline
+\multicolumn{9}{p{16cm}}{\tiny The first three columns report average marginal effects for multinomial logistic regression (dependent variable is whether the subject declared 0\%, 100\%, or something in between, in a given round). Standard errors are clustered by subject. The fourth column reports OLS regression, the dependent variable is the fraction of income declared in a given round. We only include subjects who partially cheated in at least 8 rounds, and declarations strictly between 0\% and 100\%. Standard errors are clustered by subject. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game. Norms is the social norms index (see Table \ref{tab:norms}). SafeChoices if the number (0-10) of safe choices on the lottery task. Trust is whether the individual answered  (versus '). Income is the number of the individual's income bracket, rescaled between 0 and 1 (for Chile and the UK), and the individual's perceived income decile, rescaled between 0 and 1 (for Russia).}\\
+\multicolumn{9}{l}{\tiny \sym{*} \(p<0.1\), \sym{**} \(p<0.05\), \sym{***} \(p<0.01\)}\\
+\end{tabular}

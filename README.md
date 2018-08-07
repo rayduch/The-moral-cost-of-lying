@@ -19,7 +19,7 @@ This replication package includes:
  
 **Instructions:**
 
- The instructions for the different treatments are included in each of the folders. Within each treatment there were different sessions that varied with regards to the level of taxation (from 10-40%) and audit rate (0-100%). The instructions for each of these variations only change with regards to the level of taxation and audit that was, correctly, informed. All the rest stayed the same. 
+ The instructions for the different treatments are included in each of the folders. Within each treatment there were different sessions that varied with regards to the level of taxation (from 10-40%) and audit rate (0-100%). The instructions for each of these variations only change with regards to the level of taxation and audit that was, correctly, informed. All the rest stayed the same. Note that for the Chilean sessions, instructors who ran the Shock treatments in Chile read out the wrong instructions, reading the Baseline instructions instead.
  
 **Manuscript:**
  - once_a_liar_July_2018.pdf

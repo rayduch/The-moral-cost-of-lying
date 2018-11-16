@@ -13,12 +13,15 @@ tab ind_typenew2 country_code if period2==1&include_data==1, co
 *******************************************************************************
 
 use "`path'mastern_final2018_new_new.dta", clear
+replace age=age/10
+label variable age "Age/10"
 
 *******************************************************************************
 ******************* TABLE IN THE MAIN TEXT *********************************
 *******************************************************************************
 
 local fname="`path'table_parttype.tex"
+local fname_gr="`path'gr_parttype.eps"
 local vname="ind_typenew2"
 local note = "The first four columns report are average marginal effects for multinomial logistic regression (the dependent variable is whether the subject is a consistent maximal liar, consistent partial liar, is consistently honest, or none of those). The fifth column reports OLS regression, the dependent variable is the fraction of income declared, averaged across all rounds where the subject lied partially, for all subjects who lied partially in at least 8 rounds. Robust standard errors. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game."
 local nnn=8
@@ -98,7 +101,10 @@ file write mf "\end{tabular}"
 file close mf
 
 
+coefplot m1, bylabel(Cons. Maximal) || m2, bylabel(Cons. Partial) || m3, bylabel(Cons. Honest) || m4, bylabel(Other) ||, drop(_cons) xline(0) byopts(row(1) note("The graph reports average marginal effects and 95% confidence intervals for multinomial logistic regression. The dependent variable is" "whether the subject is a consistent maximal liar, consistent partial liar, is consistently honest, or none of those. Robust standard errors." "RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference" "between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated" "in the dictator game.")) xsize(7)
+graph export "`fname_gr'", as(eps) preview(off) replace
 
+*coefplot (m1) (m2) (m3) (m4), drop(_cons) xline(0) keep(*:ncorrect_rank *:age_subject *:1.male *:1.offergd_0 *:offerdg)
 *******************************************************************************
 *******************************************************************************
 *************** TABLES: DEPERMINANTS OF LYING  ***************************
@@ -279,6 +285,7 @@ local note = "The first three columns report average marginal effects for multin
 ********************************************************************************
 **************** PERIODS 1-10,  MORE CONTROLS ******************************
 ********************************************************************************
+local include_cond="include_data_all==1"
 local fname="`path'table_reduced1_10_more.tex"
 local conds "1==1 country_code==1 country_code==2 country_code==3"
 local var1="ncorrect_rank ncorrect_dev2 i.male age period2 i.offerdg_0 offerdg_frac norms i.trust safechoices ideology income2 i.tax_20 i.tax_30"
@@ -304,9 +311,9 @@ file write mf "\begin{tabular}{l|cccccc|cc}" _n
 file write mf "\hline\hline" _n
 file close mf
 
-forval ii=2/4 {
+*forval ii=2/4 {
 *forval ii=1/2 {
-*forval ii=1/1 {
+forval ii=1/1 {
 	local cc `: word `ii' of `conds''
 	local tt `: word `ii' of `titles''
 	local ap `: word `ii' of `aplist''
@@ -612,9 +619,9 @@ file close mf
 ********************************************************************************
 
 
-local fname= "`path'subjects_2018.dta"
+local fname= "`path'mastern_final2018_new_new.dta"
 use "`fname'", clear
-drop if include_data==0
+drop if include_data_all==0
 
 egen nnn=count(russia), by(realdie ind_typenew2)
 keep ind_typenew2 realdie nnn
@@ -642,7 +649,7 @@ use "`fname'", clear
 local fname= "`path'mastern_final2018_new_new.dta"
 use "`fname'", clear
 keep if period2==1
-drop if include_data==0
+drop if include_data_all==0
 drop if digitaldie==.
 drop if digitaldie_actual==-1
 egen nnn=count(russia), by(digitaldie ind_typenew2)
@@ -748,6 +755,12 @@ forval j=1/3 {
 gen declared_cat_`i'_`j'=(l.declared_cat==`i')&(declared_cat==`j')
 }
 }
+
+gen l_time_declare_pl=time_declare+.5
+gen l_time_declare_pl=ln( time_declare_pl)
+
+
+
 gen declared_cat_p1_1=(declared_cat==1)&period2==1
 gen declared_cat_p1_2=(declared_cat==2)&period2==1
 gen declared_cat_p1_3=(declared_cat==3)&period2==1
@@ -773,17 +786,47 @@ label variable declared_cat_p1_2 "Partial lie in period 1"
 label variable declared_cat_p1_3 "Honest in period 1"
 
 local varlist3="declared_cat_p1_1 declared_cat_p1_2 declared_cat_p1_3 declared_cat_1_1 declared_cat_1_2 declared_cat_1_3 declared_cat_2_1 declared_cat_2_2 declared_cat_2_3 declared_cat_3_1 declared_cat_3_2"
-estimates clear
-local varlist = "ncorrect_rank ncorrect_dev2 male age period2 offerdg_0 offerdg_frac tax_20 tax_30 tax_40 mpcr shock shock_H status status_H non_fixed"
+local varlist = "ncorrect_rank ncorrect_dev2 male age period2 offerdg_0 offerdg_frac tax_20 tax_30 tax_40 tax_50 mpcr shock shock_H status status_H non_fixed"
 local varlist2="1.declared_cat"
-reg l_time_declare `varlist' russia uk if include_data==1, clu(subj_id)
+
+
+local fname="`path'table_reactiontime.tex"
+
+estimates clear
+reg l_time_declare_pl `varlist' russia uk if include_data==1, clu(subj_id) 
 est store m1
-reg l_time_declare `varlist' declared_cat_1 declared_cat_2 russia uk if include_data==1, clu(subj_id)
+reg l_time_declare_pl  `varlist' declared_cat_1 declared_cat_2 russia uk if include_data==1, clu(subj_id) 
 est store m2
-reg l_time_declare `varlist' `varlist3' russia uk if include_data==1, clu(subj_id)
+reg l_time_declare_pl `varlist' `varlist3' russia uk if include_data==1, clu(subj_id) 
 est store m3
-local note="OLS regression. Dependent variable is log reaction time in seconds for income declaration in a given round. Standard errors are clustered by subject. Baseline category for subject decision in Model 2 is honest behavior in this period. Baseline category for subject decision in Model 3 is honest behavior in this and previous period."
+local note="OLS regression. Dependent variable is log reaction time. Standard errors are clustered by subject. Baseline category for subject decision in Model 2 is honest behavior in this period. Baseline category for subject decision in Model 3 is honest behavior in this and previous period."
 esttab m1 m2 m3 using "`fname'", label mtitle("Model 1" "Model 2" "Model 3") wide compress nonum note(`note') se star(* 0.10 ** 0.05 *** 0.01) replace
+
+
+local fname="`path'table_reactiontime_c.tex"
+estimates clear
+streg `varlist' russia uk if include_data==1, clu(subj_id) distribution(exponential)
+est store m1
+streg `varlist' declared_cat_1 declared_cat_2 russia uk if include_data==1, clu(subj_id) distribution(exponential)
+est store m2
+streg `varlist' `varlist3' russia uk if include_data==1, clu(subj_id) distribution(exponential)
+est store m3
+local note="Exponential distribution survival time model. Standard errors are clustered by subject. Baseline category for subject decision in Model 2 is honest behavior in this period. Baseline category for subject decision in Model 3 is honest behavior in this and previous period."
+esttab m1 m2 m3 using "`fname'", label mtitle("Model 1" "Model 2" "Model 3") wide compress nonum note(`note') se star(* 0.10 ** 0.05 *** 0.01) replace
+
+
+local fname="`path'table_reactiontime_w.tex"
+estimates clear
+streg `varlist' russia uk if include_data==1, clu(subj_id) distribution(weibull)
+est store m1
+streg `varlist' declared_cat_1 declared_cat_2 russia uk if include_data==1, clu(subj_id) distribution(weibull)
+est store m2
+streg `varlist' `varlist3' russia uk if include_data==1, clu(subj_id) distribution(weibull)
+est store m3
+local note="Weibull distribution survival time model. Standard errors are clustered by subject. Baseline category for subject decision in Model 2 is honest behavior in this period. Baseline category for subject decision in Model 3 is honest behavior in this and previous period."
+esttab m1 m2 m3 using "`fname'", label mtitle("Model 1" "Model 2" "Model 3") wide compress nonum note(`note') se star(* 0.10 ** 0.05 *** 0.01) replace
+
+
 
 test declared_cat_p1_3= declared_cat_p1_2
 test declared_cat_p1_3= declared_cat_p1_1
@@ -920,6 +963,10 @@ file close mf
 *********************************************************************************
 ************** TESTS IN THE TEXT ************************************************
 *********************************************************************************
+
+*\ref{stata:payment}
+tabstat payment if period2==1&include_data_all==1, by(country_code) stats(min mean max)
+
 *\ref{stata:cheatdiff}
 tabchi ind_typenew2 country_code if inlist(country_code,1,2)&period2==1&include_data==1
 tabchi ind_typenew2 country_code if inlist(country_code,3,2)&period2==1&include_data==1
@@ -956,33 +1003,33 @@ cc ppp ttt if  include_data==1, exact
 *\ref{stata:robustcheat}
 drop ttt
 gen ttt= ind_typenew2
-replace ttt=. if ~inlist( ind_typenew2,1,3)
+replace ttt=. if ~inlist( ind_typenew2,1,3)|include_data_all==0
 replace ttt=0 if ttt==3
-cc ttt realdie_6 if period2==1&include_data==1, exact
-cc ttt realdie_5 if period2==1&include_data==1, exact
-cc ttt realdie_2 if period2==1&include_data==1, exact
+cc ttt realdie_6 if period2==1&include_data_all==1, exact
+cc ttt realdie_5 if period2==1&include_data_all==1, exact
+cc ttt realdie_2 if period2==1&include_data_all==1, exact
 
 *\ref{stata:robustcheat_bino}
-bitest realdie_5==.16666 if ind_typenew2==3&period2==1&include_data==1
-bitest realdie_6==.16666 if ind_typenew2==3&period2==1&include_data==1
-bitest realdie_5==.16666 if declared_1_n==10&period2==1&include_data==1
-bitest realdie_6==.16666 if declared_1_n==10&period2==1&include_data==1
+bitest realdie_5==.16666 if ind_typenew2==3&period2==1&include_data_all==1
+bitest realdie_6==.16666 if ind_typenew2==3&period2==1&include_data_all==1
+bitest realdie_5==.16666 if declared_1_n==10&period2==1&include_data_all==1
+bitest realdie_6==.16666 if declared_1_n==10&period2==1&include_data_all==1
 
 *\ref{stata:robustcheat_ranksum}
 * Mann-Whitney U and chi2 tests, Mostly 1-99 vs mostly 100
 drop ttt
 gen ttt= ind_typenew2
 replace ttt=. if inlist(ttt,1,4)
-ranksum realdie if period2==1&include_data==1, by(ttt)
-tab realdie ttt if period2==1&include_data==1, co chi2
+ranksum realdie if period2==1&include_data_all==1, by(ttt)
+tab realdie ttt if period2==1&include_data_all==1, co chi2
 
 * Mann-Whitney U and chi2 tests, Always 1-99 vs always 100
 drop ttt
 gen ttt=.
 replace ttt=1 if declared_f_n==10
 replace ttt=2 if declared_1_n==10
-ranksum realdie if period2==1&include_data==1, by(ttt)
-tab realdie ttt if period2==1&include_data==1, co chi2
+ranksum realdie if period2==1&include_data_all==1, by(ttt)
+tab realdie ttt if period2==1&include_data_all==1, co chi2
 
 * Fisher exact test, reported 5, consistent partial vs consistent honest
 *\label{stata:rep5}
@@ -990,39 +1037,39 @@ drop ttt
 gen ttt= ind_typenew2
 replace ttt=. if ~inlist( ind_typenew2,2,3)
 replace ttt=0 if ttt==3
-cc ttt realdie_5 if period2==1&include_data==1, exact
+cc ttt realdie_5 if period2==1&include_data_all==1, exact
 
 *\label{stata:digdie}
 drop tt
 gen tt=ind_typenew2==1
-cc tt digitaldie_lie_max if period2==1&inlist(ind_typenew2,1,2), exact
-cc tt digitaldie_lie_max if period2==1&inlist(ind_typenew2,1,3), exact
-cc tt digitaldie_lie_nonmax if period2==1&inlist(ind_typenew2,1,2), exact
-cc tt digitaldie_lie_nonmax if period2==1&inlist(ind_typenew2,1,3), exact
+cc tt digitaldie_lie_max if period2==1&inlist(ind_typenew2,1,2)&include_data_all==1, exact
+cc tt digitaldie_lie_max if period2==1&inlist(ind_typenew2,1,3)&include_data_all==1, exact
+cc tt digitaldie_lie_nonmax if period2==1&inlist(ind_typenew2,1,2)&include_data_all==1, exact
+cc tt digitaldie_lie_nonmax if period2==1&inlist(ind_typenew2,1,3)&include_data_all==1, exact
 
 drop tt
 gen tt=ind_typenew2==2
-cc tt digitaldie_lie_max if period2==1&inlist(ind_typenew2,2,3), exact
-cc tt digitaldie_lie_nonmax if period2==1&inlist(ind_typenew2,2,3), exact
+cc tt digitaldie_lie_max if period2==1&inlist(ind_typenew2,2,3)&include_data_all==1, exact
+cc tt digitaldie_lie_nonmax if period2==1&inlist(ind_typenew2,2,3)&include_data_all==1, exact
 
 drop tt
 gen tt=ind_typenew3==1
-cc tt digitaldie_lie_max if period2==1&inlist(ind_typenew3,1,2), exact
-cc tt digitaldie_lie_max if period2==1&inlist(ind_typenew3,1,3), exact
-cc tt digitaldie_lie_nonmax if period2==1&inlist(ind_typenew3,1,2), exact
-cc tt digitaldie_lie_nonmax if period2==1&inlist(ind_typenew3,1,3), exact
+cc tt digitaldie_lie_max if period2==1&inlist(ind_typenew3,1,2)&include_data_all==1, exact
+cc tt digitaldie_lie_max if period2==1&inlist(ind_typenew3,1,3)&include_data_all==1, exact
+cc tt digitaldie_lie_nonmax if period2==1&inlist(ind_typenew3,1,2)&include_data_all==1, exact
+cc tt digitaldie_lie_nonmax if period2==1&inlist(ind_typenew3,1,3)&include_data_all==1, exact
 
 drop tt
 gen tt=ind_typenew3==2
-cc tt digitaldie_lie_max if period2==1&inlist(ind_typenew3,2,3), exact
-cc tt digitaldie_lie_nonmax if period2==1&inlist(ind_typenew2,2,3), exact
+cc tt digitaldie_lie_max if period2==1&inlist(ind_typenew3,2,3)&include_data_all==1, exact
+cc tt digitaldie_lie_nonmax if period2==1&inlist(ind_typenew3,2,3)&include_data_all==1, exact
 
 *\label{stata:dg_die}
-cc offerdg_0 realdie_6 if country_code==2&period2==1&include_data==1, exact
-cc offerdg_0 realdie_6 if country_code==3&period2==1&include_data==1, exact
+cc offerdg_0 realdie_6 if country_code==2&period2==1&include_data==1&include_data_all==1, exact
+cc offerdg_0 realdie_6 if country_code==3&period2==1&include_data==1&include_data_all==1, exact
 
 *\label{stata:rt}
-tabstat time_declare if period2!=.&include_data==1, by(declared_cat) stats(mean sd n max)
+tabstat time_declare_pl if period2!=.&include_data==1, by(declared_cat) stats(mean sd n max)
 
 *\label{stata:whocheats}
 drop ttt
@@ -1086,19 +1133,21 @@ graph export "`path'ret_density.eps", as(eps) preview(off) replace
 use "`path'mastern_final2018_new_new.dta", clear
 local fname="`path'table_ret.tex"
 
+local note = "OLS regressions. Dependent variable is average performance over 10 rounds. DG frac is the fraction of the 1000 ECU donated in the dictator game. Norms is the social norms index (see Table \ref{tab:norms}). SafeChoices if the number (0-10) of safe choices on the lottery task. Income is the number of the individual's income bracket, rescaled between 0 and 1 (for Chile and the UK), and the individual's perceived income decile, rescaled between 0 and 1 (for Russia)."
+
 local varlist1 = "male age_subject offerdg_0 offerdg tax_20 tax_30"
 local varlist2 = "tax_40 tax_50 deadweight mpcr" 
 local varlist4 = "shock status status_H non_fixed norms trust safechoices ideology income2"
 local vv = "russia uk"
 
 estimates clear
-reg ncorrect_subjav `varlist1' `varlist4' if period2==1&include_data==1&country_code==1, robust
+reg ncorrect_subjav `varlist1' `varlist4' if period2==1&include_data_all==1&country_code==1, robust
 est store m1
-reg ncorrect_subjav `varlist1' `varlist4' if period2==1&include_data==1&country_code==2, robust
+reg ncorrect_subjav `varlist1' `varlist4' if period2==1&include_data_all==1&country_code==2, robust
 est store m2 
-reg ncorrect_subjav `varlist1' `varlist2' `varlist4' if period2==1&include_data==1&country_code==3, robust
+reg ncorrect_subjav `varlist1' `varlist2' `varlist4' if period2==1&include_data_all==1&country_code==3, robust
 est store m3 
-reg ncorrect_subjav `varlist1' `varlist2' `vv' `varlist4' if period2==1&include_data==1, robust
+reg ncorrect_subjav `varlist1' `varlist2' `vv' `varlist4' if period2==1&include_data_all==1, robust
 est store m4
 esttab m1 m2 m3 m4 using "`fname'", label mtitle("Chile" "Russia" "UK" "All") wide compress nonum replace order(`varlist1' `varlist2' `vv' `varlist4') note("OLS regression. Robust standard errors. Dependent variable is subject's average performance over 10 rounds.") se r2 star(* 0.10 ** 0.05 *** 0.01)
 
@@ -1110,6 +1159,8 @@ esttab m1 m2 m3 m4 using "`fname'", label mtitle("Chile" "Russia" "UK" "All") wi
 use "`path'mastern_final2018_new_new.dta", clear
 local fname="`path'table_ret_per.tex"
 
+local note = "OLS regressions. Dependent variable is parformance in a round. Standard errors are clustered by subject. DG frac is the fraction of the 1000 ECU donated in the dictator game. Norms is the social norms index (see Table \ref{tab:norms}). SafeChoices if the number (0-10) of safe choices on the lottery task. Income is the number of the individual's income bracket, rescaled between 0 and 1 (for Chile and the UK), and the individual's perceived income decile, rescaled between 0 and 1 (for Russia)."
+
 local varlist1 = "male age_subject period2 offerdg_0 offerdg tax_20 tax_30"
 local varlist2 = "tax_40 tax_50 deadweight mpcr" 
 local varlist4 = "shock l_shock status status_H non_fixed l_others norms trust safechoices ideology income2"
@@ -1117,16 +1168,16 @@ local vv = "russia uk"
 local varlist5 = "tax_20 tax_30 tax_40 tax_50" 
 
 estimates clear
-reg ncorrectret `varlist1' `varlist4' if period2>1&include_data==1&country_code==1, cluster(subj_id)
+reg ncorrectret `varlist1' `varlist4' if period2>1&include_data_all==1&country_code==1, cluster(subj_id)
 est store m1
-reg ncorrectret `varlist1' `varlist4' if period2>1.&include_data==1&country_code==2, cluster(subj_id)
+reg ncorrectret `varlist1' `varlist4' if period2>1.&include_data_all==1&country_code==2, cluster(subj_id)
 est store m2 
-reg ncorrectret `varlist1' `varlist2' `varlist4' if period2>1.&include_data==1&country_code==3, cluster(subj_id)
+reg ncorrectret `varlist1' `varlist2' `varlist4' if period2>1.&include_data_all==1&country_code==3, cluster(subj_id)
 est store m3 
-reg ncorrectret `varlist1' `varlist2' `vv' `varlist4' if period2>1.&include_data==1, cluster(subj_id)
+reg ncorrectret `varlist1' `varlist2' `vv' `varlist4' if period2>1.&include_data_all==1, cluster(subj_id)
 est store m4
 esttab m1 m2 m3 m4
-esttab m1 m2 m3 m4 using "`fname'", label mtitle("Chile" "Russia" "UK" "All") drop(`varlist5') wide compress nonum replace order(`varlist1' `varlist2' `vv' `varlist4') note("Standard errors are clustered by subject. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE.") r2 se star(* 0.10 ** 0.05 *** 0.01)
+esttab m1 m2 m3 m4 using "`fname'", label mtitle("Chile" "Russia" "UK" "All") drop(`varlist5') wide compress nonum replace order(`varlist1' `varlist2' `vv' `varlist4') note("`note'") r2 se star(* 0.10 ** 0.05 *** 0.01)
 
 ************************************************************************
 ***************** TABLE: RET PERFORMANCE, RUSSIA ******************
@@ -1135,6 +1186,8 @@ esttab m1 m2 m3 m4 using "`fname'", label mtitle("Chile" "Russia" "UK" "All") dr
 
 use "`path'mastern_final2018_new_new.dta", clear
 local fname="`path'table_ret_russia.tex"
+local note = "OLS regressions. Dependent variable is average performance over 10 rounds in the first model, and performance in a round for the second model. Robust standard errors for first model, standard errors clustered by subject for the second model. DG frac is the fraction of the 1000 ECU donated in the dictator game. Norms is the social norms index (see Table \ref{tab:norms}). SafeChoices if the number (0-10) of safe choices on the lottery task. Trusting behavior is the trusting behavior index (see Table \ref{tab:trust}). Income is the number of the individual's income bracket, rescaled between 0 and 1 (for Chile and the UK), and the individual's perceived income decile, rescaled between 0 and 1 (for Russia)."
+
 
 local varlist1 = "male age_subject offerdg_0 offerdg tax_20 tax_30 shock status status_H non_fixed mpcr norms trusting safechoices ideology income2"
 local varlist2 = "male age_subject period2 offerdg_0 offerdg tax_20 tax_30 shock l_shock status status_H non_fixed mpcr l_others norms trusting safechoices ideology income2"
@@ -1147,7 +1200,6 @@ est store m2
 esttab m1 m2 using "`fname'", label mtitle("Average" "Per round") wide compress nonum replace order(`varlist2') note("`note'") r2 se star(* 0.10 ** 0.05 *** 0.01)
 
 
-local note = "OLS regressions. Dependent variable is average performance over 10 rounds in the first model, and performance in a round for the second model. Robust standard errors for first model, standard errors clustered by subject for the second model. DG frac is the fraction of the 1000 ECU donated in the dictator game. Norms is the social norms index (see Table \ref{tab:norms}). SafeChoices if the number (0-10) of safe choices on the lottery task. Trusting behavior is the trusting behavior index (see Table \ref{tab:trust}). Income is the number of the individual's income bracket, rescaled between 0 and 1 (for Chile and the UK), and the individual's perceived income decile, rescaled between 0 and 1 (for Russia)."
 
 
 ******************************************************************************************************************************************************

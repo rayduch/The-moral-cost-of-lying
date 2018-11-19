@@ -41,7 +41,7 @@ dat<- read.dta13("mastern_final2018_new_new.dta")
 ### Die by type Figure 2
 ###########################
 
-subject<-dat[ dat$include_data==1,]
+subject<-dat[ dat$include_data_all==1,]
 
 
 subject$ind_typenew3[subject$ind_typenew2==1] <- "Consistent Maximal"
@@ -66,7 +66,7 @@ d<-ggplot(pt, aes(x = die, y = prop, colour=type, fill=type)) + geom_bar(stat = 
   scale_color_manual(values= c("grey90", "grey60", "grey40", "grey20"))+
   theme(legend.position="bottom")
 d
-ggsave(paste0("Figure2",v, ".pdf"), path=fig.path, width = 9, height = 6)
+ggsave(paste0("Figure2",v, ".eps"), path=fig.path, width = 9, height = 6)
 
 
 
@@ -116,6 +116,142 @@ legend('bottomright',
 )
 
 dev.off()
+
+
+
+#######################################
+###Figure B2 Cheater types by country
+########################################
+
+p.df<-dat[, c("country_code", "hightype" , "include_data", "include_data_all", "declared_0", "declared_f")]
+              
+#            , "declared_near")]
+p.df$country[p.df$country_code==1] <- "Chile"
+p.df$country[p.df$country_code==2] <- "Russia"
+p.df$country[p.df$country_code==3] <- "U.K."
+
+
+p.df$include_data[p.df$include_data_all==0]<-NA
+p.df<-p.df[complete.cases(p.df$include_data),]
+
+
+p.df$type[p.df$declared_0==1]<-"Maximal"
+p.df$type[p.df$declared_f==1]<-"Limited"
+p.df$type[p.df$declared_near==1]<-"Near-Maximal"
+
+
+
+pt<-prop.table(table(p.df$type, p.df$hightype, p.df$country), c(3,2))
+
+prop.t<-as.data.frame(pt)
+
+names(prop.t)<-c("type", "perform_high" ,"country", "prop" )
+prop.t$perform_high_lab<-ifelse(prop.t$perform_high==1, "High Performance", "Low Performance")
+
+prop.t$type <- factor(prop.t$type, levels = c("Maximal", "Limited", "Near-Maximal"))
+
+
+
+d<-ggplot(prop.t, aes(x = type, y = prop, colour=perform_high_lab, fill=perform_high_lab)) + geom_bar(stat = "identity", position = "dodge") + 
+  ylab("Percent") + scale_y_continuous(labels = scales::percent , limits = c(0,1)) +
+  xlab("") + labs(colour="", fill="") +
+  scale_fill_manual("", values = c("red", "blue"))+
+  theme(text = element_text(size=20))+
+  #geom_hline(yintercept = 1/6, lty="dashed", col="red")+
+  facet_wrap(~  country, ncol = 3) +  
+  theme(legend.position="bottom", legend.text=element_text(size=15))
+d
+
+ggsave(paste0("FigureB2",v, ".pdf"), path=fig.path, width = 12, height = 5)
+
+
+
+
+
+
+###############################
+### Figure C2
+################################
+p.df<-dat[, c("country_code", "ind_typenew2", "offerdg" ,"offerdg_0", "include_data")]
+p.df$country[p.df$country_code==1] <- "Chile"
+p.df$country[p.df$country_code==2] <- "Russia"
+p.df$country[p.df$country_code==3] <- "U.K."
+
+p.df$type[p.df$ind_typenew2==1] <- "C. Maximal"
+p.df$type[p.df$ind_typenew2==2] <- "C. Partial"
+p.df$type[p.df$ind_typenew2==3] <- "C. Honest"
+p.df$type[p.df$ind_typenew2==4] <- "Other"
+
+p.df$dg_type<-ifelse(p.df$offerdg_0==1, "Give 0", "Give >0")
+
+p.df$ind_typenew2[p.df$include_data==0]<-NA
+p.df<-p.df[complete.cases(p.df$ind_typenew2),]
+
+
+pt<-prop.table(table(p.df$type, p.df$dg_type, p.df$country), c(3,2))
+
+prop.t<-as.data.frame(pt)
+
+names(prop.t)<-c("type", "dg_type" ,"country", "prop" )
+
+
+
+prop.t$type <- factor(prop.t$type, levels = c("C. Maximal", "C. Partial", "C. Honest", "Other"))
+prop.t$dg_type <- factor(prop.t$dg_type, levels = c("Give 0", "Give >0"))
+
+
+
+d<-ggplot(prop.t, aes(x = type, y = prop, colour=dg_type, fill=dg_type)) + geom_bar(stat = "identity", position = "dodge") + 
+  ylab("Percent") + scale_y_continuous(labels = scales::percent , limits = c(0,1)) +
+  xlab("") + labs(colour="", fill="") +
+  theme(text = element_text(size=20))+
+  scale_fill_manual("", values = c("black", "grey60"))+
+  scale_colour_manual("", values = c("black", "grey60"))+
+  #geom_hline(yintercept = 1/6, lty="dashed", col="red")+
+  facet_wrap(~  country, ncol = 3) +  theme(legend.position="bottom", legend.text=element_text(size=15))
+d
+ggsave(paste0("FigureC2",v, ".eps"), path=fig.path, width = 16, height = 5)
+
+
+
+
+
+
+
+###########################################
+### Figure C4: Digital die
+###########################################
+subject<-dat[ dat$include_data_all==1,]
+subject<-subject[ subject$digitaldie_actual>=0,]
+subject<-subject[ subject$period==2,]
+
+
+subject$ind_typenew3[subject$ind_typenew2==1] <- "Consistent Maximal"
+subject$ind_typenew3[subject$ind_typenew2==2] <- "Consistent Partial"
+subject$ind_typenew3[subject$ind_typenew2==3] <- "Consistent Honest"
+subject$ind_typenew3[subject$ind_typenew2==4] <- "Other"
+
+
+pt<-prop.table(table(subject$digitaldie, subject$ind_typenew3), 2)
+pt<-as.data.frame(pt)
+
+names(pt)<-c("die", "type", "prop" )
+pt$type <- factor(pt$type, levels = c("Consistent Maximal", "Consistent Partial", "Consistent Honest", "Other"))
+
+
+
+d<-ggplot(pt, aes(x = die, y = prop, colour=type, fill=type)) + geom_bar(stat = "identity" ,position="dodge") + 
+  ylab("Fraction") + scale_y_continuous( limits = c(0,1)) +
+  xlab("") + labs(colour="", fill="") +
+  geom_hline(yintercept = 1/6, lty="dashed", col="black", size=1)+
+  scale_fill_manual(values= c("grey90", "grey60", "grey40", "grey20"), guide = guide_legend(title = "")) +
+  scale_color_manual(values= c("grey90", "grey60", "grey40", "grey20"))+
+  theme(legend.position="bottom")
+d
+ggsave(paste0("FigureC4",v, ".eps"), path=fig.path, width = 9, height = 6)
+
+
+
 
 ##########################################
 #### Figure C5 Reaction time per country
@@ -199,6 +335,13 @@ dev.off()
 
 
 
+
+
+
+
+###################################
+#### Posibly eliminate from code
+###################################
 ############################
 ### Cheater type
 ######################.
@@ -241,127 +384,4 @@ d
 ggsave(paste0("cheater_type_performance",v, ".pdf"), path=fig.path, width = 16, height = 5)
 
 
-
-#########################
-###Figure B2
-#########################
-
-p.df<-dat[, c("country_code", "hightype", "include_data", "declared_0", "declared_f", "declared_near")]
-p.df$country[p.df$country_code==1] <- "Chile"
-p.df$country[p.df$country_code==2] <- "Russia"
-p.df$country[p.df$country_code==3] <- "U.K."
-
-
-p.df$include_data[p.df$include_data==0]<-NA
-p.df<-p.df[complete.cases(p.df$include_data),]
-
-
-p.df$type[p.df$declared_0==1]<-"Maximal"
-p.df$type[p.df$declared_f==1]<-"Limited"
-p.df$type[p.df$declared_near==1]<-"Near-Maximal"
-
-
-
-pt<-prop.table(table(p.df$type, p.df$hightype, p.df$country), c(3,2))
-
-prop.t<-as.data.frame(pt)
-
-names(prop.t)<-c("type", "perform_high" ,"country", "prop" )
-prop.t$perform_high_lab<-ifelse(prop.t$perform_high==1, "High Performance", "Low Performance")
-
-prop.t$type <- factor(prop.t$type, levels = c("Maximal", "Limited", "Near-Maximal"))
-
-
-
-d<-ggplot(prop.t, aes(x = type, y = prop, colour=perform_high_lab, fill=perform_high_lab)) + geom_bar(stat = "identity", position = "dodge") + 
-  ylab("Percent") + scale_y_continuous(labels = scales::percent , limits = c(0,1)) +
-  xlab("") + labs(colour="", fill="") +
-  scale_fill_manual("", values = c("red", "blue"))+
-  theme(text = element_text(size=20))+
-  #geom_hline(yintercept = 1/6, lty="dashed", col="red")+
-  facet_wrap(~  country, ncol = 3) +  
-  theme(legend.position="bottom", legend.text=element_text(size=20))
-d
-
-ggsave(paste0("FigureB2",v, ".pdf"), path=fig.path, width = 12, height = 5)
-
-###############################
-### Figure C2
-################################
-p.df<-dat[, c("country_code", "ind_typenew2", "offerdg" ,"offerdg_0", "include_data")]
-p.df$country[p.df$country_code==1] <- "Chile"
-p.df$country[p.df$country_code==2] <- "Russia"
-p.df$country[p.df$country_code==3] <- "U.K."
-
-
-
-p.df$type[p.df$ind_typenew2==1] <- "C. Maximal"
-p.df$type[p.df$ind_typenew2==2] <- "C. Partial"
-p.df$type[p.df$ind_typenew2==3] <- "C. Honest"
-p.df$type[p.df$ind_typenew2==4] <- "Other"
-
-p.df$dg_type<-ifelse(p.df$offerdg_0==1, "Give 0", "Give >0")
-
-
-
-p.df$ind_typenew2[p.df$include_data==0]<-NA
-p.df<-p.df[complete.cases(p.df$ind_typenew2),]
-
-
-pt<-prop.table(table(p.df$type, p.df$dg_type, p.df$country), c(3,2))
-
-prop.t<-as.data.frame(pt)
-
-names(prop.t)<-c("type", "dg_type" ,"country", "prop" )
-
-
-
-prop.t$type <- factor(prop.t$type, levels = c("C. Maximal", "C. Partial", "C. Honest", "Other"))
-prop.t$dg_type <- factor(prop.t$dg_type, levels = c("Give 0", "Give >0"))
-
-
-
-d<-ggplot(prop.t, aes(x = type, y = prop, colour=dg_type, fill=dg_type)) + geom_bar(stat = "identity", position = "dodge") + 
-  ylab("Percent") + scale_y_continuous(labels = scales::percent , limits = c(0,1)) +
-  xlab("") + labs(colour="", fill="") +
-  theme(text = element_text(size=20))+
-  scale_fill_manual("", values = c("red", "blue"))+
-  #geom_hline(yintercept = 1/6, lty="dashed", col="red")+
-  facet_wrap(~  country, ncol = 3) +  theme(legend.position="bottom", legend.text=element_text(size=20))
-d
-ggsave(paste0("cheater_type_dgoffer",v, ".pdf"), path=fig.path, width = 16, height = 5)
-
-
-
-
-###################################
-#### Posibly eliminate from code
-###################################
-
-
-#######################################
-### Histogram of declarations Figure 2
-######################################
-
-p.df<-dat[dat$ind_typenew2==2,]
-p.df<-p.df[p.df$include_data==1,]
-
-
-p.df<-p.df[!is.na(p.df$country_code), ]
-
-
-
-p.df<-p.df[p.df$ind_typenew2==2,]
-p.df$country_code2[p.df$country_code==1] <- "Chile"
-p.df$country_code2[p.df$country_code==2] <- "Russia"
-p.df$country_code2[p.df$country_code==3] <- "U.K."
-
-
-ggplot(p.df, aes(declared_part_av)) + 
-  geom_histogram( aes(y=..density..), col="grey50", fill="grey60", bins=30)+
-  scale_x_continuous(breaks=c(0, .1, .2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1))+
-  facet_wrap(~ country_code2)+
-  xlab("") + theme(strip.text = element_text(size=15))
-
-ggsave(paste0("hist_declared",v, ".pdf"), path=fig.path, width = 12, height = 6)
 

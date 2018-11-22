@@ -5,7 +5,6 @@
 ################################################################
 
 
-
 library(foreign)
 library(ggplot2)
 library(readstata13)
@@ -123,9 +122,10 @@ dev.off()
 ###Figure B2 Cheater types by country
 ########################################
 
-p.df<-dat[, c("country_code", "hightype" , "include_data", "include_data_all", "declared_0", "declared_f")]
-              
-#            , "declared_near")]
+dat$declared_near<- ifelse ( dat$declared_frac>0 & dat$declared_frac<=.2, 1, 0)
+
+
+p.df<-dat[, c("country_code", "hightype" , "include_data", "include_data_all", "declared_0", "declared_f", "declared_near")]
 p.df$country[p.df$country_code==1] <- "Chile"
 p.df$country[p.df$country_code==2] <- "Russia"
 p.df$country[p.df$country_code==3] <- "U.K."
@@ -162,7 +162,7 @@ d<-ggplot(prop.t, aes(x = type, y = prop, colour=perform_high_lab, fill=perform_
   theme(legend.position="bottom", legend.text=element_text(size=15))
 d
 
-ggsave(paste0("FigureB2",v, ".pdf"), path=fig.path, width = 12, height = 5)
+ggsave(paste0("FigureB2",v, ".eps"), path=fig.path, width = 12, height = 5)
 
 
 

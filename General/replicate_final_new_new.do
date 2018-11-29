@@ -1,3 +1,18 @@
+
+*Nov 2018
+
+
+** The following .ado files are needed to run this code:
+** coefplot.ado 
+
+
+
+
+
+local path="C:\Users\Denise Laroze P\Documents\GitHub\Once-a-Liar\General\"
+set more off
+use "`path'mastern_final2018_new_new.dta", clear
+
 *********************************************************************************
 ******************* TABLE: LYING DECISIONS ***********************************
 *********************************************************************************
@@ -12,97 +27,34 @@ tab ind_typenew2 country_code if period2==1&include_data==1, co
 *******************************************************************************
 *******************************************************************************
 
-use "`path'mastern_final2018_new_new.dta", clear
-replace age=age/10
-label variable age "Age/10"
 
 *******************************************************************************
 ******************* TABLE IN THE MAIN TEXT *********************************
 *******************************************************************************
 
-local fname="`path'table_parttype.tex"
-local fname_gr="`path'gr_parttype.eps"
-local vname="ind_typenew2"
-local note = "The first four columns report are average marginal effects for multinomial logistic regression (the dependent variable is whether the subject is a consistent maximal liar, consistent partial liar, is consistently honest, or none of those). The fifth column reports OLS regression, the dependent variable is the fraction of income declared, averaged across all rounds where the subject lied partially, for all subjects who lied partially in at least 8 rounds. Robust standard errors. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game."
-local nnn=8
+*replace age=age/10
+*label variable age "Age/10"
+
+global fname="`path'table_parttype.tex"
+global fname_gr="`path'gr_parttype.eps"
+global vname="ind_typenew2"
+global note = "The first four columns report are average marginal effects for multinomial logistic regression (the dependent variable is whether the subject is a consistent maximal liar, consistent partial liar, is consistently honest, or none of those). The fifth column reports OLS regression, the dependent variable is the fraction of income declared, averaged across all rounds where the subject lied partially, for all subjects who lied partially in at least 8 rounds. Robust standard errors. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game."
+global nnn=8
+do "`path'tables_1.do"
 
 *******************************************************************************
 ******************* TABLE IN THE APPENDIX **********************************
 *******************************************************************************
-local fname="`path'table_parttype_10.tex"
-local vname="ind_typenew3"
-local note = "The first four columns report average marginal effects for multinomial logistic regression (the dependent variable is whether the subject was a maximal liar, partial liar, or honest, in all 10 rounds). Robust standard errors. The fifth column reports OLS regression, the dependent variable is the fraction of income declared, averaged across all rounds, for subjects who lied partially in every round. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game."
-local nnn=10
+global fname="`path'table_parttype_10.tex"
+global fname_gr=0
+global vname="ind_typenew3"
+global note = "The first four columns report average marginal effects for multinomial logistic regression (the dependent variable is whether the subject was a maximal liar, partial liar, or honest, in all 10 rounds). Robust standard errors. The fifth column reports OLS regression, the dependent variable is the fraction of income declared, averaged across all rounds, for subjects who lied partially in every round. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game."
+global nnn=10
+do "`path'tables_1.do"
 
 *******************************************************************************
 *******************************************************************************
 
-local varlist = "ncorrect_rank i.male age i.offerdg_0 offerdg_frac i.tax_20 i.tax_30 i.tax_40 i.tax_50 i.deadweight i.mpcr i.shock i.status i.status_H i.non_fixed"
-local varlist2 = " "
-local varlist3 = "0.male 0.offerdg_0 0.tax_20 0.tax_30 0.tax_40 0.tax_50 0.deadweight 0.mpcr 0.shock 0.status 0.status_H 0.non_fixed 0.russia 0.uk"
-
-local preh="&\multicolumn{8}{c|}{Mlogit, average marginal effects }&\multicolumn{2}{c}{OLS}\\"
-
-
-
-file open mf using "`fname'", write replace
-file write mf "\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}" _n
-file write mf "\begin{tabular}{l|cccccccc|cc}" _n
-file write mf "\hline\hline" _n
-file close mf
-
-	mlogit `vname' `varlist' `varlist2' i.russia i.uk if include_data==1&period2==1, robust 
-	est store m
-	forval i=1/4 {
-		est res m
-		margins, dydx(*) predict(outcome(`i')) post 
-			test 1.tax_20=1.tax_30
-			estadd scalar t2030=r(p)
-			local scals="t2030"
-			test 1.tax_20=1.tax_40
-			estadd scalar t2040=r(p)
-			test 1.tax_20=1.tax_50
-			estadd scalar t2050=r(p)
-			test 1.tax_30=1.tax_40		
-			estadd scalar t3040=r(p)
-			test 1.tax_30=1.tax_50
-			estadd scalar t3050=r(p)
-			test 1.tax_40=1.tax_50
-			estadd scalar t4050=r(p)
-			test 1.russia=1.uk
-			estadd scalar rusuk=r(p)
-			local scals=`" "t2030 D20=D30" "t2040 D20=D40" "t2050 D20=D50" "t3040 D30=D40" "t3050 D30=D50" "t4050 D40=D50" "rusuk Russia=UK" "'
-		*test status_H=status_L
-		est store m`i'
-	}
-
-reg declared_part_av `varlist' i.russia i.uk if period2==1&include_data==1&declared_f_n>=`nnn'
-			test 1.tax_20=1.tax_30
-			estadd scalar t2030=r(p)
-			test 1.tax_20=1.tax_40
-			estadd scalar t2040=r(p)
-			test 1.tax_20=1.tax_50
-			estadd scalar t2050=r(p)
-			test 1.tax_30=1.tax_40		
-			estadd scalar t3040=r(p)
-			test 1.tax_30=1.tax_50
-			estadd scalar t3050=r(p)
-			test 1.tax_40=1.tax_50
-			estadd scalar t4050=r(p)
-			test 1.russia=1.uk
-			estadd scalar rusuk=r(p)
-est store m5
-
-esttab m1 m2 m3 m4 m5 using "`fname'", drop(`varlist3') scalars(`scals') label mtitle("Consistent maximal" "Consistent partial" "Consistently honest" "Other" "Partial lying") wide compress nonum title(`tt') append fragment  prehead(`preh') postfoot(\hline\hline) se star(* 0.10 ** 0.05 *** 0.01)
-file open mf using "`fname'", write append
-file write mf "\multicolumn{11}{p{16.5cm}}{\tiny `note'}\\" _n
-file write mf "\multicolumn{11}{l}{\tiny \sym{*} \(p<0.1\), \sym{**} \(p<0.05\), \sym{***} \(p<0.01\)}\\" _n
-file write mf "\end{tabular}"
-file close mf
-
-
-coefplot m1, bylabel(Cons. Maximal) || m2, bylabel(Cons. Partial) || m3, bylabel(Cons. Honest) || m4, bylabel(Other) ||, drop(_cons) xline(0) byopts(row(1) note("The graph reports average marginal effects and 95% confidence intervals for multinomial logistic regression. The dependent variable is" "whether the subject is a consistent maximal liar, consistent partial liar, is consistently honest, or none of those. Robust standard errors." "RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference" "between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated" "in the dictator game.")) xsize(7)
-graph export "`fname_gr'", as(eps) preview(off) replace
 
 *coefplot (m1) (m2) (m3) (m4), drop(_cons) xline(0) keep(*:ncorrect_rank *:age_subject *:1.male *:1.offergd_0 *:offerdg)
 *******************************************************************************
@@ -111,51 +63,58 @@ graph export "`fname_gr'", as(eps) preview(off) replace
 *******************************************************************************
 *******************************************************************************
 
-use "`path'mastern_final2018_new_new.dta", clear
+global preh="&\multicolumn{6}{c|}{Mlogit, average marginal effects }&\multicolumn{2}{c}{OLS}\\"
+global ind_typenewcond="ind_typenew2==2"
+global auditcond=0
 
-local preh="&\multicolumn{6}{c|}{Mlogit, average marginal effects }&\multicolumn{2}{c}{OLS}\\"
-local include_cond="include_data==1"
-local ind_typenewcond="ind_typenew2==2"
-local auditcond=0
+global scals_1=`" "t2030 D20=D30" "t2040 D20=D40" "t2050 D20=D50" "t3040 D30=D40" "t3050 D30=D50" "t4050 D40=D50" "rusuk Russia=UK" "'
+global scals_2=`" "t2030 D20=D30" "'
+global scals_3=`" "t2030 D20=D30" "'
+global scals_4=`" "t2030 D20=D30" "t2040 D20=D40" "t2050 D20=D50" "t3040 D30=D40" "t3050 D30=D50" "t4050 D40=D50" "'
 
-local scals_1=`" "t2030 D20=D30" "t2040 D20=D40" "t2050 D20=D50" "t3040 D30=D40" "t3050 D30=D50" "t4050 D40=D50" "rusuk Russia=UK" "'
-local scals_2=`" "t2030 D20=D30" "'
-local scals_3=`" "t2030 D20=D30" "'
-local scals_4=`" "t2030 D20=D30" "t2040 D20=D40" "t2050 D20=D50" "t3040 D30=D40" "t3050 D30=D50" "t4050 D40=D50" "'
+global tcond_1="1.tax_20=1.tax_30 1.tax_20=1.tax_40 1.tax_20=1.tax_50 1.tax_30=1.tax_40 1.tax_30=1.tax_50 1.tax_40=1.tax_50 1.russia=1.uk"
+global tcond_2="1.tax_20=1.tax_30" 
+global tcond_3="1.tax_20=1.tax_30" 
+global tcond_4="1.tax_20=1.tax_30 1.tax_20=1.tax_40 1.tax_20=1.tax_50 1.tax_30=1.tax_40 1.tax_30=1.tax_50 1.tax_40=1.tax_50"
 
-local tcond_1="1.tax_20=1.tax_30 1.tax_20=1.tax_40 1.tax_20=1.tax_50 1.tax_30=1.tax_40 1.tax_30=1.tax_50 1.tax_40=1.tax_50 1.russia=1.uk"
-local tcond_2="1.tax_20=1.tax_30" 
-local tcond_3="1.tax_20=1.tax_30" 
-local tcond_4="1.tax_20=1.tax_30 1.tax_20=1.tax_40 1.tax_20=1.tax_50 1.tax_30=1.tax_40 1.tax_30=1.tax_50 1.tax_40=1.tax_50"
+global eadd_1="t2030=r(p) t2040=r(p) t2050=r(p) t3040=r(p) t3050=r(p) t4050=r(p) rusuk=r(p)"
+global eadd_2="t2030=r(p)"
+global eadd_3="t2030=r(p)"
+global eadd_4="t2030=r(p) t2040=r(p) t2050=r(p) t3040=r(p) t3050=r(p) t4050=r(p)"
 
-local eadd_1="t2030=r(p) t2040=r(p) t2050=r(p) t3040=r(p) t3050=r(p) t4050=r(p) rusuk=r(p)"
-local eadd_2="t2030=r(p)"
-local eadd_3="t2030=r(p)"
-local eadd_4="t2030=r(p) t2040=r(p) t2050=r(p) t3040=r(p) t3050=r(p) t4050=r(p)"
-
-local titles="All\space{}countries Chile Russia UK"
-local aplist="append append append append"
+global titles="All\space{}countries Chile Russia UK"
+global aplist="append append append append"
 
 
 ********************************************************************************
 *************** PERIODS 1-10 *************************************************
 ********************************************************************************
 
-local fname="`path'table_reduced1_10.tex"
-local conds "1==1 country_code==1 country_code==2 country_code==3"
-local var1="ncorrect_rank ncorrect_dev2 i.male age period2 i.offerdg_0 offerdg_frac i.tax_20 i.tax_30"
-local var2="i.shock i.shock_H i.status i.status_H i.non_fixed"
-local var3="0.tax_20 0.tax_30 0.shock 0.shock_H 0.status 0.status_H 0.non_fixed 0.male 0.offerdg_0"
-local varlist_1 = "`var1' " + "i.tax_40 i.tax_50 i.deadweight i.mpcr i.russia i.uk " + "`var2'"
-local varlist_2 = "`var1' " + "`var2'"
-local varlist_3 = "`var1' " + " i.mpcr " + "`var2'"
-local varlist_4 = "`var1' " + "i.tax_40 i.tax_50 i.deadweight i.mpcr " + "`var2'"
-local varlist1_1 = "`var3' " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight 0.russia 0.uk" 
-local varlist1_2 = "`var3'"
-local varlist1_3 = "`var3' " + "0.mpcr"
-local varlist1_4 = "`var3' " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight"
-local note = "The first three columns report average marginal effects for multinomial logistic regression (dependent variable is whether the subject declared 0\%, 100\%, or something in between, in a given round). Standard errors are clustered by subject. The fourth column reports OLS regression, the dependent variable is the fraction of income declared in a given round. We only include subjects who partially cheated in at least 8 rounds, and declarations strictly between 0\% and 100\%. Standard errors are clustered by subject. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game."
-			  
+global conds "1==1 country_code==1 country_code==2 country_code==3"
+global include_cond="include_data==1"
+global var1="ncorrect_rank ncorrect_dev2 i.male age period2 i.offerdg_0 offerdg_frac i.tax_20 i.tax_30"
+global var2="i.shock i.shock_H i.status i.status_H i.non_fixed"
+global var3="0.tax_20 0.tax_30 0.shock 0.shock_H 0.status 0.status_H 0.non_fixed 0.male 0.offerdg_0"
+global varlist_1 = "$var1 " + "i.tax_40 i.tax_50 i.deadweight i.mpcr i.russia i.uk " + "$var2"
+global varlist_2 = "$var1 " + "$var2"
+global varlist_3 = "$var1 " + " i.mpcr " + "$var2"
+global varlist_4 = "$var1 " + "i.tax_40 i.tax_50 i.deadweight i.mpcr " + "$var2"
+global varlist1_1 = "$var3 " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight 0.russia 0.uk" 
+global varlist1_2 = "$var3"
+global varlist1_3 = "$var3 " + "0.mpcr"
+global varlist1_4 = "$var3 " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight"
+global note = "The first three columns report average marginal effects for multinomial logistic regression (dependent variable is whether the subject declared 0\%, 100\%, or something in between, in a given round). Standard errors are clustered by subject. The fourth column reports OLS regression, the dependent variable is the fraction of income declared in a given round. We only include subjects who partially cheated in at least 8 rounds, and declarations strictly between 0\% and 100\%. Standard errors are clustered by subject. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game."
+
+global i1=1
+global i2=1
+global fname="`path'table_reduced1_10_short.tex"			  
+do "`path'tables_2.do"
+
+// ERROR starts "variable tax_40 not found"
+global i1=2
+global i2=4
+global fname="`path'table_reduced1_10.tex"			  
+do "`path'tables_2.do"
 
 
 
@@ -163,205 +122,187 @@ local note = "The first three columns report average marginal effects for multin
 *************** PERIODS 1-10, test round performance **********************
 ********************************************************************************
 
-local fname="`path'table_reduced1_10_training.tex"
-local conds "1==1 country_code==1 country_code==2 country_code==3"
-local var1="nCorrectSumTest1 i.male age period2 i.offerdg_0 offerdg_frac i.tax_20 i.tax_30"
-local var2="i.shock i.shock_H i.status i.status_H i.non_fixed"
-local var3="0.tax_20 0.tax_30 0.shock 0.shock_H 0.status 0.status_H 0.non_fixed 0.male 0.offerdg_0"
-local varlist_1 = "`var1' " + "i.tax_40 i.tax_50 i.deadweight i.mpcr i.russia i.uk " + "`var2'"
-local varlist_2 = "`var1' " + "`var2'"
-local varlist_3 = "`var1' " + " i.mpcr " + "`var2'"
-local varlist_4 = "`var1' " + "i.tax_40 i.tax_50 i.deadweight i.mpcr " + "`var2'"
-local varlist1_1 = "`var3' " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight 0.russia 0.uk" 
-local varlist1_2 = "`var3'"
-local varlist1_3 = "`var3' " + "0.mpcr"
-local varlist1_4 = "`var3' " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight"
-local note = "The first three columns report average marginal effects for multinomial logistic regression (dependent variable is whether the subject declared 0\%,  100\%, or something in between, in a given round). Standard errors are clustered by subject. The fourth column reports OLS regression, the dependent variable is the fraction of income declared in a given round. We only include subjects who partially cheated in at least 8 rounds, and declarations strictly between 0\% and 100\%. Standard errors are clustered by subject. Practice period performance is the number of correct additions in the first practice period (in Russia, the only practice period). DG frac is the fraction of the 1000 ECU donated in the dictator game."
+global fname="`path'table_reduced1_10_training.tex"
+global conds "1==1 country_code==1 country_code==2 country_code==3"
+global var1="nCorrectSumTest1 i.male age period2 i.offerdg_0 offerdg_frac i.tax_20 i.tax_30"
+global var2="i.shock i.shock_H i.status i.status_H i.non_fixed"
+global var3="0.tax_20 0.tax_30 0.shock 0.shock_H 0.status 0.status_H 0.non_fixed 0.male 0.offerdg_0"
+global varlist_1 = "$var1 " + "i.tax_40 i.tax_50 i.deadweight i.mpcr i.russia i.uk " + "$var2"
+global varlist_2 = "$var1 " + "$var2"
+global varlist_3 = "$var1 " + " i.mpcr " + "$var2"
+global varlist_4 = "$var1 " + "i.tax_40 i.tax_50 i.deadweight i.mpcr " + "$var2"
+global varlist1_1 = "$var3 " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight 0.russia 0.uk" 
+global varlist1_2 = "$var3"
+global varlist1_3 = "$var3 " + "0.mpcr"
+global varlist1_4 = "$var3 " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight"
+global note = "The first three columns report average marginal effects for multinomial logistic regression (dependent variable is whether the subject declared 0\%,  100\%, or something in between, in a given round). Standard errors are clustered by subject. The fourth column reports OLS regression, the dependent variable is the fraction of income declared in a given round. We only include subjects who partially cheated in at least 8 rounds, and declarations strictly between 0\% and 100\%. Standard errors are clustered by subject. Practice period performance is the number of correct additions in the first practice period (in Russia, the only practice period). DG frac is the fraction of the 1000 ECU donated in the dictator game."
 			  
+global i1=2
+global i2=4
+do "`path'tables_2.do"
+// ERROR ends 
 			  
 ********************************************************************************
 *************** PERIODS 1-10, MALES AND FEMALES ********************************
 ********************************************************************************
 
-local fname="`path'table_reduced1_10_gender.tex"
-local scals_1=`" "t2030 D20=D30" "t2040 D20=D40" "t2050 D20=D50" "t3040 D30=D40" "t3050 D30=D50" "t4050 D40=D50" "rusuk Russia=UK" "'
-local scals_2=`" "t2030 D20=D30" "t2040 D20=D40" "t2050 D20=D50" "t3040 D30=D40" "t3050 D30=D50" "t4050 D40=D50" "rusuk Russia=UK" "'
-local tcond_1="1.tax_20=1.tax_30 1.tax_20=1.tax_40 1.tax_20=1.tax_50 1.tax_30=1.tax_40 1.tax_30=1.tax_50 1.tax_40=1.tax_50 1.russia=1.uk"
-local tcond_2="1.tax_20=1.tax_30 1.tax_20=1.tax_40 1.tax_20=1.tax_50 1.tax_30=1.tax_40 1.tax_30=1.tax_50 1.tax_40=1.tax_50 1.russia=1.uk"
-local eadd_1="t2030=r(p) t2040=r(p) t2050=r(p) t3040=r(p) t3050=r(p) t4050=r(p) rusuk=r(p)"
-local eadd_2="t2030=r(p) t2040=r(p) t2050=r(p) t3040=r(p) t3050=r(p) t4050=r(p) rusuk=r(p)"
-local titles="All\space{}countries,\space{}females All\space{}countries,\space{}males"
+global fname="`path'table_reduced1_10_gender.tex"
+global scals_1=`" "t2030 D20=D30" "t2040 D20=D40" "t2050 D20=D50" "t3040 D30=D40" "t3050 D30=D50" "t4050 D40=D50" "rusuk Russia=UK" "'
+global scals_2=`" "t2030 D20=D30" "t2040 D20=D40" "t2050 D20=D50" "t3040 D30=D40" "t3050 D30=D50" "t4050 D40=D50" "rusuk Russia=UK" "'
+global tcond_1="1.tax_20=1.tax_30 1.tax_20=1.tax_40 1.tax_20=1.tax_50 1.tax_30=1.tax_40 1.tax_30=1.tax_50 1.tax_40=1.tax_50 1.russia=1.uk"
+global tcond_2="1.tax_20=1.tax_30 1.tax_20=1.tax_40 1.tax_20=1.tax_50 1.tax_30=1.tax_40 1.tax_30=1.tax_50 1.tax_40=1.tax_50 1.russia=1.uk"
+global eadd_1="t2030=r(p) t2040=r(p) t2050=r(p) t3040=r(p) t3050=r(p) t4050=r(p) rusuk=r(p)"
+global eadd_2="t2030=r(p) t2040=r(p) t2050=r(p) t3040=r(p) t3050=r(p) t4050=r(p) rusuk=r(p)"
+global titles="All\space{}countries,\space{}females All\space{}countries,\space{}males"
 
-local aplist="append append"
-
-
-local conds "male==0 male==1"
-local var1="ncorrect_rank ncorrect_dev2 age period2 i.offerdg_0 offerdg_frac i.tax_20 i.tax_30"
-local var2="i.shock i.shock_H i.status i.status_H i.non_fixed"
-local var3="0.tax_20 0.tax_30 0.shock 0.shock_H 0.status 0.status_H 0.non_fixed 0.offerdg_0"
-local varlist_1 = "`var1' " + "i.tax_40 i.tax_50 i.deadweight i.mpcr i.russia i.uk " + "`var2'"
-local varlist_2 = "`var1' " + "i.tax_40 i.tax_50 i.deadweight i.mpcr i.russia i.uk " + "`var2'"
-local varlist1_1 = "`var3' " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight 0.russia 0.uk" 
-local varlist1_2 = "`var3' " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight 0.russia 0.uk" 
-local note = "The first three columns report average marginal effects for multinomial logistic regression (dependent variable is whether the subject declared 0\%, 100\%, or something in between, in a given round). Standard errors are clustered by subject. The fourth column reports OLS regression, the dependent variable is the fraction of income declared in a given round. We only include subjects who partially cheated in at least 8 rounds, and declarations strictly between 0\% and 100\%. Standard errors are clustered by subject. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game."
+global aplist="append append"
 
 
-********************************************************************************
-*************** PERIODS 1-10, BY BASELINE/STATUS/SHOCK/NONFIXED *********
-********************************************************************************
+global conds "male==0 male==1"
+global var1="ncorrect_rank ncorrect_dev2 age period2 i.offerdg_0 offerdg_frac i.tax_20 i.tax_30"
+global var2="i.shock i.shock_H i.status i.status_H i.non_fixed"
+global var3="0.tax_20 0.tax_30 0.shock 0.shock_H 0.status 0.status_H 0.non_fixed 0.offerdg_0"
+global varlist_1 = "$var1 " + "i.tax_40 i.tax_50 i.deadweight i.mpcr i.russia i.uk " + "$var2"
+global varlist_2 = "$var1 " + "i.tax_40 i.tax_50 i.deadweight i.mpcr i.russia i.uk " + "$var2"
+global varlist1_1 = "$var3 " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight 0.russia 0.uk" 
+global varlist1_2 = "$var3 " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight 0.russia 0.uk" 
+global note = "The first three columns report average marginal effects for multinomial logistic regression (dependent variable is whether the subject declared 0\%, 100\%, or something in between, in a given round). Standard errors are clustered by subject. The fourth column reports OLS regression, the dependent variable is the fraction of income declared in a given round. We only include subjects who partially cheated in at least 8 rounds, and declarations strictly between 0\% and 100\%. Standard errors are clustered by subject. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game."
 
-local fname="`path'table_reduced1_10_treat.tex"
-local scals_1=`" "t2030 D20=D30" "t2040 D20=D40" "t2050 D20=D50" "t3040 D30=D40" "t3050 D30=D50" "t4050 D40=D50" "rusuk Russia=UK" "'
-local scals_2=`" "t2030 D20=D30" "rusuk Russia=UK" "'
-local scals_3=`" "t2030 D20=D30" "rusuk Russia=UK" "'
-local scals_4=`" "t2030 D20=D30" "rusuk Russia=UK" "'
-local tcond_1="1.tax_20=1.tax_30 1.tax_20=1.tax_40 1.tax_20=1.tax_50 1.tax_30=1.tax_40 1.tax_30=1.tax_50 1.tax_40=1.tax_50 1.russia=1.uk"
-local tcond_2="1.tax_20=1.tax_30 1.russia=1.uk"
-local tcond_3="1.tax_20=1.tax_30 1.russia=1.uk"
-local tcond_4="1.tax_20=1.tax_30 1.russia=1.uk"
+global i1=1
+global i2=2
+do "`path'tables_2.do"
+		  
 
-local eadd_1="t2030=r(p) t2040=r(p) t2050=r(p) t3040=r(p) t3050=r(p) t4050=r(p) rusuk=r(p)"
-local eadd_2="t2030=r(p) rusuk=r(p)"
-local eadd_3="t2030=r(p) rusuk=r(p)"
-local eadd_4="t2030=r(p) rusuk=r(p)"
-
-local titles="Baseline Status Shock Non-fixed"
-local aplist="append append append append"
-
-
-local conds "baseline==1&mpcr==0&deadweight==0 status==1 shock==1 non_fixed==1"
-local var1="ncorrect_rank ncorrect_dev2 i.male age period2 i.offerdg_0 offerdg_frac i.tax_20 i.tax_30"
-local var3="0.tax_20 0.tax_30 0.male 0.offerdg_0 0.russia 0.uk"
-local varlist_1 = "`var1' " + "i.tax_40 i.tax_50 i.russia i.uk " 
-local varlist_2 = "`var1' " + "i.status_H i.russia i.uk " 
-local varlist_3 = "`var1' " + "i.shock_H i.russia i.uk " 
-local varlist_4 = "`var1' " + "i.russia i.uk " 
-local varlist1_1 = "`var3' " + "0.tax_40 0.tax_50" 
-local varlist1_2 = "`var3' " + "0.status_H" 
-local varlist1_3 = "`var3' " + "0.shock_H" 
-local varlist1_4 = "`var3'" 
-local note = "The first three columns report average marginal effects for multinomial logistic regression (dependent variable is whether the subject declared 0\%, 100\%, or something in between, in a given round). Standard errors are clustered by subject. The fourth column reports OLS regression, the dependent variable is the fraction of income declared in a given round. We only include subjects who partially cheated in at least 8 rounds, and declarations strictly between 0\% and 100\%. Standard errors are clustered by subject. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game."
-			  			  
 
 			  			  
 ********************************************************************************
 **************** PERIODS 2-10, PAST ACTIONS ********************************
 ********************************************************************************
-local fname="`path'table_reduced2_10.tex"
-local conds "1==1&period2>1 country_code==1&period2>1 country_code==2&period2>1 country_code==3&period2>1"
-local var1="ncorrect_rank ncorrect_dev2 i.male age period2 i.offerdg_0 offerdg_frac i.tax_20 i.tax_30"
-local var2="i.shock i.shock_H i.status i.status_H i.non_fixed i.l0 i.lf l_declim l_others"
-local var3="0.tax_20 0.tax_30 0.shock 0.shock_H 0.status 0.status_H 0.non_fixed 0.male 0.offerdg_0 0.l0 0.lf"
-local varlist_1 = "`var1' " + "i.tax_40 i.tax_50 i.deadweight i.mpcr i.russia i.uk " + "`var2'"
-local varlist_2 = "`var1' " + "`var2'"
-local varlist_3 = "`var1' " + " i.mpcr " + "`var2'"
-local varlist_4 = "`var1' " + "i.tax_40 i.tax_50 i.deadweight i.mpcr " + "`var2'"
-local varlist1_1 = "`var3' " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight 0.russia 0.uk" 
-local varlist1_2 = "`var3'"
-local varlist1_3 = "`var3' " + "0.mpcr"
-local varlist1_4 = "`var3' " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight"
-local note = "The first three columns report average marginal effects for multinomial logistic regression (dependent variable is whether the subject declared 0\%, 100\%, or something in between, in a given round). Standard errors are clustered by subject. The fourth column reports OLS regression, the dependent variable is the fraction of income declared in a given round. We only include subjects who partially cheated in at least 8 rounds, and declarations strictly between 0\% and 100\%. Standard errors are clustered by subject. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game."
+global conds "1==1&period2>1 country_code==1&period2>1 country_code==2&period2>1 country_code==3&period2>1"
+global var1="ncorrect_rank ncorrect_dev2 i.male age period2 i.offerdg_0 offerdg_frac i.tax_20 i.tax_30"
+global var2="i.shock i.shock_H i.status i.status_H i.non_fixed i.l0 i.lf l_declim l_others"
+global var3="0.tax_20 0.tax_30 0.shock 0.shock_H 0.status 0.status_H 0.non_fixed 0.male 0.offerdg_0 0.l0 0.lf"
+global varlist_1 = "$var1 " + "i.tax_40 i.tax_50 i.deadweight i.mpcr i.russia i.uk " + "$var2"
+global varlist_2 = "$var1 " + "$var2"
+global varlist_3 = "$var1 " + " i.mpcr " + "$var2"
+global varlist_4 = "$var1 " + "i.tax_40 i.tax_50 i.deadweight i.mpcr " + "$var2"
+global varlist1_1 = "$var3 " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight 0.russia 0.uk" 
+global varlist1_2 = "$var3"
+global varlist1_3 = "$var3 " + "0.mpcr"
+global varlist1_4 = "$var3 " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight"
+global note = "The first three columns report average marginal effects for multinomial logistic regression (dependent variable is whether the subject declared 0\%, 100\%, or something in between, in a given round). Standard errors are clustered by subject. The fourth column reports OLS regression, the dependent variable is the fraction of income declared in a given round. We only include subjects who partially cheated in at least 8 rounds, and declarations strictly between 0\% and 100\%. Standard errors are clustered by subject. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game."
+
+global fname="`path'table_reduced2_10.tex"
+global i1=1
+global i2=1
+do "`path'tables_2.do"
+
+global fname="`path'table_reduced2_10_countries.tex"
+global i1=2
+global i2=4
+do "`path'tables_2.do"
 
 ********************************************************************************
 **************** PERIOD 1 ****************************************************
 ********************************************************************************
 
-local fname="`path'table_reduced1.tex"
-local conds "1==1&period2==1 country_code==1&period2==1 country_code==2&period2==1 country_code==3&period2==1"
-local var1="ncorrect_rank ncorrect_dev2 i.male age i.offerdg_0 offerdg_frac i.tax_20 i.tax_30"
-local var2="i.shock i.shock_H i.status i.status_H i.non_fixed"
-local var3="0.tax_20 0.tax_30 0.shock 0.shock_H 0.status 0.status_H 0.non_fixed 0.male 0.offerdg_0"
-local varlist_1 = "`var1' " + "i.tax_40 i.tax_50 i.deadweight i.mpcr i.russia i.uk " + "`var2'"
-local varlist_2 = "`var1' " + "`var2'"
-local varlist_3 = "`var1' " + " i.mpcr " + "`var2'"
-local varlist_4 = "`var1' " + "i.tax_40 i.tax_50 i.deadweight i.mpcr " + "`var2'"
-local varlist1_1 = "`var3' " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight 0.russia 0.uk" 
-local varlist1_2 = "`var3'"
-local varlist1_3 = "`var3' " + "0.mpcr"
-local varlist1_4 = "`var3' " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight"
-local note = "The first three columns report average marginal effects for multinomial logistic regression (dependent variable is whether the subject declared 0\%, 100\%, or something in between, in a given round). Standard errors are clustered by subject. The fourth column reports OLS regression, the dependent variable is the fraction of income declared in a given round. We only include subjects who partially cheated in at least 8 rounds, and declarations strictly between 0\% and 100\%. Standard errors are clustered by subject. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game."
+// Error starts "variable tax_40 not found"
 
+global conds "1==1&period2==1 country_code==1&period2==1 country_code==2&period2==1 country_code==3&period2==1"
+global var1="ncorrect_rank ncorrect_dev2 i.male age i.offerdg_0 offerdg_frac i.tax_20 i.tax_30"
+global var2="i.shock i.shock_H i.status i.status_H i.non_fixed"
+global var3="0.tax_20 0.tax_30 0.shock 0.shock_H 0.status 0.status_H 0.non_fixed 0.male 0.offerdg_0"
+global varlist_1 = "$var1 " + "i.tax_40 i.tax_50 i.deadweight i.mpcr i.russia i.uk " + "$var2"
+global varlist_2 = "$var1 " + "$var2"
+global varlist_3 = "$var1 " + " i.mpcr " + "$var2"
+global varlist_4 = "$var1 " + "i.tax_40 i.tax_50 i.deadweight i.mpcr " + "$var2"
+global varlist1_1 = "$var3 " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight 0.russia 0.uk" 
+global varlist1_2 = "$var3"
+global varlist1_3 = "$var3 " + "0.mpcr"
+global varlist1_4 = "$var3 " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight"
+global note = "The first three columns report average marginal effects for multinomial logistic regression (dependent variable is whether the subject declared 0\%, 100\%, or something in between, in a given round). Standard errors are clustered by subject. The fourth column reports OLS regression, the dependent variable is the fraction of income declared in a given round. We only include subjects who partially cheated in at least 8 rounds, and declarations strictly between 0\% and 100\%. Standard errors are clustered by subject. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game."
+
+global fname="`path'table_reduced1.tex"
+global i1=1
+global i2=1
+do "`path'tables_2.do"
+
+global fname="`path'table_reduced1_countries.tex"
+global i1=2
+global i2=4
+do "`path'tables_2.do"
+
+// ERROR ends 
 
 ********************************************************************************
 **************** PERIODS 1-10,  MORE CONTROLS ******************************
 ********************************************************************************
-local include_cond="include_data_all==1"
-local fname="`path'table_reduced1_10_more.tex"
-local conds "1==1 country_code==1 country_code==2 country_code==3"
-local var1="ncorrect_rank ncorrect_dev2 i.male age period2 i.offerdg_0 offerdg_frac norms i.trust safechoices ideology income2 i.tax_20 i.tax_30"
-local var2="i.shock i.shock_H i.status i.status_H i.non_fixed"
-local var3="0.tax_20 0.tax_30 0.shock 0.shock_H 0.status 0.status_H 0.non_fixed 0.male 0.offerdg_0 0.trust"
-local varlist_1 = "`var1' " + "i.tax_40 i.tax_50 i.deadweight i.mpcr i.russia i.uk " + "`var2'"
-local varlist_2 = "`var1' " + "`var2'"
-local varlist_3 = "`var1' " + " i.mpcr " + "`var2'"
-local varlist_4 = "`var1' " + "i.tax_40 i.tax_50 i.deadweight i.mpcr " + "`var2'"
-local varlist1_1 = "`var3' " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight 0.russia 0.uk" 
-local varlist1_2 = "`var3'"
-local varlist1_3 = "`var3' " + "0.mpcr"
-local varlist1_4 = "`var3' " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight"
-local note = "The first three columns report average marginal effects for multinomial logistic regression (dependent variable is whether the subject declared 0\%, 100\%, or something in between, in a given round). Standard errors are clustered by subject. The fourth column reports OLS regression, the dependent variable is the fraction of income declared in a given round. We only include subjects who partially cheated in at least 8 rounds, and declarations strictly between 0\% and 100\%. Standard errors are clustered by subject. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game. Norms is the social norms index (see Table \ref{tab:norms}). SafeChoices if the number (0-10) of safe choices on the lottery task. Trust is whether the individual answered ``Most people can be trusted'' (versus ``You can't be too careful with people''). Income is the number of the individual's income bracket, rescaled between 0 and 1 (for Chile and the UK), and the individual's perceived income decile, rescaled between 0 and 1 (for Russia)."
+global include_cond="include_data_all==1"
+global fname="`path'table_reduced1_10_more.tex"
+global conds "1==1 country_code==1 country_code==2 country_code==3"
+global var1="ncorrect_rank ncorrect_dev2 i.male age period2 i.offerdg_0 offerdg_frac norms i.trust safechoices ideology income2 i.tax_20 i.tax_30"
+global var2="i.shock i.shock_H i.status i.status_H i.non_fixed"
+global var3="0.tax_20 0.tax_30 0.shock 0.shock_H 0.status 0.status_H 0.non_fixed 0.male 0.offerdg_0 0.trust"
+global varlist_1 = "$var1 " + "i.tax_40 i.tax_50 i.deadweight i.mpcr i.russia i.uk " + "$var2"
+global varlist_2 = "$var1 " + "$var2"
+global varlist_3 = "$var1 " + " i.mpcr " + "$var2"
+global varlist_4 = "$var1 " + "i.tax_40 i.tax_50 i.deadweight i.mpcr " + "$var2"
+global varlist1_1 = "$var3 " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight 0.russia 0.uk" 
+global varlist1_2 = "$var3"
+global varlist1_3 = "$var3 " + "0.mpcr"
+global varlist1_4 = "$var3 " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight"
+global note = "The first three columns report average marginal effects for multinomial logistic regression (dependent variable is whether the subject declared 0\%, 100\%, or something in between, in a given round). Standard errors are clustered by subject. The fourth column reports OLS regression, the dependent variable is the fraction of income declared in a given round. We only include subjects who partially cheated in at least 8 rounds, and declarations strictly between 0\% and 100\%. Standard errors are clustered by subject. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game. Norms is the social norms index (see Table \ref{tab:norms}). SafeChoices if the number (0-10) of safe choices on the lottery task. Trust is whether the individual answered ``Most people can be trusted'' (versus ``You can't be too careful with people''). Income is the number of the individual's income bracket, rescaled between 0 and 1 (for Chile and the UK), and the individual's perceived income decile, rescaled between 0 and 1 (for Russia)."
 
-*********************************************************************************
-********** TABLES: CHOICE, COMMON PART **************************************
-*********************************************************************************
+global fname="`path'table_reduced1_10_more.tex"
+global i1=1
+global i2=1
+do "`path'tables_2.do"
 
-file open mf using "`fname'", write replace
-file write mf "\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}" _n
-file write mf "\begin{tabular}{l|cccccc|cc}" _n
-file write mf "\hline\hline" _n
-file close mf
+global fname="`path'table_reduced1_10_more_countries.tex"
+global i1=2
+global i2=4
+do "`path'tables_2.do"
 
-*forval ii=2/4 {
-*forval ii=1/2 {
-forval ii=1/1 {
-	local cc `: word `ii' of `conds''
-	local tt `: word `ii' of `titles''
-	local ap `: word `ii' of `aplist''
-	local scals=`" `scals_`ii'' "'
-	local tcond="`tcond_`ii''"
-	local eadd="`eadd_`ii''"
-	local n: word count `tcond'
-	estimates clear
-	local varlist="`varlist_`ii''"
-	local varlist1="`varlist1_`ii''"
-	mlogit declared_cat `varlist' if `cc'&`include_cond', cluster(subj_id)
-	
-	
-	est store m
-	forval i=1/3 {
-		est res m
-		margins, dydx(*) predict(outcome(`i')) post		
-		forval iii=1/`n' {
-			local ttt `: word `iii' of `tcond''
-			local eee `: word `iii' of `eadd''
-			test `ttt'
-			estadd scalar `eee'
-		}
-		est store m`i'
-	}
-	
-	reg declared_frac `varlist' if `cc'&`include_cond'&declared_cat==2&`ind_typenewcond', cluster(subj_id)
-		forval iii=1/`n' {
-			local ttt `: word `iii' of `tcond''
-			local eee `: word `iii' of `eadd''
-			test `ttt'
-			estadd scalar `eee'
-		}
-		est store m4
-	
-	*esttab m1 m2 m3 using "`fname'", drop(`varlist2') label mtitle("Maximal cheating" "Partial cheating" "Honest") wide compress nonum title(`tt') `ap' fragment  prehead(&\multicolumn{6}{c}{\bf `tt'}\\) postfoot(\hline\hline) se star(* 0.10 ** 0.05 *** 0.01)
-	esttab m1 m2 m3 m4 using "`fname'", drop(`varlist1') scalars(`scals') label mtitle("Maximal lying" "Partial lying" "Honest" "Partial lying") wide compress nonum title(`tt') `ap' fragment  prehead(&\multicolumn{6}{c|}{\bf `tt'}&\multicolumn{2}{c}{\bf `tt'}\\ `preh') postfoot(\hline\hline) se star(* 0.10 ** 0.05 *** 0.01)
-	}
+********************************************************************************
+*************** PERIODS 1-10, BY BASELINE/STATUS/SHOCK/NONFIXED *********
+********************************************************************************
 
-file open mf using "`fname'", write append
-file write mf "\multicolumn{9}{p{16cm}}{\tiny `note'}\\" _n
-file write mf "\multicolumn{9}{l}{\tiny \sym{*} \(p<0.1\), \sym{**} \(p<0.05\), \sym{***} \(p<0.01\)}\\" _n
-file write mf "\end{tabular}"
-file close mf
+global fname="`path'table_reduced1_10_treat.tex"
+global scals_1=`" "t2030 D20=D30" "t2040 D20=D40" "t2050 D20=D50" "t3040 D30=D40" "t3050 D30=D50" "t4050 D40=D50" "rusuk Russia=UK" "'
+global scals_2=`" "t2030 D20=D30" "rusuk Russia=UK" "'
+global scals_3=`" "t2030 D20=D30" "rusuk Russia=UK" "'
+global scals_4=`" "t2030 D20=D30" "rusuk Russia=UK" "'
+global tcond_1="1.tax_20=1.tax_30 1.tax_20=1.tax_40 1.tax_20=1.tax_50 1.tax_30=1.tax_40 1.tax_30=1.tax_50 1.tax_40=1.tax_50 1.russia=1.uk"
+global tcond_2="1.tax_20=1.tax_30 1.russia=1.uk"
+global tcond_3="1.tax_20=1.tax_30 1.russia=1.uk"
+global tcond_4="1.tax_20=1.tax_30 1.russia=1.uk"
+
+global eadd_1="t2030=r(p) t2040=r(p) t2050=r(p) t3040=r(p) t3050=r(p) t4050=r(p) rusuk=r(p)"
+global eadd_2="t2030=r(p) rusuk=r(p)"
+global eadd_3="t2030=r(p) rusuk=r(p)"
+global eadd_4="t2030=r(p) rusuk=r(p)"
+
+global titles="Baseline Status Shock Non-fixed"
+global aplist="append append append append"
 
 
+global conds "baseline==1&mpcr==0&deadweight==0 status==1 shock==1 non_fixed==1"
+global var1="ncorrect_rank ncorrect_dev2 i.male age period2 i.offerdg_0 offerdg_frac i.tax_20 i.tax_30"
+global var3="0.tax_20 0.tax_30 0.male 0.offerdg_0 0.russia 0.uk"
+global varlist_1 = "$var1 " + "i.tax_40 i.tax_50 i.russia i.uk " 
+global varlist_2 = "$var1 " + "i.status_H i.russia i.uk " 
+global varlist_3 = "$var1 " + "i.shock_H i.russia i.uk " 
+global varlist_4 = "$var1 " + "i.russia i.uk " 
+global varlist1_1 = "$var3 " + "0.tax_40 0.tax_50" 
+global varlist1_2 = "$var3 " + "0.status_H" 
+global varlist1_3 = "$var3 " + "0.shock_H" 
+global varlist1_4 = "$var3" 
+global note = "The first three columns report average marginal effects for multinomial logistic regression (dependent variable is whether the subject declared 0\%, 100\%, or something in between, in a given round). Standard errors are clustered by subject. The fourth column reports OLS regression, the dependent variable is the fraction of income declared in a given round. We only include subjects who partially cheated in at least 8 rounds, and declarations strictly between 0\% and 100\%. Standard errors are clustered by subject. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game."
+			  	
 
-
+global i1=1
+global i2=4
+do "`path'tables_2.do"
 
 
 *******************************************************************************
@@ -372,10 +313,9 @@ file close mf
 ******** FIGURE: DISTRIBUTION OF DECLARATIONS BY COUNTRY ***************
 *******************************************************************************
 
-local fname= "`path'subjects_2018.dta"
-use "`fname'", clear
+use "`path'mastern_final2018_new_new.dta", clear
 
-keep if include_data==1
+keep if include_data==1&period2==1
 egen nnn=count(russia), by( declared_0_n declared_1_n)
 keep declared_0_n declared_1_n nnn
 quietly tabstat nnn, stats(n) save
@@ -386,8 +326,8 @@ format %4.1f nfreq
 graph drop _all
 scatter declared_0_n declared_1_n, msymbol(none) mlabel(nfreq ) mlabposition(0) xtitle(Declared 100%) ytitle(Declared 0%) title(All) name(All)
 
-use "`fname'", clear
-keep if include_data==1
+use "`path'mastern_final2018_new_new.dta", clear
+keep if include_data==1&period2==1
 egen nnn=count(russia), by( declared_0_n declared_1_n country_code)
 keep declared_0_n declared_1_n nnn country_code
 egen ccount=count(country_code), by(country_code)
@@ -398,17 +338,16 @@ scatter declared_0_n declared_1_n if country_code==2, msymbol(none) mlabel(nfreq
 scatter declared_0_n declared_1_n if country_code==3, msymbol(none) mlabel(nfreq ) mlabposition(0) xtitle(Declared 100%) ytitle(Declared 0%) title(UK) name(UK)
 gr combine Chile Russia UK All, note("The figures show the percent of subjects for each number of rounds with 0% and 100% declarations ")
 graph export "`path'\declared_freq_all.eps", as(eps) preview(off) replace
-use "`fname'", clear
+
 
 
 **************************************************************************************************
 ***************** FIGURE: DISTRIBUTION OF BEHAVIOR TYPE BY DG DONATIONS ******************
 **************************************************************************************************
 
-local fname= "`path'mastern_final2018_new_new.dta"
-use "`fname'", clear
+use "`path'mastern_final2018_new_new.dta", clear
 
-keep if include_data==1
+keep if include_data==1&period2==1
 collapse (count) c0=russia, by(country_code ind_typenew2 offerdg_0)
 rename offerdg_0 hightype
 gsort country_code ind_typenew2 -hightype
@@ -426,12 +365,13 @@ generate lo = max(c0 - invttail(n-1,0.025)*(sqrt(c0*(1-c0)) / sqrt(nntot)),0)
 rename hightype type
 twoway (bar c0 t if type==1&cc==1, color(red) barw(.8)) (bar c0 t if type==0&cc==1, color(red) barw(.8) fi(50)) (bar c0 t if type==1&cc==2, color(dkgreen) barw(.8)) (bar c0 t if type==0&cc==2, color(dkgreen) barw(.8) fi(50)) (bar c0 t if type==1&cc==3, color(blue) barw(.8)) (bar c0 t if type==0&cc==3, color(blue) barw(.8) fi(50)) (bar c0 t if type==1&cc==4, color(gray) barw(.8)) (bar c0 t if type==0&cc==4, color(gray) barw(.8) fi(50)) (rcap hi lo t, color(black)), xlabel(4.5 "Chile" 13.5 "Russia" 22.5 "UK", noticks) xsize(6) ylabel(0(.2)1) legend(row(2) order(1 "Consistent maximal" 3 "Consistent partial" 5 "Consistent honest" 7 "Other") size(small)) note("Distribution of behavior types by dictator game donations" "Dark shades correspond to subjects with DG=0, light shapes - to subjects with DG>0") xtitle("")
 graph export "`path'ind_typenew2_dg0.eps", as(eps) preview(off) replace
-use "`fname'", clear
 
 
 *******************************************************************************
 ************** TABLE: INITIAL PREDICTION OF GROUP RANK ******************
 *******************************************************************************
+use "`path'mastern_final2018_new_new.dta", clear
+
 tab ind_typenew2  pred0 if include_data==1&period2==1, co
 *ttest ncorrect_rank if include_data==1&period2==1&inlist(init_pred,1,2), by(init_pred) welch
 ttest rank_withingroup if include_data==1&period2==1&inlist(pred0,1,2), by(pred0) welch
@@ -619,8 +559,7 @@ file close mf
 ********************************************************************************
 
 
-local fname= "`path'mastern_final2018_new_new.dta"
-use "`fname'", clear
+use "`path'mastern_final2018_new_new.dta", clear
 drop if include_data_all==0
 
 egen nnn=count(russia), by(realdie ind_typenew2)
@@ -639,15 +578,13 @@ egen nnt=sum(nnn), by(cc)
 gen c0=nnn/nnt
 twoway (bar c0 t if cc==1, color(red) barw(.8)) (bar c0 t if cc==2, color(dkgreen) barw(.8))  (bar c0 t if cc==3, color(blue) barw(.8)) (bar c0 t if cc==4, color(gray) barw(.8)), xlabel(2.5 "1" 7.5 "2" 12.5 "3" 17.5 "4" 22.5 "5" 27.5 "6", noticks) legend(row(2) order(1 "Consistent maximal" 2 "Consistent partial" 3 "Consistent honest" 4 "Other") size(small)) title("") xtitle("") ytitle("Fraction") yline(0.1666, lcolor(black)) note("The graph shows the relative frequencies of reported die rolls for different behavioral types." "The horizontal line corresponds to 0.1666=1/6.")
 graph export "`path'die_type.eps", as(eps) preview(off) replace
-use "`fname'", clear
 
 ********************************************************************************
 ********** FIGURE: DIGITAL DIE ROLL REPORTED BY BEHAVIORAL TYPE ********
 ********************************************************************************
 
 
-local fname= "`path'mastern_final2018_new_new.dta"
-use "`fname'", clear
+use "`path'mastern_final2018_new_new.dta", clear
 keep if period2==1
 drop if include_data_all==0
 drop if digitaldie==.
@@ -668,7 +605,6 @@ egen nnt=sum(nnn), by(cc)
 gen c0=nnn/nnt
 twoway (bar c0 t if cc==1, color(red) barw(.8)) (bar c0 t if cc==2, color(dkgreen) barw(.8))  (bar c0 t if cc==3, color(blue) barw(.8)) (bar c0 t if cc==4, color(gray) barw(.8)), xlabel(2.5 "1" 7.5 "2" 12.5 "3" 17.5 "4" 22.5 "5" 27.5 "6", noticks) legend(row(2) order(1 "Consistent maximal" 2 "Consistent partial" 3 "Consistent honest" 4 "Other") size(small)) title("") xtitle("") ytitle("Fraction") yline(0.1666, lcolor(black)) note("The graph shows the relative frequencies of reported digital die rolls for different behavioral types." "The horizontal line corresponds to 0.1666=1/6.")
 graph export "`path'ddie_type.eps", as(eps) preview(off) replace
-use "`fname'", clear
 
 
 
@@ -681,7 +617,7 @@ local fname="`path'table_dieroll_pred.tex"
 
 estimates clear
 forval i=1/6 {
-	logit realdie_`i' ncorrect_rank male age ind_typenew2_1 ind_typenew2_2 declared_part_av1 ind_typenew2_4 russia uk if period2==1&include_data==1
+	logit realdie_`i' ncorrect_rank male age ind_typenew2_1 ind_typenew2_2 declared_part_av1 ind_typenew2_4 russia uk if period2==1&include_data_all==1
 	margins, dydx(*) post
 	est store m`i'
 }
@@ -693,9 +629,7 @@ esttab m1 m2 m3 m4 m5 m6 using "`fname'", label mtitle(1 2 3 4 5 6) drop(ncorrec
 ********************************************************************************************************
 
 
-local fname= "`path'mastern_final2018_new_new.dta"
-use "`fname'", clear
-graph drop _all
+use "`path'mastern_final2018_new_new.dta", clear
 
 drop time_declare_*	
 gen time_declare_1=time_declare+uniform()
@@ -711,20 +645,19 @@ replace time_declare_1=. if include_data==0
 	twoway (line time_declare_cu_1 time_declare_1 if time_declare<31&include_data==1, c(J) lcolor(black)) (line time_declare_cu_2 time_declare_1 if time_declare<31&include_data==1, c(J) lcolor(black) lpattern(dash)) (line time_declare_cu_3 time_declare_1 if time_declare<31&include_data==1, c(J) lcolor(black) lpattern("-.")), legend(label(1 "Maximal lying") label(2 "Partial lying") label(3 "Honest") row(1) size(small)) xsize(5) note("Cumulative distribution functions of RT for different decisions") ytitle("")
 	
 graph export "`path'response.eps", as(eps) preview(off) replace
-use "`fname'", clear
  
 **********************************************************************************************************************
 ***********FIGURE: CUMULATIVE DISTRIBUTION OF REACTION TIME FOR DIFFERENT DECLARATIONS, BY COUNTRY ******
 **********************************************************************************************************************
 
 
-local fname= "`path'mastern_final2018_new_new.dta"
 graph drop _all
 local tlist="Chile Russia UK"
 
 
 forval iii=1/3 {
-	use "`fname'", clear
+	use "`path'mastern_final2018_new_new.dta", clear
+	
 	local gname `: word `iii' of `tlist''
 	*drop time_declare_1	
 	gen time_declare_1=time_declare+uniform()
@@ -747,6 +680,9 @@ graph export "`path'response_country.eps", as(eps) preview(off) replace
 *********************************************************************************
 ******************* TABLE: DETERMINANTS OF REACTION TIME *******************
 *********************************************************************************
+
+use "`path'mastern_final2018_new_new.dta", clear
+ssc install streg
 
 local fname="`path'table_reactiontime.tex"
 
@@ -838,8 +774,7 @@ test declared_cat_1_2= declared_cat_1_3
 *********** FIGURE: PREVALENCE OF LYING DEPENDING ON SUBJECT PERFORMANCE *************
 ***********************************************************************************************
 
-local fname= "`path'mastern_final2018_new_new.dta"
-use "`fname'", clear
+use "`path'mastern_final2018_new_new.dta", clear
 drop declared_near
 gen declared_near=declared>0&declared_frac<=.2
 collapse (mean) c0=declared_0 cf=declared_f cn=declared_near (sd) c0_sd=declared_0 cf_sd=declared_f cn_sd=declared_near (count) n=cheat if include_data==1, by(country_code hightype)
@@ -872,90 +807,30 @@ replace t=t+1 in 13/18
 
 twoway (bar c0 t if type==1&cc==1, color(red) barw(.8)) (bar c0 t if type==1&cc==2, color(red) barw(.8) fi(60)) (bar c0 t if type==1&cc==3, color(red) barw(.8) fi(30)) (bar c0 t if type==2&cc==1, color(blue) barw(.8)) (bar c0 t if type==2&cc==2, color(blue) barw(.8) fi(60)) (bar c0 t if type==2&cc==3, color(blue) barw(.8) fi(30)) (rcap hi lo t, color(black)), xlabel(3 "Chile" 10 "Russia" 17.5 "UK", noticks) note("The graph shows the total share of declarations in each country that is maximal lying, partial lying," "or near-maximal lying, defined as declarations between 1 EDU and 20\% of income.") ylabel(0(.2)1) legend(row(3) order(1 "Low performance, maximal" 4 "High performance, maximal" 2 "Low performance, limited" 5 "High performance, limited" 3 "Low performance, near-maximal" 6 "High performance, near-maximal" ) size(small)) xsize(6) xtitle("")
 graph export "`path'\cheat_hilo.eps", as(eps) preview(off) replace
-use "`fname'", clear
 
 
 *******************************************************************************
 *************** TABLE: NEAR-MAXIMAL CHEATING ****************************** 
 *******************************************************************************
 
-local fname="`path'table_nearmax.tex"
-local byvar="hightype"
-local llist="Low High p"
+use "`path'mastern_final2018_new_new.dta", clear
+global fname="`path'table_nearmax.tex"
+global byvar="hightype"
+global llist="Low High p"
+do "`path'tables_3.do"
 
-local fname="`path'table_nearmax_male.tex"
-local byvar="male"
-local llist="Female Male p"
+use "`path'mastern_final2018_new_new.dta", clear
+global fname="`path'table_nearmax_male.tex"
+global byvar="male"
+global llist="Female Male p"
+do "`path'tables_3.do"
 
-local fname="`path'table_nearmax_dg.tex"
-local byvar="offerdg_0"
-local llist="DG>0 DG=0 p"
+use "`path'mastern_final2018_new_new.dta", clear
+global fname="`path'table_nearmax_dg.tex"
+global byvar="offerdg_0"
+global llist="DG>0 DG=0 p"
+do "`path'tables_3.do"
 
-
-
-local uplim="1 10 20 30 40 50 60 70 80 90"
-local clist="Chile Russia UK"
-matrix M=J(9,10,.)
-drop near_temp
-gen near_temp=.
-local i=1
-local j=2
-forval iii=1/3 {
-forval ii=1/10 {
-	local ul `: word `ii' of `uplim''
-	quietly replace near_temp=0
-	quietly replace near_temp=1 if declared>0&declared<=`ul'
-	quietly tabstat near_temp if include_data==1&country_code==`iii', by(`byvar') stats(mean sd n) save
-
-	matrix l1=r(Stat1)
-	matrix l2=r(Stat2)
-	*local se=sqrt(l`i'[2,1]^2/l`i'[3,1]+l`j'[2,1]^2/l`j'[3,1])
-	*local t=abs(l`i'[1,1]-l`j'[1,1])/`se'
-	*local df=min(l`i'[3,1],l`j'[3,1])-1
-	*local pp=tprob(`df',`t')
-	quietly cc `byvar' near_temp if include_data==1&country_code==`iii', exact
-	local pp=  r(p_exact)
-	
-	mat M[1+3*(`iii'-1),`ii']=l`i'[1,1]
-	mat M[2+3*(`iii'-1),`ii']=l`j'[1,1]
-	mat M[3+3*(`iii'-1),`ii']=`pp'
-}
-}
-
-
-file open mf using "`fname'", write replace
-file write mf "\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}" _n
-file write mf "\begin{tabular}{|ll|cccccccccc|}" _n
-file write mf "\hline\hline" _n
-file write mf "&"
-forval i=1/10 {
-	local ul `: word `i' of `uplim''
-	file write mf "&1-`ul' ECU"
-}
-file write mf "\\" _n
-file write mf "\hline" _n
-forval ii=1/3 {
-	local cc `: word `ii' of `clist''
-	forval iii=1/3 {
-		local ll `: word `iii' of `llist''
-		if `iii'==2 {
-			file write mf "`cc'"
-		}
-		file write mf "&`ll'"
-		forval j=1/10 {
-			local mm=M[`iii'+3*(`ii'-1),`j']
-			file write mf "&"
-			file write mf %9.6f (`mm')
-			
-			
-		}
-		file write mf "\\" _n
-	}
-	file write mf "\hline"	
-}
-file write mf "\multicolumn{11}{p{15cm}}{\tiny For each country, the first two rows report the frequencies of declarations for two groups of subjects. The third row reports the p-value for Fisher's exact test comparing these two frequencies.}\\" _n
-file write mf "\end{tabular}"
-file close mf
 
 
 
@@ -1200,10 +1075,3 @@ est store m2
 esttab m1 m2 using "`fname'", label mtitle("Average" "Per round") wide compress nonum replace order(`varlist2') note("`note'") r2 se star(* 0.10 ** 0.05 *** 0.01)
 
 
-
-
-******************************************************************************************************************************************************
-************************** ORDER VARIABLES IN DATASET ********************************************************************************************
-******************************************************************************************************************************************************
-
-order include_data country_code chile russia uk chile_udd sess_id subj_id taxrate tax_10 tax_20 tax_30 tax_40 tax_50 baseline status status_H status_L shock shock_H shock_L l_shock non_fixed deadweight mpcr auditrate auditrate_gr audit_10_s period period2 period3 period4 period_1 extra_period subject group profit ncorrectret ncorrect_subjav ncorrect_subjava hightype ncorrect_rank ncorrect_ranka ncorrect_dev2 profitret declared declared_frac declared_cat l_declared_cat declared_0 declared_f declared_1 declared_0_n declared_f_n declared_1_n declared_0a_n declared_fa_n declared_1a_n l0 lf l_declim ind_type_detail ind_typenew2 ind_typenew2_1 ind_typenew2_2 ind_typenew2_4 ind_typenew2a ind_typenew3 declared_part_av1 declared_group declared_others l_others deduction totaldeduction cheat audited l_audited fine deductionsgroup receivedfromgroup groupdg profitdg proposerdg offerdg offerdg_0 offerdg_frac timeokdeclareok time_declare l_time_declare nCorrectSumTest1 dec1 dec2 dec3 dec4 dec5 dec6 dec7 dec8 dec9 dec10 hljump safechoices realdie digitaldie digitaldie_actual digitaldie_lie digitaldie_lie_nonmax digitaldie_lie_max lastroll realdie_1 realdie_2 realdie_3 realdie_4 realdie_5 realdie_6 pred0 pred2 pred1 rank_withingroup publictransport taxes drivingfast moneyfound lying accidentaldamage litter drivingalcohol jobapplication buyingstolen norms

@@ -1,0 +1,148 @@
+----------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\Denise Laroze P\Documents\GitHub\Once-a-Liar\General\log_file.log
+  log type:  text
+ opened on:  20 Nov 2018, 12:31:46
+
+. 
+. local path C:\Users\Denise Laroze P\Documents\GitHub\Once-a-Liar\
+
+. 
+. 
+. *********************************************************************************
+. ******************* TABLE: LYING DECISIONS ***********************************
+. *********************************************************************************
+. 
+. use "`path'mastern_final2018_new_new.dta", clear
+file C:\Users\Denise Laroze P\Documents\GitHub\Once-a-Liar\mastern_final2018_new_new.dta not found
+r(601);
+
+end of do-file
+
+r(601);
+
+. do "C:\Users\DENISE~2\AppData\Local\Temp\STD00000000.tmp"
+
+. use "`path'mastern_final2018_new_new.dta", clear
+
+. 
+. tab ind_typenew2 country_code if period2==1&include_data==1, co
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+| column percentage |
++-------------------+
+
+              |           country_code
+ ind_typenew2 |     Chile     Russia         UK |     Total
+--------------+---------------------------------+----------
+   Mostly \0% |        38         72        264 |       374 
+              |     12.34      28.13      51.97 |     34.89 
+--------------+---------------------------------+----------
+Mostly 1-99\% |        77        106         70 |       253 
+              |     25.00      41.41      13.78 |     23.60 
+--------------+---------------------------------+----------
+ Mostly 100\% |       121         18         70 |       209 
+              |     39.29       7.03      13.78 |     19.50 
+--------------+---------------------------------+----------
+        Other |        72         60        104 |       236 
+              |     23.38      23.44      20.47 |     22.01 
+--------------+---------------------------------+----------
+        Total |       308        256        508 |     1,072 
+              |    100.00     100.00     100.00 |    100.00 
+
+
+. 
+. 
+. *******************************************************************************
+. *******************************************************************************
+. ************** TABLE: DETERMINANTS OF LYING *******************************
+. *******************************************************************************
+. *******************************************************************************
+. 
+. use "`path'mastern_final2018_new_new.dta", clear
+
+. replace age=age/10
+variable age_subject was byte now float
+(21,480 real changes made)
+
+. label variable age "Age/10"
+
+. 
+. *******************************************************************************
+. ******************* TABLE IN THE MAIN TEXT *********************************
+. *******************************************************************************
+. 
+. local fname="`path'table_parttype.tex"
+
+. local fname_gr="`path'gr_parttype.eps"
+
+. local vname="ind_typenew2"
+
+. local note = "The first four columns report are average marginal effects for multinomial logistic regression (the dependent vari
+> able is whether the subject is a consistent maximal liar, consistent partial liar, is consistently honest, or none of those). Th
+> e fifth column reports OLS regression, the dependent variable is the fraction of income declared, averaged across all rounds whe
+> re the subject lied partially, for all subjects who lied partially in at least 8 rounds. Robust standard errors. RET rank is the
+>  national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference betw
+> een actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU don
+> ated in the dictator game."
+
+. local nnn=8
+
+. 
+. *******************************************************************************
+. ******************* TABLE IN THE APPENDIX **********************************
+. *******************************************************************************
+. local fname="`path'table_parttype_10.tex"
+
+. local vname="ind_typenew3"
+
+. local note = "The first four columns report average marginal effects for multinomial logistic regression (the dependent variable
+>  is whether the subject was a maximal liar, partial liar, or honest, in all 10 rounds). Robust standard errors. The fifth column
+>  reports OLS regression, the dependent variable is the fraction of income declared, averaged across all rounds, for subjects who
+>  lied partially in every round. RET rank is the national rank, between 0 and 1, of subject's national performance at the real ef
+> fort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period 
+> FE. DG frac is the fraction of the 1000 ECU donated in the dictator game."
+
+. local nnn=10
+
+. 
+. *******************************************************************************
+. *******************************************************************************
+. 
+. local varlist = "ncorrect_rank i.male age i.offerdg_0 offerdg_frac i.tax_20 i.tax_30 i.tax_40 i.tax_50 i.deadweight i.mpcr i.sho
+> ck i.status i.status_H i.non_fixed"
+
+. local varlist2 = " "
+
+. local varlist3 = "0.male 0.offerdg_0 0.tax_20 0.tax_30 0.tax_40 0.tax_50 0.deadweight 0.mpcr 0.shock 0.status 0.status_H 0.non_f
+> ixed 0.russia 0.uk"
+
+. 
+. local preh="&\multicolumn{8}{c|}{Mlogit, average marginal effects }&\multicolumn{2}{c}{OLS}\\"
+
+. 
+. 
+. 
+. file open mf using "`fname'", write replace
+(note: file table_parttype_10.tex not found)
+
+. file write mf "\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}" _n
+
+. file write mf "\begin{tabular}{l|cccccccc|cc}" _n
+
+. file write mf "\hline\hline" _n
+
+. file close mf
+
+. 
+end of do-file
+
+. log close
+      name:  <unnamed>
+       log:  C:\Users\Denise Laroze P\Documents\GitHub\Once-a-Liar\General\log_file.log
+  log type:  text
+ closed on:  20 Nov 2018, 12:32:17
+----------------------------------------------------------------------------------------------------------------------------------

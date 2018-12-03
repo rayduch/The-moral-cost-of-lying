@@ -9,7 +9,6 @@ forval ii=$i1/$i2 {
 	local cc `: word `ii' of $conds'
 	local tt `: word `ii' of $titles'
 	local ap `: word `ii' of $aplist'
-	*local scals=`" $scals_`ii' "'
 	estimates clear
 	di `ii'
 	if `ii'==1 {
@@ -24,18 +23,21 @@ forval ii=$i1/$i2 {
 		local varlist1="$varlist1_2"
 		local tcond="$tcond_2"
 		local eadd="$eadd_2"
+		local scals=`" $scals_2 "'
 	} 
 	else if `ii'==3 {	
 		local varlist="$varlist_3"	
 		local varlist1="$varlist1_3"
 		local tcond="$tcond_3"
 		local eadd="$eadd_3"
+		local scals=`" $scals_3 "'
 	} 
 	else {
 		local varlist="$varlist_4"
 		local varlist1="$varlist1_4"
 		local tcond="$tcond_4"
 		local eadd="$eadd_4"
+		local scals=`" $scals_4 "'
 	}
 	local n: word count `tcond'
 	mlogit declared_cat `varlist' if `cc'&$include_cond, cluster(subj_id)

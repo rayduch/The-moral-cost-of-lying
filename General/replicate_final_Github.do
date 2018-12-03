@@ -5,13 +5,18 @@
 ** The following .ado files are needed to run this code:
 ** coefplot.ado 
 ** chitest.ado
-** ssc install streg
+
+ssc install streg
+ssc install tab_chi
+ssc install coefplot
+ssc install triplot
 
 
 
 
-cd "C:\Users\Denise Laroze P\Documents\GitHub\Once-a-Liar\General\"
-global path="C:\Users\Denise Laroze P\Documents\GitHub\Once-a-Liar\General\"
+
+local path="[Your path]\"
+cd "`path'"
 set more off
 use "`path'mastern_final2018_new_new.dta", clear
 
@@ -142,44 +147,13 @@ global note = "The first three columns report average marginal effects for multi
 global i1=2
 global i2=4
 do "`path'tables_2.do"
-// Error ends 
-			  
-********************************************************************************
-*************** PERIODS 1-10, MALES AND FEMALES ********************************
-********************************************************************************
-
-global fname="`path'table_reduced1_10_gender.tex"
-global scals_1=`" "t2030 D20=D30" "t2040 D20=D40" "t2050 D20=D50" "t3040 D30=D40" "t3050 D30=D50" "t4050 D40=D50" "rusuk Russia=UK" "'
-global scals_2=`" "t2030 D20=D30" "t2040 D20=D40" "t2050 D20=D50" "t3040 D30=D40" "t3050 D30=D50" "t4050 D40=D50" "rusuk Russia=UK" "'
-global tcond_1="1.tax_20=1.tax_30 1.tax_20=1.tax_40 1.tax_20=1.tax_50 1.tax_30=1.tax_40 1.tax_30=1.tax_50 1.tax_40=1.tax_50 1.russia=1.uk"
-global tcond_2="1.tax_20=1.tax_30 1.tax_20=1.tax_40 1.tax_20=1.tax_50 1.tax_30=1.tax_40 1.tax_30=1.tax_50 1.tax_40=1.tax_50 1.russia=1.uk"
-global eadd_1="t2030=r(p) t2040=r(p) t2050=r(p) t3040=r(p) t3050=r(p) t4050=r(p) rusuk=r(p)"
-global eadd_2="t2030=r(p) t2040=r(p) t2050=r(p) t3040=r(p) t3050=r(p) t4050=r(p) rusuk=r(p)"
-global titles="All\space{}countries,\space{}females All\space{}countries,\space{}males"
-
-global aplist="append append"
-
-
-global conds "male==0 male==1"
-global var1="ncorrect_rank ncorrect_dev2 age period2 i.offerdg_0 offerdg_frac i.tax_20 i.tax_30"
-global var2="i.shock i.shock_H i.status i.status_H i.non_fixed"
-global var3="0.tax_20 0.tax_30 0.shock 0.shock_H 0.status 0.status_H 0.non_fixed 0.offerdg_0"
-global varlist_1 = "$var1 " + "i.tax_40 i.tax_50 i.deadweight i.mpcr i.russia i.uk " + "$var2"
-global varlist_2 = "$var1 " + "i.tax_40 i.tax_50 i.deadweight i.mpcr i.russia i.uk " + "$var2"
-global varlist1_1 = "$var3 " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight 0.russia 0.uk" 
-global varlist1_2 = "$var3 " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight 0.russia 0.uk" 
-global note = "The first three columns report average marginal effects for multinomial logistic regression (dependent variable is whether the subject declared 0\%, 100\%, or something in between, in a given round). Standard errors are clustered by subject. The fourth column reports OLS regression, the dependent variable is the fraction of income declared in a given round. We only include subjects who partially cheated in at least 8 rounds, and declarations strictly between 0\% and 100\%. Standard errors are clustered by subject. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game."
-
-global i1=1
-global i2=2
-do "`path'tables_2.do"
-		  
-
-
+// ERROR ends 
+	
 			  			  
 ********************************************************************************
 **************** PERIODS 2-10, PAST ACTIONS ********************************
 ********************************************************************************
+
 global conds "1==1&period2>1 country_code==1&period2>1 country_code==2&period2>1 country_code==3&period2>1"
 global var1="ncorrect_rank ncorrect_dev2 i.male age period2 i.offerdg_0 offerdg_frac i.tax_20 i.tax_30"
 global var2="i.shock i.shock_H i.status i.status_H i.non_fixed i.l0 i.lf l_declim l_others"
@@ -233,7 +207,7 @@ global fname="`path'table_reduced1_countries.tex"
 global i1=2
 global i2=4
 do "`path'tables_2.do"
-// Error ends 
+// ERROR ends 
 
 
 ********************************************************************************
@@ -273,16 +247,16 @@ do "`path'tables_2.do"
 ********************************************************************************
 
 global fname="`path'table_reduced1_10_treat.tex"
-global scals_1=`" "t2030 D20=D30" "t2040 D20=D40" "t2050 D20=D50" "t3040 D30=D40" "t3050 D30=D50" "t4050 D40=D50" "rusuk Russia=UK" "'
+global scals_1=`" "t2030 D20=D30" "t2050 D20=D50" "t3050 D30=D50" "rusuk Russia=UK" "'
 global scals_2=`" "t2030 D20=D30" "rusuk Russia=UK" "'
 global scals_3=`" "t2030 D20=D30" "rusuk Russia=UK" "'
 global scals_4=`" "t2030 D20=D30" "rusuk Russia=UK" "'
-global tcond_1="1.tax_20=1.tax_30 1.tax_20=1.tax_40 1.tax_20=1.tax_50 1.tax_30=1.tax_40 1.tax_30=1.tax_50 1.tax_40=1.tax_50 1.russia=1.uk"
+global tcond_1="1.tax_20=1.tax_30 1.tax_20=1.tax_50 1.tax_30=1.tax_50 1.russia=1.uk"
 global tcond_2="1.tax_20=1.tax_30 1.russia=1.uk"
 global tcond_3="1.tax_20=1.tax_30 1.russia=1.uk"
 global tcond_4="1.tax_20=1.tax_30 1.russia=1.uk"
 
-global eadd_1="t2030=r(p) t2040=r(p) t2050=r(p) t3040=r(p) t3050=r(p) t4050=r(p) rusuk=r(p)"
+global eadd_1="t2030=r(p) t2050=r(p) t3050=r(p) rusuk=r(p)"
 global eadd_2="t2030=r(p) rusuk=r(p)"
 global eadd_3="t2030=r(p) rusuk=r(p)"
 global eadd_4="t2030=r(p) rusuk=r(p)"
@@ -294,11 +268,11 @@ global aplist="append append append append"
 global conds "baseline==1&mpcr==0&deadweight==0 status==1 shock==1 non_fixed==1"
 global var1="ncorrect_rank ncorrect_dev2 i.male age period2 i.offerdg_0 offerdg_frac i.tax_20 i.tax_30"
 global var3="0.tax_20 0.tax_30 0.male 0.offerdg_0 0.russia 0.uk"
-global varlist_1 = "$var1 " + "i.tax_40 i.tax_50 i.russia i.uk " 
+global varlist_1 = "$var1 " + "i.tax_50 i.russia i.uk " 
 global varlist_2 = "$var1 " + "i.status_H i.russia i.uk " 
 global varlist_3 = "$var1 " + "i.shock_H i.russia i.uk " 
 global varlist_4 = "$var1 " + "i.russia i.uk " 
-global varlist1_1 = "$var3 " + "0.tax_40 0.tax_50" 
+global varlist1_1 = "$var3 " + "0.tax_50" 
 global varlist1_2 = "$var3 " + "0.status_H" 
 global varlist1_3 = "$var3 " + "0.shock_H" 
 global varlist1_4 = "$var3" 
@@ -309,7 +283,39 @@ global i1=1
 global i2=4
 do "`path'tables_2.do"
 
-// Error ends 
+		  
+********************************************************************************
+*************** PERIODS 1-10, MALES AND FEMALES ********************************
+********************************************************************************
+
+global fname="`path'table_reduced1_10_gender.tex"
+global scals_1=`" "t2030 D20=D30" "t2040 D20=D40" "t2050 D20=D50" "t3040 D30=D40" "t3050 D30=D50" "t4050 D40=D50" "rusuk Russia=UK" "'
+global scals_2=`" "t2030 D20=D30" "t2040 D20=D40" "t2050 D20=D50" "t3040 D30=D40" "t3050 D30=D50" "t4050 D40=D50" "rusuk Russia=UK" "'
+global tcond_1="1.tax_20=1.tax_30 1.tax_20=1.tax_40 1.tax_20=1.tax_50 1.tax_30=1.tax_40 1.tax_30=1.tax_50 1.tax_40=1.tax_50 1.russia=1.uk"
+global tcond_2="1.tax_20=1.tax_30 1.tax_20=1.tax_40 1.tax_20=1.tax_50 1.tax_30=1.tax_40 1.tax_30=1.tax_50 1.tax_40=1.tax_50 1.russia=1.uk"
+global eadd_1="t2030=r(p) t2040=r(p) t2050=r(p) t3040=r(p) t3050=r(p) t4050=r(p) rusuk=r(p)"
+global eadd_2="t2030=r(p) t2040=r(p) t2050=r(p) t3040=r(p) t3050=r(p) t4050=r(p) rusuk=r(p)"
+global titles="All\space{}countries,\space{}females All\space{}countries,\space{}males"
+
+global aplist="append append"
+
+
+global conds "male==0 male==1"
+global var1="ncorrect_rank ncorrect_dev2 age period2 i.offerdg_0 offerdg_frac i.tax_20 i.tax_30"
+global var2="i.shock i.shock_H i.status i.status_H i.non_fixed"
+global var3="0.tax_20 0.tax_30 0.shock 0.shock_H 0.status 0.status_H 0.non_fixed 0.offerdg_0"
+global varlist_1 = "$var1 " + "i.tax_40 i.tax_50 i.deadweight i.mpcr i.russia i.uk " + "$var2"
+global varlist_2 = "$var1 " + "i.tax_40 i.tax_50 i.deadweight i.mpcr i.russia i.uk " + "$var2"
+global varlist1_1 = "$var3 " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight 0.russia 0.uk" 
+global varlist1_2 = "$var3 " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight 0.russia 0.uk" 
+global note = "The first three columns report average marginal effects for multinomial logistic regression (dependent variable is whether the subject declared 0\%, 100\%, or something in between, in a given round). Standard errors are clustered by subject. The fourth column reports OLS regression, the dependent variable is the fraction of income declared in a given round. We only include subjects who partially cheated in at least 8 rounds, and declarations strictly between 0\% and 100\%. Standard errors are clustered by subject. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game."
+
+global i1=1
+global i2=2
+do "`path'tables_2.do"
+		  
+
+// ERROR ends 
 
 *******************************************************************************
 ******************** APPENDIX ***********************************************
@@ -391,7 +397,6 @@ ttest rank_withingroup if include_data==1&period2==1&inlist(pred0,3,4), by(pred0
 ************** TABLE: PREDICTED AND ACTUAL BEHAVIOR IN PERIOD 10 *******
 ************** FIGURE: PREDICTED AND ACTUAL BEHAVIOR IN PERIOD 10 ******
 *******************************************************************************
-// Error starts "variable l0_temp not found"
 
 local iters=50
 set matsize 800
@@ -410,9 +415,14 @@ quietly gen p1=.
 quietly gen p2=.
 quietly gen p3=.
 
+quietly gen l0_temp=. 
+quietly gen lf_temp=. 
+quietly gen l_others_temp=.
+
 forval ii=2/4 {
 *forval ii=1/3 {
 *forval ii=1/1 {
+	
 	quietly drop l0_temp lf_temp l_others_temp
 	quietly gen l0_temp=l0
 	quietly gen lf_temp=lf
@@ -458,11 +468,16 @@ forval tt=1/3 {
 	matrix xx`ii'`tt'=J(3,`iters',.)
 	forval iiii=1/`iters' {
 		di("`ii' `tt' `iiii'")
-	
-		quietly drop pred
+		local vl1="pred p1 p2 p3"
+		forval i=1/4  {
+			local vn: word `i' of `vl1'
+			capture confirm variable `vn'
+			if !_rc {
+				quietly drop `vn'
+			}	
+		}
 		quietly gen pred=.
 		quietly replace pred=declared_cat if period2==1
-		quietly drop p1 p2 p3
 		quietly gen p1=.
 		quietly gen p2=.
 		quietly gen p3=.
@@ -493,7 +508,7 @@ forval tt=1/3 {
 
 graph drop _all
 
-drop C1 C2 C3 C4
+//drop C1 C2 C3 C4
 local titles="All\space{}countries Chile Russia UK"
 forval ii=2/4 {
 	local tt `: word `ii' of `titles''
@@ -558,7 +573,6 @@ file write mf "\hline\hline" _n
 file write mf "\end{tabular}"
 file close mf
 
-// Error ends
 
 ********************************************************************************
 ********** FIGURE: DIE ROLL REPORTED BY BEHAVIORAL TYPE ************************
@@ -688,34 +702,27 @@ graph export "`path'response_country.eps", as(eps) preview(off) replace
 *********************************************************************************
 
 use "`path'mastern_final2018_new_new.dta", clear
-//ssc install streg
-
-// Error: ssc install: "streg" not found at SSC, type -findit streg-
-// (To find all packages at SSC that start with s, type -ssc describe s-)
-
-
+stset time_declare
 local fname="`path'table_reactiontime.tex"
+ 
 
+*forval i=1/3 {
+*forval j=1/3 {
+*gen declared_cat_`i'_`j'=(l.declared_cat==`i')&(declared_cat==`j')
+*}
+*}
 
-// Error: variables already present in data, therefore commented out
-
-//forval i=1/3 {
-//forval j=1/3 {
-//gen declared_cat_`i'_`j'=(l.declared_cat==`i')&(declared_cat==`j')
-//}
-//}
-
-//gen l_time_declare_pl=time_declare+.5
-//gen l_time_declare_pl=ln( time_declare_pl)
+*gen l_time_declare_pl=time_declare+.5
+*gen l_time_declare_pl=ln( time_declare_pl)
 
 
 
-//gen declared_cat_p1_1=(declared_cat==1)&period2==1
-//gen declared_cat_p1_2=(declared_cat==2)&period2==1
-//gen declared_cat_p1_3=(declared_cat==3)&period2==1
+*gen declared_cat_p1_1=(declared_cat==1)&period2==1
+*gen declared_cat_p1_2=(declared_cat==2)&period2==1
+*gen declared_cat_p1_3=(declared_cat==3)&period2==1
 
-//gen declared_cat_1=declared_0
-//gen declared_cat_2=declared_f
+*gen declared_cat_1=declared_0
+*gen declared_cat_2=declared_f
 
 label variable declared_cat_2 "Partial lie this period"
 label variable declared_cat_1 "Maximal lie this period"
@@ -750,8 +757,6 @@ reg l_time_declare_pl `varlist' `varlist3' russia uk if include_data==1, clu(sub
 est store m3
 local note="OLS regression. Dependent variable is log reaction time. Standard errors are clustered by subject. Baseline category for subject decision in Model 2 is honest behavior in this period. Baseline category for subject decision in Model 3 is honest behavior in this and previous period."
 esttab m1 m2 m3 using "`fname'", label mtitle("Model 1" "Model 2" "Model 3") wide compress nonum note(`note') se star(* 0.10 ** 0.05 *** 0.01) replace
-
-// Error starts "_st not found"
 
 local fname="`path'table_reactiontime_c.tex"
 estimates clear

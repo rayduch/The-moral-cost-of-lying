@@ -21,37 +21,65 @@ set more off
 use "`path'mastern_final2018_new_new.dta", clear
 
 *********************************************************************************
-******************* TABLE: LYING DECISIONS ***********************************
+********************** TABLE 1: Number of subjects **************************
+*********************************************************************************
+
+tab taxrate if period2==1
+tab taxrate if period2==1&baseline==1
+tab taxrate if period2==1&shock==1
+tab taxrate if period2==1&status==1
+tab taxrate if period2==1&non_fixed==1
+tab taxrate if period2==1&subject==1
+tab taxrate if period2==1&baseline==1&subject==1
+tab taxrate if period2==1&shock==1&subject==1
+tab taxrate if period2==1&status==1&subject==1
+tab taxrate if period2==1&non_fixed==1&subject==1
+
+
+*********************************************************************************
+********************** TABLE 2: OBSERVED LYING BEHAVIOR ********************
 *********************************************************************************
 
 
-tab ind_typenew2 country_code if period2==1&include_data==1, co
+tab ind_typenew2 country_code if period2==1&include_data==1, co nof
+tab ind_typenew3 country_code if period2==1&include_data==1, co nof
 
 
 *******************************************************************************
+******************  Table A1: List of sessions ****************************
 *******************************************************************************
-************** TABLE: DETERMINANTS OF LYING *******************************
-*******************************************************************************
-*******************************************************************************
+
+egen subjnum=count(subject) if period2==1, by(sess_id)
+li sess_id country_code taxrate subjnum if period2==1&subject==1
 
 
 *******************************************************************************
-******************* TABLE IN THE MAIN TEXT *********************************
+******************* TABLE C1:  Determinants of lying *********************
 *******************************************************************************
 
 *replace age=age/10
 *label variable age "Age/10"
 
 global fname="`path'table_parttype.tex"
-global fname_gr="`path'gr_parttype.eps"
 global vname="ind_typenew2"
 global note = "The first four columns report are average marginal effects for multinomial logistic regression (the dependent variable is whether the subject is a consistent maximal liar, consistent partial liar, is consistently honest, or none of those). The fifth column reports OLS regression, the dependent variable is the fraction of income declared, averaged across all rounds where the subject lied partially, for all subjects who lied partially in at least 8 rounds. Robust standard errors. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game."
 global nnn=8
 do "`path'tables_1.do"
 
-*******************************************************************************
-******************* TABLE IN THE APPENDIX **********************************
-*******************************************************************************
+
+***********************************************************************************************************************************************************************************
+******************* FIGURE 1: Marginal effects of experimental conditions and individual covariates on the type of lying behavior *********************************
+***********************************************************************************************************************************************************************************
+
+global fname_gr="`path'gr_parttype.eps"
+coefplot m1, bylabel(Cons. Maximal) || m2, bylabel(Cons. Partial) || m3, bylabel(Cons. Honest) || m4, bylabel(Other) ||, drop(_cons) xline(0) byopts(row(1) note("The graph reports average marginal effects and 95% confidence intervals for multinomial logistic regression. The dependent variable is" "whether the subject is a consistent maximal liar, consistent partial liar, is consistently honest, or none of those. Robust standard errors." "RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference" "between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated" "in the dictator game.")) xsize(7)
+graph export "$fname_gr", as(eps) preview(off) replace
+
+
+************************************************************************************************************************************************
+******************* TABLE C2: Determinants of lying, alternative categorization of subject behavior ********************************
+************************************************************************************************************************************************
+
 global fname="`path'table_parttype_10.tex"
 global fname_gr=0
 global vname="ind_typenew3"
@@ -59,14 +87,10 @@ global note = "The first four columns report average marginal effects for multin
 global nnn=10
 do "`path'tables_1.do"
 
-*******************************************************************************
-*******************************************************************************
 
-
-*coefplot (m1) (m2) (m3) (m4), drop(_cons) xline(0) keep(*:ncorrect_rank *:age_subject *:1.male *:1.offergd_0 *:offerdg)
 *******************************************************************************
 *******************************************************************************
-*************** TABLES: DEPERMINANTS OF LYING  ***************************
+*************** TABLES: DETERMINANTS OF LYING  ***************************
 *******************************************************************************
 *******************************************************************************
 
@@ -92,9 +116,8 @@ global eadd_4="t2030=r(p) t2040=r(p) t2050=r(p) t3040=r(p) t3050=r(p) t4050=r(p)
 global titles="All\space{}countries Chile Russia UK"
 global aplist="append append append append"
 
-
 ********************************************************************************
-*************** PERIODS 1-10 *************************************************
+*************** TABLE 3: Determinants of lying, by period ****************
 ********************************************************************************
 
 global conds "1==1 country_code==1 country_code==2 country_code==3"
@@ -112,12 +135,17 @@ global varlist1_3 = "$var3 " + "0.mpcr"
 global varlist1_4 = "$var3 " + "0.tax_40 0.tax_50 0.mpcr 0.deadweight"
 global note = "The first three columns report average marginal effects for multinomial logistic regression (dependent variable is whether the subject declared 0\%, 100\%, or something in between, in a given round). Standard errors are clustered by subject. The fourth column reports OLS regression, the dependent variable is the fraction of income declared in a given round. We only include subjects who partially cheated in at least 8 rounds, and declarations strictly between 0\% and 100\%. Standard errors are clustered by subject. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game."
 
+
+
 global i1=1
 global i2=1
 global fname="`path'table_reduced1_10_short.tex"			  
 do "`path'tables_2.do"
 
-// ERROR starts "variable tax_40 not found"
+***************************************************************************************************************
+*************** TABLE C5: Determinants of lying in each period, by country  ****************
+***************************************************************************************************************
+
 global i1=2
 global i2=4
 global fname="`path'table_reduced1_10.tex"			  
@@ -125,9 +153,9 @@ do "`path'tables_2.do"
 
 
 
-********************************************************************************
-*************** PERIODS 1-10, test round performance **********************
-********************************************************************************
+**********************************************************************************************************************************
+*************** Table C12: Determinants of lying in each period, by country. Performance data from training period *
+**********************************************************************************************************************************
 
 global fname="`path'table_reduced1_10_training.tex"
 global conds "1==1 country_code==1 country_code==2 country_code==3"
@@ -147,12 +175,11 @@ global note = "The first three columns report average marginal effects for multi
 global i1=2
 global i2=4
 do "`path'tables_2.do"
-// ERROR ends 
 	
 			  			  
-********************************************************************************
-**************** PERIODS 2-10, PAST ACTIONS ********************************
-********************************************************************************
+***************************************************************************************************************************
+**************** Table 4: Determinants of lying in periods 2-10, previous action ********************************
+***************************************************************************************************************************
 
 global conds "1==1&period2>1 country_code==1&period2>1 country_code==2&period2>1 country_code==3&period2>1"
 global var1="ncorrect_rank ncorrect_dev2 i.male age period2 i.offerdg_0 offerdg_frac i.tax_20 i.tax_30"
@@ -173,13 +200,17 @@ global i1=1
 global i2=1
 do "`path'tables_2.do"
 
+*****************************************************************************************************************************************
+**************** Table C8: Determinants of lying in periods 2-10, previous action, by country ********************************
+*****************************************************************************************************************************************
+
 global fname="`path'table_reduced2_10_countries.tex"
 global i1=2
 global i2=4
 do "`path'tables_2.do"
 
 ********************************************************************************
-**************** PERIOD 1 ****************************************************
+**************** Table 6: Determinants of lying in period 1 **************
 ********************************************************************************
 
 // Error starts "variable tax_40 not found"
@@ -203,6 +234,11 @@ global i1=1
 global i2=1
 do "`path'tables_2.do"
 
+
+***************************************************************************************************
+**************** Table C9: Determinants of lying in period 1, by country **************
+***************************************************************************************************
+
 global fname="`path'table_reduced1_countries.tex"
 global i1=2
 global i2=4
@@ -210,9 +246,10 @@ do "`path'tables_2.do"
 // ERROR ends 
 
 
-********************************************************************************
-**************** PERIODS 1-10,  MORE CONTROLS ******************************
-********************************************************************************
+*********************************************************************************************************
+**************** Table C10: Determinants of lying, periods 1-10, more controls *****************
+*********************************************************************************************************
+
 global include_cond="include_data_all==1"
 global fname="`path'table_reduced1_10_more.tex"
 global conds "1==1 country_code==1 country_code==2 country_code==3"
@@ -236,15 +273,19 @@ do "`path'tables_2.do"
 
 // Error starts "variable tax_40 not found"
 
+*********************************************************************************************************
+*********** Table C11: Determinants of lying , periods 1-10, more controls, by countries *****
+*********************************************************************************************************
 
 global fname="`path'table_reduced1_10_more_countries.tex"
 global i1=2
 global i2=4
 do "`path'tables_2.do"
 
-********************************************************************************
-*************** PERIODS 1-10, BY BASELINE/STATUS/SHOCK/NONFIXED *********
-********************************************************************************
+
+***********************************************************************************************
+*************** Table C7: Determinants of lying in each period, by treatment *********
+***********************************************************************************************
 
 global fname="`path'table_reduced1_10_treat.tex"
 global scals_1=`" "t2030 D20=D30" "t2050 D20=D50" "t3050 D30=D50" "rusuk Russia=UK" "'
@@ -284,9 +325,9 @@ global i2=4
 do "`path'tables_2.do"
 
 		  
-********************************************************************************
-*************** PERIODS 1-10, MALES AND FEMALES ********************************
-********************************************************************************
+**************************************************************************************************
+*************** Table C6: Determinants of lying in each period, by gender ***************
+**************************************************************************************************
 
 global fname="`path'table_reduced1_10_gender.tex"
 global scals_1=`" "t2030 D20=D30" "t2040 D20=D40" "t2050 D20=D50" "t3040 D30=D40" "t3050 D30=D50" "t4050 D40=D50" "rusuk Russia=UK" "'
@@ -315,14 +356,8 @@ global i2=2
 do "`path'tables_2.do"
 		  
 
-// ERROR ends 
-
 *******************************************************************************
-******************** APPENDIX ***********************************************
-*******************************************************************************
-
-*******************************************************************************
-******** FIGURE: DISTRIBUTION OF DECLARATIONS BY COUNTRY ***************
+******** Figure C1: Frequency of cheating decisions by country. *******
 *******************************************************************************
 
 use "`path'mastern_final2018_new_new.dta", clear
@@ -354,10 +389,38 @@ graph export "`path'\declared_freq_all.eps", as(eps) preview(off) replace
 
 
 **************************************************************************************************
-***************** FIGURE: DISTRIBUTION OF BEHAVIOR TYPE BY DG DONATIONS ******************
+***************** Figure C2: Distributions of behavior by Dictator Game donations. ******
 **************************************************************************************************
 
 use "`path'mastern_final2018_new_new.dta", clear
+mat FE=J(12,3,.)
+capture confirm variable pp
+if !_rc {
+	drop pp
+}
+local ttt=1
+forval c=1/3 {
+	forval cc=1/4 {
+		quietly gen pp=ind_typenew2==`cc'
+		quietly cc offerdg_0 pp if period2==1&include_data==1&country_code==`c', exact
+		mat FE[`ttt',1]=r(p_exact)
+		quietly tabstat pp if period2==1&include_data==1&country_code==`c', by(offerdg_0) save
+		mat m1=r(Stat1)
+		mat m2=r(Stat2)
+		quietly drop pp
+		mat FE[`ttt',2]=max(m1[1,1],m2[1,1])
+		mat FE[`ttt',3]=`ttt'*2+`c'-1.6
+		local ttt=`ttt'+1
+		
+	}
+}
+
+forval i=1/12 {
+	local yy=FE[`i',2]+.02
+	local xx=FE[`i',3]
+	local te`i'="text("+"`yy' `xx'"
+	local d`i'=strofreal(FE[`i',1],"%9.4f")
+}
 
 keep if include_data==1&period2==1
 collapse (count) c0=russia, by(country_code ind_typenew2 offerdg_0)
@@ -375,12 +438,13 @@ generate hi = c0 + invttail(n-1,0.025)*(sqrt(c0*(1-c0)) / sqrt(nntot))
 generate lo = max(c0 - invttail(n-1,0.025)*(sqrt(c0*(1-c0)) / sqrt(nntot)),0)
 
 rename hightype type
-twoway (bar c0 t if type==1&cc==1, color(red) barw(.8)) (bar c0 t if type==0&cc==1, color(red) barw(.8) fi(50)) (bar c0 t if type==1&cc==2, color(dkgreen) barw(.8)) (bar c0 t if type==0&cc==2, color(dkgreen) barw(.8) fi(50)) (bar c0 t if type==1&cc==3, color(blue) barw(.8)) (bar c0 t if type==0&cc==3, color(blue) barw(.8) fi(50)) (bar c0 t if type==1&cc==4, color(gray) barw(.8)) (bar c0 t if type==0&cc==4, color(gray) barw(.8) fi(50)) (rcap hi lo t, color(black)), xlabel(4.5 "Chile" 13.5 "Russia" 22.5 "UK", noticks) xsize(6) ylabel(0(.2)1) legend(row(2) order(1 "Consistent maximal" 3 "Consistent partial" 5 "Consistent honest" 7 "Other") size(small)) note("Distribution of behavior types by dictator game donations" "Dark shades correspond to subjects with DG=0, light shapes - to subjects with DG>0") xtitle("")
+*twoway (bar c0 t if type==1&cc==1, color(red) barw(.8)) (bar c0 t if type==0&cc==1, color(red) barw(.8) fi(50)) (bar c0 t if type==1&cc==2, color(dkgreen) barw(.8)) (bar c0 t if type==0&cc==2, color(dkgreen) barw(.8) fi(50)) (bar c0 t if type==1&cc==3, color(blue) barw(.8)) (bar c0 t if type==0&cc==3, color(blue) barw(.8) fi(50)) (bar c0 t if type==1&cc==4, color(gray) barw(.8)) (bar c0 t if type==0&cc==4, color(gray) barw(.8) fi(50)) (rcap hi lo t, color(black)), xlabel(4.5 "Chile" 13.5 "Russia" 22.5 "UK", noticks) xsize(6) ylabel(0(.2)1) legend(row(2) order(1 "Consistent maximal" 3 "Consistent partial" 5 "Consistent honest" 7 "Other") size(small)) note("Distribution of behavior types by dictator game donations" "Dark shades correspond to subjects with DG=0, light shapes - to subjects with DG>0") xtitle("")
+twoway (bar c0 t if type==1&cc==1, color(red) barw(.8)) (bar c0 t if type==0&cc==1, color(red) barw(.8) fi(50)) (bar c0 t if type==1&cc==2, color(dkgreen) barw(.8)) (bar c0 t if type==0&cc==2, color(dkgreen) barw(.8) fi(50)) (bar c0 t if type==1&cc==3, color(blue) barw(.8)) (bar c0 t if type==0&cc==3, color(blue) barw(.8) fi(50)) (bar c0 t if type==1&cc==4, color(gray) barw(.8)) (bar c0 t if type==0&cc==4, color(gray) barw(.8) fi(50)), xlabel(4.5 "Chile" 13.5 "Russia" 22.5 "UK", noticks) xsize(6) ylabel(0(.2)1) legend(row(2) order(1 "Consistent maximal" 3 "Consistent partial" 5 "Consistent honest" 7 "Other") size(small)) note("Distribution of behavior types by dictator game donations. Dark shades correspond to subjects with DG=0," "light shapes - to subjects with DG>0. Above each bar we report p-values for two-sided Fischer's exact test" "comparing the prevalence of each behavior for subjects who made zero DG donations with the prevalence for" "subjects who made nonzero donations. ") xtitle("") `te1' "`d1'", size(small)) `te2' "`d2'", size(small)) `te3' "`d3'", size(small)) `te4' "`d4'", size(small)) `te5' "`d5'", size(small)) `te6' "`d6'", size(small)) `te7' "`d7'", size(small)) `te8' "`d8'", size(small)) `te9' "`d9'", size(small)) `te10' "`d10'", size(small)) `te11' "`d11'", size(small)) `te12' "`d12'", size(small)) ytitle("")
 graph export "`path'ind_typenew2_dg0.eps", as(eps) preview(off) replace
 
 
 *******************************************************************************
-************** TABLE: INITIAL PREDICTION OF GROUP RANK ******************
+************** Table C3: Predicted rank and actual rank in the first period ***
 *******************************************************************************
 use "`path'mastern_final2018_new_new.dta", clear
 
@@ -393,15 +457,15 @@ ttest rank_withingroup if include_data==1&period2==1&inlist(pred0,3,4), by(pred0
 
 
 
-*******************************************************************************
-************** TABLE: PREDICTED AND ACTUAL BEHAVIOR IN PERIOD 10 *******
-************** FIGURE: PREDICTED AND ACTUAL BEHAVIOR IN PERIOD 10 ******
-*******************************************************************************
+**********************************************************************************
+************** Table 5: Predicted and actual behavior in Period 10 *******
+************** Figure C3: Predicted and actual behavior in Period 10 *****
+**********************************************************************************
 
 local iters=50
 set matsize 800
 set more off
-* Set iters=50 to draw graph
+* Set iters=50 to draw graph and iters=1000 to produce the table
 tsset subj_id period2
 
 local conds "1==1&period2>1 country_code==1&period2>1 country_code==2&period2>1 country_code==3&period2>1"
@@ -575,11 +639,12 @@ file close mf
 
 
 ********************************************************************************
-********** FIGURE: DIE ROLL REPORTED BY BEHAVIORAL TYPE ************************
+********** Figure 2: Lying and the Die Roll Result. **********************
 ********************************************************************************
 
 
 use "`path'mastern_final2018_new_new.dta", clear
+
 drop if include_data_all==0
 
 egen nnn=count(russia), by(realdie ind_typenew2)
@@ -600,7 +665,7 @@ twoway (bar c0 t if cc==1, color(red) barw(.8)) (bar c0 t if cc==2, color(dkgree
 graph export "`path'die_type.eps", as(eps) preview(off) replace
 
 ********************************************************************************
-********** FIGURE: DIGITAL DIE ROLL REPORTED BY BEHAVIORAL TYPE ********
+********** Figure C4:  Lying and the digital die roll result.  **********
 ********************************************************************************
 
 
@@ -629,7 +694,15 @@ graph export "`path'ddie_type.eps", as(eps) preview(off) replace
 
 
 **************************************************************************************
-************** TABLE: PREDICTING DIE ROLL FROM BEHAVIOR TYPE ******************
+****************** Table C14: Lying on the digital die task **************************
+**************************************************************************************
+
+tab  ind_typenew2 digitaldie_cat if inlist(ind_typenew2,1,2,3)&period2==1&include_data_all==1&inlist(digitaldie_actual,1,2,3,4)
+tab  ind_typenew3 digitaldie_cat if inlist(ind_typenew3,1,2,3)&period2==1&include_data_all==1&inlist(digitaldie_actual,1,2,3,4)
+
+
+**************************************************************************************
+************** Table C4: Logit regression of die roll values ******************
 **************************************************************************************
 
 use "`path'mastern_final2018_new_new.dta", clear
@@ -641,11 +714,11 @@ forval i=1/6 {
 	margins, dydx(*) post
 	est store m`i'
 }
-esttab m1 m2 m3 m4 m5 m6 using "`fname'", label mtitle(1 2 3 4 5 6) drop(ncorrect_rank male age_subject) compress nonum replace note("Logistic regression, marginal coefficients. Individual controls not shown. Average fraction declared is shown for partial liars") se star(* 0.10 ** 0.05 *** 0.01) nogap
+esttab m1 m2 m3 m4 m5 m6 using "`fname'", label scalars("ll L") mtitle(1 2 3 4 5 6) drop(ncorrect_rank male age_subject) compress nonum replace note("Logistic regression, marginal coefficients. Individual controls not shown. Average fraction declared is shown for partial liars") se star(* 0.10 ** 0.05 *** 0.01) nogap
 
 
 ********************************************************************************************************
-***********FIGURE: CUMULATIVE DISTRIBUTION OF REACTION TIME FOR DIFFERENT DECLARATIONS ******
+********** Figure 3: Cumulative distributions of reaction times for different declarations *************
 ********************************************************************************************************
 
 
@@ -667,7 +740,7 @@ replace time_declare_1=. if include_data==0
 graph export "`path'response.eps", as(eps) preview(off) replace
  
 **********************************************************************************************************************
-***********FIGURE: CUMULATIVE DISTRIBUTION OF REACTION TIME FOR DIFFERENT DECLARATIONS, BY COUNTRY ******
+*********** Figure C5: Distribution of reaction time by country ******************************************************
 **********************************************************************************************************************
 
 
@@ -697,8 +770,10 @@ gr combine Chile Russia UK, r(1) xsize(5) ysize(2)
 graph export "`path'response_country.eps", as(eps) preview(off) replace
 
 
+
+
 *********************************************************************************
-******************* TABLE: DETERMINANTS OF REACTION TIME *******************
+******************* Table C17: Determinants of reaction time ********************
 *********************************************************************************
 
 use "`path'mastern_final2018_new_new.dta", clear
@@ -758,28 +833,38 @@ est store m3
 local note="OLS regression. Dependent variable is log reaction time. Standard errors are clustered by subject. Baseline category for subject decision in Model 2 is honest behavior in this period. Baseline category for subject decision in Model 3 is honest behavior in this and previous period."
 esttab m1 m2 m3 using "`fname'", label mtitle("Model 1" "Model 2" "Model 3") wide compress nonum note(`note') se star(* 0.10 ** 0.05 *** 0.01) replace
 
+
+
+***********************************************************************************************************************************
+******************* Table C18: Parametric estimation of hazard rate, exponential distribution of reaction time ********************
+***********************************************************************************************************************************
+
 local fname="`path'table_reactiontime_c.tex"
 estimates clear
-streg `varlist' russia uk if include_data==1, clu(subj_id) distribution(exponential)
+streg `varlist' russia uk if include_data==1, clu(subj_id) distribution(exponential) nohr
 est store m1
-streg `varlist' declared_cat_1 declared_cat_2 russia uk if include_data==1, clu(subj_id) distribution(exponential)
+streg `varlist' declared_cat_1 declared_cat_2 russia uk if include_data==1, clu(subj_id) distribution(exponential) nohr
 est store m2
-streg `varlist' `varlist3' russia uk if include_data==1, clu(subj_id) distribution(exponential)
+streg `varlist' `varlist3' russia uk if include_data==1, clu(subj_id) distribution(exponential) nohr
 est store m3
 local note="Exponential distribution survival time model. Standard errors are clustered by subject. Baseline category for subject decision in Model 2 is honest behavior in this period. Baseline category for subject decision in Model 3 is honest behavior in this and previous period."
-esttab m1 m2 m3 using "`fname'", label mtitle("Model 1" "Model 2" "Model 3") wide compress nonum note(`note') se star(* 0.10 ** 0.05 *** 0.01) replace
+esttab m1 m2 m3 using "`fname'", scalars("ll L") label mtitle("Model 1" "Model 2" "Model 3") wide compress nonum note(`note') se star(* 0.10 ** 0.05 *** 0.01) replace
 
+
+***********************************************************************************************************************************
+******************* Table C19: Parametric estimation of hazard rate, exponential distribution of reaction time ********************
+***********************************************************************************************************************************
 
 local fname="`path'table_reactiontime_w.tex"
 estimates clear
-streg `varlist' russia uk if include_data==1, clu(subj_id) distribution(weibull)
+streg `varlist' russia uk if include_data==1, clu(subj_id) distribution(weibull) nohr
 est store m1
-streg `varlist' declared_cat_1 declared_cat_2 russia uk if include_data==1, clu(subj_id) distribution(weibull)
+streg `varlist' declared_cat_1 declared_cat_2 russia uk if include_data==1, clu(subj_id) distribution(weibull) nohr
 est store m2
-streg `varlist' `varlist3' russia uk if include_data==1, clu(subj_id) distribution(weibull)
+streg `varlist' `varlist3' russia uk if include_data==1, clu(subj_id) distribution(weibull) nohr
 est store m3
 local note="Weibull distribution survival time model. Standard errors are clustered by subject. Baseline category for subject decision in Model 2 is honest behavior in this period. Baseline category for subject decision in Model 3 is honest behavior in this and previous period."
-esttab m1 m2 m3 using "`fname'", label mtitle("Model 1" "Model 2" "Model 3") wide compress nonum note(`note') se star(* 0.10 ** 0.05 *** 0.01) replace
+esttab m1 m2 m3 using "`fname'", scalars("ll L") label mtitle("Model 1" "Model 2" "Model 3") wide compress nonum note(`note') se star(* 0.10 ** 0.05 *** 0.01) replace
 
 
 
@@ -790,47 +875,67 @@ test declared_cat_1_2= declared_cat_1_3
 
 
 ***********************************************************************************************
-*********** FIGURE: PREVALENCE OF LYING DEPENDING ON SUBJECT PERFORMANCE *************
+*********** Figure B2: Prevalence of lying depending on subject performance *******************
 ***********************************************************************************************
 
 use "`path'mastern_final2018_new_new.dta", clear
-//drop declared_near
-gen declared_near=declared>0&declared_frac<=.2
-collapse (mean) c0=declared_0 cf=declared_f cn=declared_near (sd) c0_sd=declared_0 cf_sd=declared_f cn_sd=declared_near (count) n=cheat if include_data==1, by(country_code hightype)
 rename hightype type
-replace type=type+1
-expand 3
-sort country_code type
-gen t=_n
-gen cc=0
-forval i=1/3 {
-forval ii=1/3 {
-forval iii=1/2 {
-local obsn=(`i'-1)*6+(`iii'-1)*3+`ii'
-replace cc=`ii' in `obsn'
-if `ii'==2 {
-replace c0=cf in `obsn'
-replace c0_sd=cf_sd in `obsn'
-}
-else if `ii'==3 {
-replace c0=cn in `obsn'
-replace c0_sd=cn_sd in `obsn'
-}
-}
-}
-}
-generate hi = c0 + invttail(n-1,0.025)*(c0_sd / sqrt(n))
-generate lo = c0 - invttail(n-1,0.025)*(c0_sd / sqrt(n))
-replace t=t+1 in 7/18
-replace t=t+1 in 13/18
+gen ct=.
+replace ct=1 if declared_cat==1
+replace ct=2 if declared_frac>0&declared_frac<=.2
+replace ct=3 if declared_frac>.2&declared_frac<1
+replace ct=4 if declared_frac==1
 
-twoway (bar c0 t if type==1&cc==1, color(red) barw(.8)) (bar c0 t if type==1&cc==2, color(red) barw(.8) fi(60)) (bar c0 t if type==1&cc==3, color(red) barw(.8) fi(30)) (bar c0 t if type==2&cc==1, color(blue) barw(.8)) (bar c0 t if type==2&cc==2, color(blue) barw(.8) fi(60)) (bar c0 t if type==2&cc==3, color(blue) barw(.8) fi(30)) (rcap hi lo t, color(black)), xlabel(3 "Chile" 10 "Russia" 17.5 "UK", noticks) note("The graph shows the total share of declarations in each country that is maximal lying, partial lying," "or near-maximal lying, defined as declarations between 1 EDU and 20\% of income.") ylabel(0(.2)1) legend(row(3) order(1 "Low performance, maximal" 4 "High performance, maximal" 2 "Low performance, limited" 5 "High performance, limited" 3 "Low performance, near-maximal" 6 "High performance, near-maximal" ) size(small)) xsize(6) xtitle("")
+mat FE=J(12,3,.)
+capture confirm variable pp
+if !_rc {
+	drop pp
+}
+local ttt=1
+forval c=1/3 {
+	forval cc=1/4 {
+		quietly gen pp=ct==`cc'
+		quietly cc type pp if include_data==1&country_code==`c', exact
+		mat FE[`ttt',1]=r(p_exact)
+		quietly tabstat pp if include_data==1&country_code==`c', by(type) save
+		mat m1=r(Stat1)
+		mat m2=r(Stat2)
+		quietly drop pp
+		mat FE[`ttt',2]=max(m1[1,1],m2[1,1])
+		mat FE[`ttt',3]=`ttt'*2+`c'-1.6
+		local ttt=`ttt'+1
+		
+	}
+}
+
+forval i=1/12 {
+	local yy=FE[`i',2]+.02
+	local xx=FE[`i',3]
+	local te`i'="text("+"`yy' `xx'"
+	local d`i'=strofreal(FE[`i',1],"%9.4f")
+}
+
+
+keep if include_data==1&ct!=.
+collapse (count) c0=russia, by(country_code ct type)
+gsort country_code ct -type
+
+gen t=_n
+replace t=t+1 in 9/24
+replace t=t+1 in 17/24
+
+egen nntot=sum(c0), by(country_code type)
+replace c0=c0/nntot
+
+
+*twoway (bar c0 t if type==1&cc==1, color(red) barw(.8)) (bar c0 t if type==0&cc==1, color(red) barw(.8) fi(50)) (bar c0 t if type==1&cc==2, color(dkgreen) barw(.8)) (bar c0 t if type==0&cc==2, color(dkgreen) barw(.8) fi(50)) (bar c0 t if type==1&cc==3, color(blue) barw(.8)) (bar c0 t if type==0&cc==3, color(blue) barw(.8) fi(50)) (bar c0 t if type==1&cc==4, color(gray) barw(.8)) (bar c0 t if type==0&cc==4, color(gray) barw(.8) fi(50)) (rcap hi lo t, color(black)), xlabel(4.5 "Chile" 13.5 "Russia" 22.5 "UK", noticks) xsize(6) ylabel(0(.2)1) legend(row(2) order(1 "Consistent maximal" 3 "Consistent partial" 5 "Consistent honest" 7 "Other") size(small)) note("Distribution of behavior types by dictator game donations" "Dark shades correspond to subjects with DG=0, light shapes - to subjects with DG>0") xtitle("")
+twoway (bar c0 t if type==1&ct==1, color(red) barw(.8)) (bar c0 t if type==0&ct==1, color(red) barw(.8) fi(50)) (bar c0 t if type==1&ct==2, color(dkgreen) barw(.8)) (bar c0 t if type==0&ct==2, color(dkgreen) barw(.8) fi(50)) (bar c0 t if type==1&ct==3, color(blue) barw(.8)) (bar c0 t if type==0&ct==3, color(blue) barw(.8) fi(50)) (bar c0 t if type==1&ct==4, color(gray) barw(.8)) (bar c0 t if type==0&ct==4, color(gray) barw(.8) fi(50)), xlabel(4.5 "Chile" 13.5 "Russia" 22.5 "UK", noticks) xsize(6) ylabel(0(.2)1) legend(row(2) order(1 "Declared 0" 3 "Declared 0-20%" 5 "Declared 21-99%" 7 "Declared 100%") size(small)) note("Distribution of declarations by subject performance. Dark shades correspond to subjects with average RET" "performance above national median, light shapes - to subjects below median. Above each bar we report p-values" "for two-sided Fischer's exact test comparing the prevalence of each declaration for two types of subjects.") xtitle("") `te1' "`d1'", size(small)) `te2' "`d2'", size(small)) `te3' "`d3'", size(small)) `te4' "`d4'", size(small)) `te5' "`d5'", size(small)) `te6' "`d6'", size(small)) `te7' "`d7'", size(small)) `te8' "`d8'", size(small)) `te9' "`d9'", size(small)) `te10' "`d10'", size(small)) `te11' "`d11'", size(small)) `te12' "`d12'", size(small)) ytitle("")
 graph export "`path'cheat_hilo.eps", as(eps) preview(off) replace
 
 
-*******************************************************************************
-*************** TABLE: NEAR-MAXIMAL CHEATING ****************************** 
-*******************************************************************************
+********************************************************************************************************
+*************** Table C20: Near-maximal cheating depending on performance ****************************** 
+********************************************************************************************************
 
 use "`path'mastern_final2018_new_new.dta", clear
 global fname="`path'table_nearmax.tex"
@@ -838,11 +943,19 @@ global byvar="hightype"
 global llist="Low High p"
 do "`path'tables_3.do"
 
+********************************************************************************************************
+*************** Table C21: Near-maximal cheating depending on gender *********************************** 
+********************************************************************************************************
+
 use "`path'mastern_final2018_new_new.dta", clear
 global fname="`path'table_nearmax_male.tex"
 global byvar="male"
 global llist="Female Male p"
 do "`path'tables_3.do"
+
+********************************************************************************************************
+*************** Table C22: Near-maximal cheating depending on DG donation ****************************** 
+********************************************************************************************************
 
 use "`path'mastern_final2018_new_new.dta", clear
 global fname="`path'table_nearmax_dg.tex"
@@ -1012,7 +1125,7 @@ gen ncorrect_same=ncorrectret==l.ncorrectret
 tab declared_same if period2!=.&ind_typenew2==2&include_data==1&declared_cat==2&ncorrect_same==1
 
 ******************************************************************************
-********* FIGURE: DISTRIBUTION OF RET PERFORMANCE ****************************
+********* Figure B1: Distribution of average performance by country **********
 ******************************************************************************
 
 local i=1
@@ -1021,7 +1134,7 @@ graph export "`path'ret_density.eps", as(eps) preview(off) replace
 
 
 ******************************************************************
-******* TABLE: RET PERFORMANCE ***********************************
+******* Table B1: Determinants of subject’s average performance **
 ******************************************************************
 
 use "`path'mastern_final2018_new_new.dta", clear
@@ -1046,9 +1159,9 @@ est store m4
 esttab m1 m2 m3 m4 using "`fname'", label mtitle("Chile" "Russia" "UK" "All") wide compress nonum replace order(`varlist1' `varlist2' `vv' `varlist4') note("OLS regression. Robust standard errors. Dependent variable is subject's average performance over 10 rounds.") se r2 star(* 0.10 ** 0.05 *** 0.01)
 
 
-******************************************************************
-******* TABLE: RET PERFORMANCE, PERIOD ***************************
-******************************************************************
+*****************************************************************************
+******* Table B2: Determinants of subject’s average performance by country **
+*****************************************************************************
 
 use "`path'mastern_final2018_new_new.dta", clear
 local fname="`path'table_ret_per.tex"
@@ -1073,9 +1186,10 @@ est store m4
 esttab m1 m2 m3 m4
 esttab m1 m2 m3 m4 using "`fname'", label mtitle("Chile" "Russia" "UK" "All") drop(`varlist5') wide compress nonum replace order(`varlist1' `varlist2' `vv' `varlist4') note("`note'") r2 se star(* 0.10 ** 0.05 *** 0.01)
 
+
 ************************************************************************
-***************** TABLE: RET PERFORMANCE, RUSSIA ******************
-***********************************************************************
+******** Table C16: Determinants of subject’s performance, Russia*******
+************************************************************************
 
 
 use "`path'mastern_final2018_new_new.dta", clear
@@ -1093,4 +1207,18 @@ reg ncorrectret `varlist2' if period2>1.&include_data==1&country_code==2, cluste
 est store m2 
 esttab m1 m2 using "`fname'", label mtitle("Average" "Per round") wide compress nonum replace order(`varlist2') note("`note'") r2 se star(* 0.10 ** 0.05 *** 0.01)
 
+
+
+************************************************************************
+************** Table C13: Components of the civicness index. ***********
+************************************************************************
+
+pca publictransport taxes drivingfast moneyfound lying accidentaldamage litter drivingalcohol jobapplication buyingstolen if include_data_all==1
+
+
+************************************************************************
+************** Table C15: Components of the trusting behavior index. ***
+************************************************************************
+
+pca lendmoney lendstuff dooropen if include_data_all==1
 

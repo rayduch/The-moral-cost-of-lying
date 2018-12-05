@@ -61,5 +61,3 @@ file write mf "\multicolumn{11}{l}{\tiny \sym{*} \(p<0.1\), \sym{**} \(p<0.05\),
 file write mf "\end{tabular}"
 file close mf
 
-	coefplot m1, bylabel(Cons. Maximal) || m2, bylabel(Cons. Partial) || m3, bylabel(Cons. Honest) || m4, bylabel(Other) ||, drop(_cons) xline(0) byopts(row(1) note("The graph reports average marginal effects and 95% confidence intervals for multinomial logistic regression. The dependent variable is" "whether the subject is a consistent maximal liar, consistent partial liar, is consistently honest, or none of those. Robust standard errors." "RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference" "between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated" "in the dictator game.")) xsize(7)
-	graph export "$fname_gr", as(eps) preview(off) replace

@@ -6,17 +6,18 @@
 ** coefplot.ado 
 ** chitest.ado
 
-ssc install streg
+//ssc install streg // Uncoment if necessary
 ssc install tab_chi
 ssc install coefplot
 ssc install triplot
 
 
 
-
-
-local path="[Your path]\"
+local path="[Your folder]\"
 cd "`path'"
+
+log using "replication.log", replace
+
 set more off
 use "`path'mastern_final2018_new_new.dta", clear
 
@@ -439,7 +440,7 @@ generate lo = max(c0 - invttail(n-1,0.025)*(sqrt(c0*(1-c0)) / sqrt(nntot)),0)
 
 rename hightype type
 *twoway (bar c0 t if type==1&cc==1, color(red) barw(.8)) (bar c0 t if type==0&cc==1, color(red) barw(.8) fi(50)) (bar c0 t if type==1&cc==2, color(dkgreen) barw(.8)) (bar c0 t if type==0&cc==2, color(dkgreen) barw(.8) fi(50)) (bar c0 t if type==1&cc==3, color(blue) barw(.8)) (bar c0 t if type==0&cc==3, color(blue) barw(.8) fi(50)) (bar c0 t if type==1&cc==4, color(gray) barw(.8)) (bar c0 t if type==0&cc==4, color(gray) barw(.8) fi(50)) (rcap hi lo t, color(black)), xlabel(4.5 "Chile" 13.5 "Russia" 22.5 "UK", noticks) xsize(6) ylabel(0(.2)1) legend(row(2) order(1 "Consistent maximal" 3 "Consistent partial" 5 "Consistent honest" 7 "Other") size(small)) note("Distribution of behavior types by dictator game donations" "Dark shades correspond to subjects with DG=0, light shapes - to subjects with DG>0") xtitle("")
-twoway (bar c0 t if type==1&cc==1, color(red) barw(.8)) (bar c0 t if type==0&cc==1, color(red) barw(.8) fi(50)) (bar c0 t if type==1&cc==2, color(dkgreen) barw(.8)) (bar c0 t if type==0&cc==2, color(dkgreen) barw(.8) fi(50)) (bar c0 t if type==1&cc==3, color(blue) barw(.8)) (bar c0 t if type==0&cc==3, color(blue) barw(.8) fi(50)) (bar c0 t if type==1&cc==4, color(gray) barw(.8)) (bar c0 t if type==0&cc==4, color(gray) barw(.8) fi(50)), xlabel(4.5 "Chile" 13.5 "Russia" 22.5 "UK", noticks) xsize(6) ylabel(0(.2)1) legend(row(2) order(1 "Consistent maximal" 3 "Consistent partial" 5 "Consistent honest" 7 "Other") size(small)) note("Distribution of behavior types by dictator game donations. Dark shades correspond to subjects with DG=0," "light shapes - to subjects with DG>0. Above each bar we report p-values for two-sided Fischer's exact test" "comparing the prevalence of each behavior for subjects who made zero DG donations with the prevalence for" "subjects who made nonzero donations. ") xtitle("") `te1' "`d1'", size(small)) `te2' "`d2'", size(small)) `te3' "`d3'", size(small)) `te4' "`d4'", size(small)) `te5' "`d5'", size(small)) `te6' "`d6'", size(small)) `te7' "`d7'", size(small)) `te8' "`d8'", size(small)) `te9' "`d9'", size(small)) `te10' "`d10'", size(small)) `te11' "`d11'", size(small)) `te12' "`d12'", size(small)) ytitle("")
+twoway (bar c0 t if type==1&cc==1, color(red) barw(.8)) (bar c0 t if type==0&cc==1, color(red) barw(.8) fi(30)) (bar c0 t if type==1&cc==2, color(dkgreen) barw(.8)) (bar c0 t if type==0&cc==2, color(dkgreen) barw(.8) fi(30)) (bar c0 t if type==1&cc==3, color(blue) barw(.8)) (bar c0 t if type==0&cc==3, color(blue) barw(.8) fi(30)) (bar c0 t if type==1&cc==4, color(gray) barw(.8)) (bar c0 t if type==0&cc==4, color(gray) barw(.8) fi(30)), xlabel(4.5 "Chile" 13.5 "Russia" 22.5 "UK", noticks) xsize(7) ylabel(0(.2)1) legend(row(1) order(1 "Consistent maximal" 3 "Consistent partial" 5 "Consistent honest" 7 "Other") size(small)) note("Distribution of behavior types by dictator game donations. Dark shades correspond to subjects with DG=0, light shapes - to" "subjects with DG>0. Above each bar we report p-values for two-sided Fischer's exact test comparing the prevalence of each" "behavior for subjects who made zero DG donations with the prevalence for subjects who made nonzero donations. ") xtitle("") `te1' "`d1'", size(small)) `te2' "`d2'", size(small)) `te3' "`d3'", size(small)) `te4' "`d4'", size(small)) `te5' "`d5'", size(small)) `te6' "`d6'", size(small)) `te7' "`d7'", size(small)) `te8' "`d8'", size(small)) `te9' "`d9'", size(small)) `te10' "`d10'", size(small)) `te11' "`d11'", size(small)) `te12' "`d12'", size(small)) ytitle("")
 graph export "`path'ind_typenew2_dg0.eps", as(eps) preview(off) replace
 
 
@@ -661,7 +662,7 @@ replace t=t+1 in 21/24
 rename ind_typenew2 cc
 egen nnt=sum(nnn), by(cc)
 gen c0=nnn/nnt
-twoway (bar c0 t if cc==1, color(red) barw(.8)) (bar c0 t if cc==2, color(dkgreen) barw(.8))  (bar c0 t if cc==3, color(blue) barw(.8)) (bar c0 t if cc==4, color(gray) barw(.8)), xlabel(2.5 "1" 7.5 "2" 12.5 "3" 17.5 "4" 22.5 "5" 27.5 "6", noticks) legend(row(2) order(1 "Consistent maximal" 2 "Consistent partial" 3 "Consistent honest" 4 "Other") size(small)) title("") xtitle("") ytitle("Fraction") yline(0.1666, lcolor(black)) note("The graph shows the relative frequencies of reported die rolls for different behavioral types." "The horizontal line corresponds to 0.1666=1/6.")
+twoway (bar c0 t if cc==1, color(black) barw(.8)) (bar c0 t if cc==2, color(black) barw(.8) fi(70))  (bar c0 t if cc==3, color(black) barw(.8) fi(50)) (bar c0 t if cc==4, color(black) barw(.8) fi(30)), xlabel(2.5 "1" 7.5 "2" 12.5 "3" 17.5 "4" 22.5 "5" 27.5 "6", noticks) legend(row(2) order(1 "Consistent maximal" 2 "Consistent partial" 3 "Consistent honest" 4 "Other") size(small)) title("") xtitle("") ytitle("Fraction") yline(0.1666, lcolor(black)) note("The graph shows the relative frequencies of reported die rolls for different behavioral types." "The horizontal line corresponds to 0.1666=1/6.")
 graph export "`path'die_type.eps", as(eps) preview(off) replace
 
 ********************************************************************************
@@ -688,7 +689,7 @@ replace t=t+1 in 21/24
 rename ind_typenew2 cc
 egen nnt=sum(nnn), by(cc)
 gen c0=nnn/nnt
-twoway (bar c0 t if cc==1, color(red) barw(.8)) (bar c0 t if cc==2, color(dkgreen) barw(.8))  (bar c0 t if cc==3, color(blue) barw(.8)) (bar c0 t if cc==4, color(gray) barw(.8)), xlabel(2.5 "1" 7.5 "2" 12.5 "3" 17.5 "4" 22.5 "5" 27.5 "6", noticks) legend(row(2) order(1 "Consistent maximal" 2 "Consistent partial" 3 "Consistent honest" 4 "Other") size(small)) title("") xtitle("") ytitle("Fraction") yline(0.1666, lcolor(black)) note("The graph shows the relative frequencies of reported digital die rolls for different behavioral types." "The horizontal line corresponds to 0.1666=1/6.")
+twoway (bar c0 t if cc==1, color(black) barw(.8)) (bar c0 t if cc==2, color(black) barw(.8) fi(70))  (bar c0 t if cc==3, color(black) barw(.8) fi(50)) (bar c0 t if cc==4, color(black) barw(.8) fi(30)), xlabel(2.5 "1" 7.5 "2" 12.5 "3" 17.5 "4" 22.5 "5" 27.5 "6", noticks) legend(row(1) order(1 "Consistent maximal" 2 "Consistent partial" 3 "Consistent honest" 4 "Other") size(small)) title("") xtitle("") ytitle("Fraction") yline(0.1666, lcolor(black)) note("The graph shows the relative frequencies of reported digital die rolls for different behavioral types." "The horizontal line corresponds to 0.1666=1/6.") xsize(6)
 graph export "`path'ddie_type.eps", as(eps) preview(off) replace
 
 
@@ -696,7 +697,11 @@ graph export "`path'ddie_type.eps", as(eps) preview(off) replace
 **************************************************************************************
 ****************** Table C14: Lying on the digital die task **************************
 **************************************************************************************
-
+use "`path'mastern_final2018_new_new.dta", clear
+gen digitaldie_cat=.
+replace digitaldie_cat=1 if digitaldie_lie_max==1
+replace digitaldie_cat=2 if digitaldie_lie_nonmax==1
+replace digitaldie_cat=3 if digitaldie_lie==0
 tab  ind_typenew2 digitaldie_cat if inlist(ind_typenew2,1,2,3)&period2==1&include_data_all==1&inlist(digitaldie_actual,1,2,3,4)
 tab  ind_typenew3 digitaldie_cat if inlist(ind_typenew3,1,2,3)&period2==1&include_data_all==1&inlist(digitaldie_actual,1,2,3,4)
 
@@ -763,10 +768,10 @@ forval iii=1/3 {
 
 		label variable time_declare_1 "seconds"
 
-		twoway (line time_declare_cu_1 time_declare_1 if time_declare<31&include_data==1, c(J) lcolor(black)) (line time_declare_cu_2 time_declare_1 if time_declare<31&include_data==1, c(J) lcolor(black) lpattern(dash)) (line time_declare_cu_3 time_declare_1 if time_declare<31&include_data==1, c(J) lcolor(black) lpattern("-.")), legend(label(1 "Maximal lying") label(2 "Partial lying") label(3 "Honest") row(1) size(small)) xsize(5) note("Cumulative distribution functions of RT for different decisions") ytitle("") name(`gname') title(`gname') 
-	
+		
+			twoway (line time_declare_cu_1 time_declare_1 if time_declare<31&include_data==1, c(J) lcolor(black)) (line time_declare_cu_2 time_declare_1 if time_declare<31&include_data==1, c(J) lcolor(black) lpattern(dash)) (line time_declare_cu_3 time_declare_1 if time_declare<31&include_data==1, c(J) lcolor(black) lpattern("-.")), legend(label(1 "Maximal lying") label(2 "Partial lying") label(3 "Honest") row(1) size(small)) xsize(5) note("Cumulative distribution functions of RT for different decisions") ytitle("") name(`gname') title(`gname') 
 }
-gr combine Chile Russia UK, r(1) xsize(5) ysize(2)
+gr combine Chile Russia UK, r(1) xsize(7) ysize(2) ycommon
 graph export "`path'response_country.eps", as(eps) preview(off) replace
 
 
@@ -929,7 +934,7 @@ replace c0=c0/nntot
 
 
 *twoway (bar c0 t if type==1&cc==1, color(red) barw(.8)) (bar c0 t if type==0&cc==1, color(red) barw(.8) fi(50)) (bar c0 t if type==1&cc==2, color(dkgreen) barw(.8)) (bar c0 t if type==0&cc==2, color(dkgreen) barw(.8) fi(50)) (bar c0 t if type==1&cc==3, color(blue) barw(.8)) (bar c0 t if type==0&cc==3, color(blue) barw(.8) fi(50)) (bar c0 t if type==1&cc==4, color(gray) barw(.8)) (bar c0 t if type==0&cc==4, color(gray) barw(.8) fi(50)) (rcap hi lo t, color(black)), xlabel(4.5 "Chile" 13.5 "Russia" 22.5 "UK", noticks) xsize(6) ylabel(0(.2)1) legend(row(2) order(1 "Consistent maximal" 3 "Consistent partial" 5 "Consistent honest" 7 "Other") size(small)) note("Distribution of behavior types by dictator game donations" "Dark shades correspond to subjects with DG=0, light shapes - to subjects with DG>0") xtitle("")
-twoway (bar c0 t if type==1&ct==1, color(red) barw(.8)) (bar c0 t if type==0&ct==1, color(red) barw(.8) fi(50)) (bar c0 t if type==1&ct==2, color(dkgreen) barw(.8)) (bar c0 t if type==0&ct==2, color(dkgreen) barw(.8) fi(50)) (bar c0 t if type==1&ct==3, color(blue) barw(.8)) (bar c0 t if type==0&ct==3, color(blue) barw(.8) fi(50)) (bar c0 t if type==1&ct==4, color(gray) barw(.8)) (bar c0 t if type==0&ct==4, color(gray) barw(.8) fi(50)), xlabel(4.5 "Chile" 13.5 "Russia" 22.5 "UK", noticks) xsize(6) ylabel(0(.2)1) legend(row(2) order(1 "Declared 0" 3 "Declared 0-20%" 5 "Declared 21-99%" 7 "Declared 100%") size(small)) note("Distribution of declarations by subject performance. Dark shades correspond to subjects with average RET" "performance above national median, light shapes - to subjects below median. Above each bar we report p-values" "for two-sided Fischer's exact test comparing the prevalence of each declaration for two types of subjects.") xtitle("") `te1' "`d1'", size(small)) `te2' "`d2'", size(small)) `te3' "`d3'", size(small)) `te4' "`d4'", size(small)) `te5' "`d5'", size(small)) `te6' "`d6'", size(small)) `te7' "`d7'", size(small)) `te8' "`d8'", size(small)) `te9' "`d9'", size(small)) `te10' "`d10'", size(small)) `te11' "`d11'", size(small)) `te12' "`d12'", size(small)) ytitle("")
+twoway (bar c0 t if type==1&ct==1, color(red) barw(.8)) (bar c0 t if type==0&ct==1, color(red) barw(.8) fi(30)) (bar c0 t if type==1&ct==2, color(dkgreen) barw(.8)) (bar c0 t if type==0&ct==2, color(dkgreen) barw(.8) fi(30)) (bar c0 t if type==1&ct==3, color(blue) barw(.8)) (bar c0 t if type==0&ct==3, color(blue) barw(.8) fi(30)) (bar c0 t if type==1&ct==4, color(gray) barw(.8)) (bar c0 t if type==0&ct==4, color(gray) barw(.8) fi(30)), xlabel(4.5 "Chile" 13.5 "Russia" 22.5 "UK", noticks) xsize(7) ylabel(0(.2)1) legend(row(1) order(1 "Declared 0" 3 "Declared 0-20%" 5 "Declared 21-99%" 7 "Declared 100%") size(small)) note("Distribution of declarations by subject performance. Dark shades correspond to subjects with average RET performance above" "national median, light shapes - to subjects below median. Above each bar we report p-values for two-sided Fischer's exact test" "comparing the prevalence of each declaration for two types of subjects.") xtitle("") `te1' "`d1'", size(small)) `te2' "`d2'", size(small)) `te3' "`d3'", size(small)) `te4' "`d4'", size(small)) `te5' "`d5'", size(small)) `te6' "`d6'", size(small)) `te7' "`d7'", size(small)) `te8' "`d8'", size(small)) `te9' "`d9'", size(small)) `te10' "`d10'", size(small)) `te11' "`d11'", size(small)) `te12' "`d12'", size(small)) ytitle("")
 graph export "`path'cheat_hilo.eps", as(eps) preview(off) replace
 
 
@@ -1222,3 +1227,5 @@ pca publictransport taxes drivingfast moneyfound lying accidentaldamage litter d
 
 pca lendmoney lendstuff dooropen if include_data_all==1
 
+
+log close 

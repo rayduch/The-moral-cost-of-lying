@@ -1,5 +1,11 @@
 
-*Nov 2018
+*Dec 2018
+
+* Disclaimer: tables 3-4, 6, C1-C2, C4-C12, and C17 exported in this code do not automatically include the log likelihoods/R squared
+* values of the estimations, for completeness of results, these values were added manually to the tables included 
+* in the manuscript and appendix. The corresponding  log likelihoods/R squared values are reproduced in  
+* appropriate sections of the replication code and available in the "replication_log.log" file in the replication repository.
+
 
 
 ** The following .ado files are needed to run this code:

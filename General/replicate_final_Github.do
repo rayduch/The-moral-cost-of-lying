@@ -1261,16 +1261,16 @@ twoway (bar c0 t if cc==1, color(black) barw(.8)) (bar c0 t if cc==2, color(blac
 graph export "`path'die_country.eps", as(eps) preview(off) replace
 
 
-use "`path'mastern_final2018_new_new.dta", clear  
-
 ********************************************************************************
 ********** Tests in the text: The Die Roll Result by Country. ******************
 ********************************************************************************
 
+use "`path'mastern_final2018_new_new.dta", clear  
+
 
 *\ref{stata:robustcheat_ranksum_country}
 * Mann-Whitney U and chi2 tests, Chile vs UK
-drop ttt
+//drop ttt
 gen ttt= country_code
 replace ttt=. if ttt==2
 ranksum realdie if period2==1&include_data_all==1, by(ttt)

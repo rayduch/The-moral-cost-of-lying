@@ -1,4 +1,7 @@
 
+local note="$note"
+
+
 file open mf using "$fname", write replace
 file write mf "\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}" _n
 file write mf "\begin{tabular}{l|cccccc|cc}" _n

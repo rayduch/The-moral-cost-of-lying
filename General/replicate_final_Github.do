@@ -250,7 +250,7 @@ global fname="`path'table_reduced1_countries.tex"
 global i1=2
 global i2=4
 do "`path'tables_2.do"
-// ERROR ends 
+
 
 
 *********************************************************************************************************
@@ -1232,6 +1232,73 @@ pca publictransport taxes drivingfast moneyfound lying accidentaldamage litter d
 ************************************************************************
 
 pca lendmoney lendstuff dooropen if include_data_all==1
+
+
+********************************************************************************
+********** Figure: The Die Roll Result by Country. *****************************
+********************************************************************************
+
+
+use "`path'mastern_final2018_new_new.dta", clear
+
+drop if include_data_all==0
+
+egen nnn=count(russia), by(realdie country_code)
+keep country_code realdie nnn
+duplicates drop
+sort realdie country_code
+gen t=_n
+drop if realdie==.
+replace t=t+1 in 4/18
+replace t=t+1 in 7/18
+replace t=t+1 in 10/18
+replace t=t+1 in 13/18
+replace t=t+1 in 16/18
+rename country_code cc
+egen nnt=sum(nnn), by(cc)
+gen c0=nnn/nnt
+twoway (bar c0 t if cc==1, color(black) barw(.8)) (bar c0 t if cc==2, color(black) barw(.8) fi(60))  (bar c0 t if cc==3, color(black) barw(.8) fi(30)), xlabel(2 "1" 6 "2" 10 "3" 14 "4" 18 "5" 22 "6", noticks) legend(row(1) order(1 "Chile" 2 "Russia" 3 "UK") size(small)) title("") xtitle("") ytitle("Fraction") yline(0.1666, lcolor(black)) note("The graph shows the relative frequencies of reported die rolls for different countries." "The horizontal line corresponds to 0.1666=1/6.")
+graph export "`path'die_country.eps", as(eps) preview(off) replace
+
+
+use "`path'mastern_final2018_new_new.dta", clear  
+
+********************************************************************************
+********** Tests in the text: The Die Roll Result by Country. ******************
+********************************************************************************
+
+
+*\ref{stata:robustcheat_ranksum_country}
+* Mann-Whitney U and chi2 tests, Chile vs UK
+drop ttt
+gen ttt= country_code
+replace ttt=. if ttt==2
+ranksum realdie if period2==1&include_data_all==1, by(ttt)
+tab realdie ttt if period2==1&include_data_all==1, co chi2
+ret li
+replace ttt=0 if ttt==3
+cc ttt realdie_6 if period2==1&include_data_all==1, exact
+
+* Mann-Whitney U and chi2 tests, Chile vs Russia
+drop ttt
+gen ttt= country_code
+replace ttt=. if ttt==3
+ranksum realdie if period2==1&include_data_all==1, by(ttt)
+tab realdie ttt if period2==1&include_data_all==1, co chi2
+ret li
+replace ttt=0 if ttt==2
+cc ttt realdie_6 if period2==1&include_data_all==1, exact
+
+* Mann-Whitney U and chi2 tests, Russia vs UK
+drop ttt
+gen ttt= country_code
+replace ttt=. if ttt==1
+ranksum realdie if period2==1&include_data_all==1, by(ttt)
+tab realdie ttt if period2==1&include_data_all==1, co chi2
+ret li
+
+
+
 
 
 log close 

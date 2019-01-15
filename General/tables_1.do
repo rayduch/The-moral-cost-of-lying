@@ -1,3 +1,6 @@
+
+local note="$note"
+
 local varlist = "ncorrect_rank i.male age i.offerdg_0 offerdg_frac i.tax_20 i.tax_30 i.tax_40 i.tax_50 i.deadweight i.mpcr i.shock i.status i.status_H i.non_fixed"
 local varlist2 = " "
 local varlist3 = "0.male 0.offerdg_0 0.tax_20 0.tax_30 0.tax_40 0.tax_50 0.deadweight 0.mpcr 0.shock 0.status 0.status_H 0.non_fixed 0.russia 0.uk"

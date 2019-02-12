@@ -1,5 +1,5 @@
 
-*Dec 2018
+*Feb 2019
 
 * Disclaimer: tables 3-4, 6, C1-C2, C4-C12, and C17 exported in this code do not automatically include the log likelihoods/R squared
 * values of the estimations, for completeness of results, these values were added manually to the tables included 
@@ -1298,7 +1298,98 @@ tab realdie ttt if period2==1&include_data_all==1, co chi2
 ret li
 
 
+*** Data Management Tables C26-28
 
+
+
+pca redistrib* if include_data_all==1, com(1)
+*drop redistrib_index
+*predict redistrib_index
+*lab var redistrib_index "Redistribution preferences"
+*local fname="`path'table_russia_redistrib_pca.tex"
+*local note="The index of redistributive preferences is calculated as the normalized first principle component of 6 questions of the following form: “For each pair of statements, please indicate the one with which you agree, or if you have an intermediate position”. Possible answers are from 0 to 4P. The first principle component explained 26\% of variation."
+*esttab e(L) using "`fname'", label replace note("`note'") nonum cells("L(fmt(%3.2f))"
+
+
+pca econself nosecure econcountrypers econselfpers econlosejob if include_data==1, com(1)
+*drop security_index
+*predict security_index
+*lab var security_index "Economic security"
+*local fname="`path'table_russia_secure_pca.tex"
+*local note="The index of economic security is calculated as the normalized first principle component of 5 the questions. The first principle component explained 34\% of variation."
+*esttab e(L) using "`fname'", label replace note("`note'") nonum cells("L(fmt(%3.2f))")
+
+
+
+pca own1-own8 if include_data_all==1
+*predict own_f
+*tabstat own_f, stats(sd)
+*replace own_f=own_f/1.9271
+
+
+*********************************************************************************************************
+**************** Table C26: Lying in periods 1-10, Russia, redistributive preferences ***************
+*********************************************************************************************************
+
+
+
+global preh="&\multicolumn{6}{c|}{Mlogit, average marginal effects }&\multicolumn{2}{c}{OLS}\\"
+global ind_typenewcond="ind_typenew2==2"
+global auditcond=0
+ 
+global aplist="append"
+
+global scals_1=`" "t2030 D20=D30" "'
+global tcond_1="1.tax_20=1.tax_30" 
+global eadd_1="t2030=r(p)"
+global conds "country_code==2"
+global include_cond="include_data_all==1"
+global i1=1
+global i2=1
+
+global fname="`path'table_reduced1_trusting.tex"
+global var1="ncorrect_rank ncorrect_dev2 i.male age period2 i.offerdg_0 offerdg_frac redistrib_index trusting i.tax_20 i.tax_30"
+global var2="i.shock i.shock_H i.status i.status_H i.non_fixed"
+global var3="0.tax_20 0.tax_30 0.shock 0.shock_H 0.status 0.status_H 0.non_fixed 0.male 0.offerdg_0"
+global varlist_1 = "$var1 " + "$var2"
+global varlist1_1 = "$var3"
+global note = "The first three columns report average marginal effects for multinomial logistic regression (dependent variable is whether the subject declared 0\%, 100\%, or something in between, in a given round). Standard errors are clustered by subject. The fourth column reports OLS regression, the dependent variable is the fraction of income declared in a given round. We only include subjects who partially cheated in at least 8 rounds, and declarations strictly between 0\% and 100\%. Standard errors are clustered by subject. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game."
+
+global fname="`path'table_reduced1_russia_trusting.tex"
+do "`path'tables_2.do"
+
+
+
+************************************************************************************************************************************************
+**************** Table C27: Lying in periods 1-10, Russia, redistributive preferences, trusting behavior, and economic security  ***************
+************************************************************************************************************************************************
+
+global fname="`path'table_reduced1_trusting_sec.tex"
+global var1="ncorrect_rank ncorrect_dev2 i.male age period2 i.offerdg_0 offerdg_frac redistrib_index trusting security_index i.tax_20 i.tax_30"
+global var2="i.shock i.shock_H i.status i.status_H i.non_fixed"
+global var3="0.tax_20 0.tax_30 0.shock 0.shock_H 0.status 0.status_H 0.non_fixed 0.male 0.offerdg_0"
+global varlist_1 = "$var1 " + "$var2"
+global varlist1_1 = "$var3"
+global note = "The first three columns report average marginal effects for multinomial logistic regression (dependent variable is whether the subject declared 0\%, 100\%, or something in between, in a given round). Standard errors are clustered by subject. The fourth column reports OLS regression, the dependent variable is the fraction of income declared in a given round. We only include subjects who partially cheated in at least 8 rounds, and declarations strictly between 0\% and 100\%. Standard errors are clustered by subject. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game."
+
+global fname="`path'table_reduced1_russia_trusting_sec.tex"
+do "`path'tables_2.do"
+
+*********************************************************************************************************
+**************** Table C28: Lying in periods 1-10, Russia, subjective social status ***************
+*********************************************************************************************************
+
+
+global fname="`path'table_reduced1_sss.tex"
+global var1="ncorrect_rank ncorrect_dev2 i.male age period2 i.offerdg_0 offerdg_frac own_f i.tax_20 i.tax_30"
+global var2="i.shock i.shock_H i.non_fixed"
+global var3="0.tax_20 0.shock 0.shock_H 0.non_fixed 0.male 0.offerdg_0"
+global varlist_1 = "$var1 " + "$var2"
+global varlist1_1 = "$var3"
+global note = "The first three columns report average marginal effects for multinomial logistic regression (dependent variable is whether the subject declared 0\%, 100\%, or something in between, in a given round). Standard errors are clustered by subject. The fourth column reports OLS regression, the dependent variable is the fraction of income declared in a given round. We only include subjects who partially cheated in at least 8 rounds, and declarations strictly between 0\% and 100\%. Standard errors are clustered by subject. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game."
+
+global fname="`path'table_reduced1_russia_sss.tex"
+do "`path'tables_2.do"
 
 
 log close 

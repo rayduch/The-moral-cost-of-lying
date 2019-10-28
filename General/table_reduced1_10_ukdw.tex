@@ -1,0 +1,37 @@
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l|cccccc|cc}
+\hline\hline
+&\multicolumn{6}{c|}{\bf UK}&\multicolumn{2}{c}{\bf UK}\\ &\multicolumn{6}{c|}{Mlogit, average marginal effects }&\multicolumn{2}{c}{OLS}\\
+                &\multicolumn{2}{c}{Maximal lying}&\multicolumn{2}{c}{Partial lying}&\multicolumn{2}{c}{Honest}  &\multicolumn{2}{c}{Fraction declared}\\
+\hline
+RET rank        &    0.375\sym{***}& (0.0559)&  -0.0737         & (0.0533)&   -0.301\sym{***}& (0.0537)&  -0.0740         & (0.0756)\\
+RET deviation   & -0.00124         &(0.00210)&  0.00220         &(0.00236)&-0.000959         &(0.00189)& -0.00569         &(0.00460)\\
+Male            &    0.102\sym{***}& (0.0344)&   -0.128\sym{***}& (0.0305)&   0.0257         & (0.0290)&   0.0434         & (0.0460)\\
+Age             & -0.00768\sym{***}&(0.00264)&  0.00498\sym{**} &(0.00222)&  0.00269         &(0.00203)& -0.00132         &(0.00260)\\
+Period          &   0.0210\sym{***}&(0.00206)&  -0.0106\sym{***}&(0.00195)&  -0.0104\sym{***}&(0.00161)& -0.00877\sym{***}&(0.00328)\\
+DG frac         &   -0.637\sym{***}& (0.0689)&    0.196\sym{***}& (0.0617)&    0.441\sym{***}& (0.0688)&    0.287\sym{**} &  (0.127)\\
+Deduction 20\%=1&  -0.0118         & (0.0411)&   0.0460         & (0.0380)&  -0.0342         & (0.0309)& -0.00565         & (0.0520)\\
+Deduction 30\%=1&   0.0333         & (0.0425)&  -0.0199         & (0.0379)&  -0.0133         & (0.0358)&   0.0428         & (0.0659)\\
+Deduction 40\%=1&  -0.0385         & (0.0669)&   0.0905         & (0.0650)&  -0.0520         & (0.0464)&   0.0511         & (0.0734)\\
+Deduction 50\%=1&    0.124         & (0.0768)&  -0.0116         & (0.0717)&   -0.112\sym{**} & (0.0470)&   -0.177\sym{**} & (0.0848)\\
+Deadweight loss=1&  0.00807         &  (0.119)&   0.0919         &  (0.115)&   -0.100         & (0.0903)&   -0.131         &  (0.118)\\
+Deadweight$\times$\space{}DG\space{}frac&   -0.257         &  (0.318)&   -0.238         &  (0.246)&    0.495         &  (0.327)&    0.354         &  (0.440)\\
+Redistribution=1&   0.0813         & (0.0513)&  -0.0395         & (0.0429)&  -0.0418         & (0.0416)&  -0.0386         & (0.0703)\\
+Shock=1         &   0.0118         & (0.0654)&  -0.0307         & (0.0564)&   0.0189         & (0.0561)&   -0.116\sym{*}  & (0.0654)\\
+Shock, yes=1    &  -0.0504         & (0.0414)&   0.0947\sym{**} & (0.0479)&  -0.0443         & (0.0293)&  -0.0470         & (0.0405)\\
+Status=1        &    0.131\sym{*}  & (0.0696)&  -0.0531         & (0.0663)&  -0.0781         & (0.0556)&   0.0283         &  (0.104)\\
+Status, 200 ECU=1&   -0.169\sym{*}  & (0.0922)&   0.0195         &  (0.101)&    0.150         &  (0.117)&   -0.134         &  (0.107)\\
+Non-fixed=1     &  -0.0198         & (0.0483)&   0.0408         & (0.0445)&  -0.0210         & (0.0371)&  0.00734         & (0.0710)\\
+Constant        &                  &         &                  &         &                  &         &    0.333\sym{***}& (0.0998)\\
+\hline
+Observations    &     5080         &         &     5080         &         &     5080         &         &     1091         &         \\
+D20=D30         &    0.331         &         &    0.111         &         &    0.590         &         &    0.393         &         \\
+D20=D40         &    0.704         &         &    0.493         &         &    0.708         &         &    0.388         &         \\
+D20=D50         &   0.0944         &         &    0.434         &         &    0.124         &         &   0.0316         &         \\
+D30=D40         &    0.303         &         &   0.0986         &         &    0.442         &         &    0.916         &         \\
+D30=D50         &    0.259         &         &    0.911         &         &   0.0704         &         &   0.0159         &         \\
+D40=D50         &   0.0637         &         &    0.214         &         &    0.295         &         &  0.00591         &         \\
+\hline\hline
+\multicolumn{9}{p{16cm}}{\tiny The first three columns report average marginal effects for multinomial logistic regression (dependent variable is whether the subject declared 0\%, 100\%, or something in between, in a given round). Standard errors are clustered by subject. The fourth column reports OLS regression, the dependent variable is the fraction of income declared in a given round; only partial lying decisions are considered. Standard errors are clustered by subject. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game.}\\
+\multicolumn{9}{l}{\tiny \sym{*} \(p<0.1\), \sym{**} \(p<0.05\), \sym{***} \(p<0.01\)}\\
+\end{tabular}

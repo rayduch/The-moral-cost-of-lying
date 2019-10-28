@@ -15,7 +15,7 @@ forval iii=1/3 {
 forval ii=1/10 {
 	local ul `: word `ii' of `uplim''
 	quietly replace near_temp=0
-	quietly replace near_temp=1 if declared_frac>0&declared_frac<=`ul'
+	quietly replace near_temp=1 if declared>0&declared<=`ul'
 	quietly tabstat near_temp if include_data==1&country_code==`iii', by($byvar) stats(mean sd n) save
 
 	matrix l1=r(Stat1)
@@ -24,8 +24,14 @@ forval ii=1/10 {
 	*local t=abs(l`i'[1,1]-l`j'[1,1])/`se'
 	*local df=min(l`i'[3,1],l`j'[3,1])-1
 	*local pp=tprob(`df',`t')
-	quietly cc $byvar near_temp if include_data==1&country_code==`iii', exact
-	local pp=  r(p_exact)
+	*quietly cc $byvar near_temp if include_data==1&country_code==`iii', exact
+	quietly reg  near_temp $byvar if include_data==1&country_code==`iii', clu(subj_id)
+	mat eb=e(b)
+	mat eV=e(V)
+	local pp=ttail(e(df_r),abs(eb[1,1]/sqrt(eV[1,1])))*2
+	
+	*local pp=  r(p_exact)
+
 	
 	mat M[1+3*(`iii'-1),`ii']=l`i'[1,1]
 	mat M[2+3*(`iii'-1),`ii']=l`j'[1,1]
@@ -56,7 +62,7 @@ forval ii=1/3 {
 		forval j=1/10 {
 			local mm=M[`iii'+3*(`ii'-1),`j']
 			file write mf "&"
-			file write mf %9.6f (`mm')
+			file write mf %9.4f (`mm')
 			
 			
 		}
@@ -64,7 +70,7 @@ forval ii=1/3 {
 	}
 	file write mf "\hline"	
 }
-file write mf "\multicolumn{11}{p{15cm}}{\tiny For each country, the first two rows report the frequencies of declarations for two groups of subjects. The third row reports the p-value for Fisher's exact test comparing these two frequencies.}\\" _n
+file write mf "\multicolumn{11}{p{15cm}}{\tiny For each country, the first two rows report the frequencies of declarations for two groups of subjects. The third row reports the p-value for the OLS regression where the dependent variable is 0 or 1 (if there is near-maximal cheating), and the independent variable is the dummy the subject group, and standard errors are clustered by subject. }\\" _n
 file write mf "\end{tabular}"
 file close mf
 

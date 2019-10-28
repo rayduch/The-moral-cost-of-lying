@@ -7,9 +7,9 @@
 ** chitest.ado
 ** eststo.ado
 
-*ssc install tab_chi
-*ssc install coefplot
-*ssc install triplot
+ssc install tab_chi
+ssc install coefplot
+ssc install triplot
 
 
 local path="[your path]\"
@@ -546,7 +546,7 @@ ttest rank_withingroup if include_data==1&period2==1&inlist(pred0,3,4), by(pred0
 **********************************************************************************
 
 local iters=50
-set matsize 1000
+set matsize 1000 // If you use an IC version of Stata or smaller, please reduce to 800.
 set more off
 * Set iters=50 to draw graph and iters=1000 to produce the table
 tsset subj_id period2

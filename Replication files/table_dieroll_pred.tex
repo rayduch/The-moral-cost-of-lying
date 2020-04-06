@@ -1,0 +1,23 @@
+{
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l*{6}{c}}
+\hline\hline
+                &\multicolumn{1}{c}{1}&\multicolumn{1}{c}{2}&\multicolumn{1}{c}{3}&\multicolumn{1}{c}{4}&\multicolumn{1}{c}{5}&\multicolumn{1}{c}{6}\\
+\hline
+Periods declared 0\%& -0.00854\sym{**} & -0.00768\sym{*}  & -0.00304         &-0.000102         &  -0.0161\sym{**} &   0.0287\sym{***}\\
+                &(0.00393)         &(0.00425)         &(0.00400)         &(0.00481)         &(0.00644)         &(0.00635)         \\
+Periods declared 1-99\%& 0.000347         & 0.000977         & -0.00329         &  0.00321         &-0.000377         &-0.000555         \\
+                &(0.00301)         &(0.00304)         &(0.00399)         &(0.00457)         &(0.00632)         &(0.00728)         \\
+Russia          & -0.00594         &  -0.0631\sym{**} &  -0.0110         &  -0.0210         &   0.0271         &   0.0724         \\
+                & (0.0295)         & (0.0311)         & (0.0340)         & (0.0367)         & (0.0529)         & (0.0579)         \\
+UK              &   0.0367         &  -0.0424         &  -0.0175         &  -0.0776\sym{*}  &  -0.0350         &    0.135\sym{**} \\
+                & (0.0285)         & (0.0316)         & (0.0352)         & (0.0433)         & (0.0576)         & (0.0588)         \\
+\hline
+Observations    &      444         &      444         &      444         &      444         &      444         &      444         \\
+L               &                  &                  &                  &                  &                  &                  \\
+Declared\space{}0\%=Declared\space{}1-99\%&   0.0612         &    0.116         &    0.657         &    0.689         &   0.0156         & 6.57e-08         \\
+\hline\hline
+\multicolumn{7}{l}{\footnotesize Logistic regression, marginal coefficients. Individual controls are gender, age, and RET rank (not shown).}\\
+\multicolumn{7}{l}{\footnotesize \sym{*} \(p<0.10\), \sym{**} \(p<0.05\), \sym{***} \(p<0.01\)}\\
+\end{tabular}
+}

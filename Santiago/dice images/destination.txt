@@ -1,1 +1,0 @@
-Using netcontrol, copy the files to c:\zTreeFiles\Dice\

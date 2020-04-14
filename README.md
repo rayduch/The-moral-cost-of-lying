@@ -1,27 +1,19 @@
-# Once A Liar 2018
-Data, and Stata/R Replication Code for Duch Laroze Zakharov 
+# The Moral Cost of Lying 2020
+Data, and Stata/R Replication Code for Duch, Laroze and Zakharov 2020
 
-Lying is a puzzling phenomenon. It prevalent on both a grand scale and in mundane, day-to-day interactions, but for many people there are intrinsic costs that prevent them from distorting information to one's favor. The goal of this study is to investigate how these costs depend on the magnitude to which the truth is distorted. We observe over 1000 individuals from the U.K., Russia and Chile making over 10000 lying decisions in a public goods game, while varying the benefit of lying. We find that the incidence and magnitude of lying do not depend on the benefits, which is not consistent with the marginal cost of lying being increasing in the size of the lie. Instead, we find that some subjects tend to be maximal liars with very low intrinsic lying costs, while some others lie up to a threshold that is not very sensitive to the extrinsic benefits of lying. We argue that maximal and partial lying are distinct phenomena. First, in two countries out of three lying is not highly conditional on the behavior of other individuals. Second, both ability at a real effort task and selfish behavior in the Dictator Game are strong and consistent predictors of maximal, but not partial, lying. Finally, the reaction time for a partial lying decision was much longer than for either a maximal lie or an honest declaration. 
+Lying is widespread, but for many people it entails moral costs. We investigate how these costs depend on the extent of lying. We observe over 1000 individuals from the U.K., Russia and Chile making over 10000 lying decisions, with the payoffs increasing in the extent to which the truth is distorted. We find that both incidence and extent of lying do not depend on the extrinsic benefit of lying. This is not consistent with the moral cost of lying being a smooth, increasing, and concave function of the extent of lying. 
 
 This replication package includes:
- 
-**Data:** 
- -  UK Sessions: [1,18]; [28, 33]; [40, 42]
- -  Chile Sessions: [19, 27]; [34, 39]; [43, 46] 
- -  Russia Sessions: [47, 64]
- -  For each of these sessions: z-tree code, doc instructions, xls data sets
- -  Comprehensive STATA dataset
- 
- 
-**Code:**
- - STATA code for data analysis
- - z-tree code for individual sessions
- 
-**Instructions:**
 
- The instructions for the different treatments are included in each of the folders. Within each treatment there were different sessions that varied with regards to the level of taxation (from 10-40%) and audit rate (0-100%). The instructions for each of these variations only change with regards to the level of taxation and audit that was, correctly, informed. All the rest stayed the same. Note that for the Chilean sessions, instructors who ran the Shock treatments in Chile read out the wrong instructions, reading the Baseline instructions instead.
- 
-**Manuscript:**
- - once_a_liar_July_2018.pdf
- - TeX files
+Moral_Cost.pdf - the manuscript  
+Replication files/ - Replication files, figures and tables, including:  
+Replication files/mastern_final2018_new_new.dta - Stata data file
+Replication files/replicate_final_1_Github_2020.do - Replication .do file
+Replication files/codebook_lies_final.docx - Codebook [DELETE THE OLD codebook_lies.docx. Delete tables_2_new.do]
+Data/Moscow/Raw Data/ - raw data and Ztree modules for each of Moscow sessions
+Data/Moscow/Screenshots/ - screenshots for Moscow sessions Data/Oxford/Raw Data/ - raw data and Ztree modules for each of Oxford sessions
+Data/Oxford/Screenshots/ - screenshots for Oxford sessions 
+Data/Santiago/Raw Data/ - raw data and Ztree modules for each of Santiago sessions
+Data/Santiago/Screenshots/ - screenshots for Santiago sessions 
+Other/ - consent forms, protocol, IRB statement and erratum [rename "Protocole for Tax Experiments" to "Protocol"]
  

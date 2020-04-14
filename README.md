@@ -7,13 +7,24 @@ This replication package includes:
 
 Moral_Cost.pdf - the manuscript  
 Replication files/ - Replication files, figures and tables, including:  
+
 Replication files/mastern_final2018_new_new.dta - Stata data file
+
 Replication files/replicate_final_1_Github_2020.do - Replication .do file
-Replication files/codebook_lies_final.docx - Codebook [DELETE THE OLD codebook_lies.docx. Delete tables_2_new.do]
+
+Replication files/codebook_lies_final.docx - Codebook
+
 Data/Moscow/Raw Data/ - raw data and Ztree modules for each of Moscow sessions
-Data/Moscow/Screenshots/ - screenshots for Moscow sessions Data/Oxford/Raw Data/ - raw data and Ztree modules for each of Oxford sessions
+
+Data/Moscow/Screenshots/ - screenshots for Moscow sessions
+
+Data/Oxford/Raw Data/ - raw data and Ztree modules for each of Oxford sessions
+
 Data/Oxford/Screenshots/ - screenshots for Oxford sessions 
+
 Data/Santiago/Raw Data/ - raw data and Ztree modules for each of Santiago sessions
-Data/Santiago/Screenshots/ - screenshots for Santiago sessions 
-Other/ - consent forms, protocol, IRB statement and erratum [rename "Protocole for Tax Experiments" to "Protocol"]
+
+Data/Santiago/Screenshots/ - screenshots for Santiago sessions
+ 
+Other/ - consent forms, protocol, IRB statement and erratum
  

@@ -1,0 +1,38 @@
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l|cccccc|cc|cc}
+\hline\hline
+&\multicolumn{6}{c|}{\bf All\space{}countries}&\multicolumn{2}{c|}{\bf All\space{}countries}&\multicolumn{2}{c}{\bf All\space{}countries}\\ &\multicolumn{6}{c|}{Mlogit, average marginal effects }&\multicolumn{2}{c|}{OLS}&\multicolumn{2}{c}{OLS}\\
+                &\multicolumn{2}{c}{Maximal lying}&\multicolumn{2}{c}{Partial lying}&\multicolumn{2}{c}{Honest}  &\multicolumn{2}{c}{Fraction undeclared}&\multicolumn{2}{c}{Amount undeclared}\\
+\hline
+RET rank        &    0.249\sym{***}& (0.0423)&  -0.0750         & (0.0511)&   -0.174\sym{***}& (0.0462)&   0.0203         & (0.0547)&    902.8\sym{***}&  (101.2)\\
+RET deviation   &  0.00889         &(0.00692)&  0.00941         &(0.00815)&  -0.0183\sym{**} &(0.00780)&   0.0189\sym{**} &(0.00951)&    118.2\sym{***}&  (17.06)\\
+Male            &   0.0793\sym{***}& (0.0254)&  -0.0869\sym{***}& (0.0292)&  0.00764         & (0.0263)&  -0.0128         & (0.0316)&   -37.60         &  (53.81)\\
+Age             & -0.00293         &(0.00244)&  0.00331         &(0.00275)&-0.000372         &(0.00225)&  0.00515\sym{**} &(0.00221)&    5.741         &  (3.804)\\
+DG frac         &   -0.546\sym{***}& (0.0561)&    0.201\sym{***}& (0.0663)&    0.344\sym{***}& (0.0599)&   -0.152\sym{*}  & (0.0867)&   -258.3\sym{*}  &  (139.1)\\
+Deduction 20\%=1&  -0.0441         & (0.0287)&   0.0524         & (0.0343)& -0.00836         & (0.0300)&   0.0301         & (0.0363)&    51.54         &  (59.07)\\
+Deduction 30\%=1&  -0.0193         & (0.0311)&   0.0522         & (0.0370)&  -0.0329         & (0.0321)&  -0.0125         & (0.0397)&   -13.07         &  (65.28)\\
+Deduction 40\%=1&  -0.0733         & (0.0535)&    0.112         & (0.0801)&  -0.0385         & (0.0722)&   -0.135         & (0.0925)&   -153.3         &  (151.3)\\
+Deduction 50\%=1&  0.00628         & (0.0689)&   0.0872         &  (0.103)&  -0.0934         & (0.0841)&   0.0723         & (0.0909)&    140.4         &  (184.4)\\
+Deadweight loss=1&  -0.0520         & (0.0601)&  -0.0532         & (0.0724)&    0.105         & (0.0662)&  0.00521         & (0.0997)&    105.4         &  (207.6)\\
+Redistribution=1&   0.0359         & (0.0460)&   0.0268         & (0.0566)&  -0.0627         & (0.0527)&   0.0206         & (0.0595)&   -43.03         &  (101.0)\\
+Russia=1        &    0.111\sym{**} & (0.0432)&    0.246\sym{***}& (0.0462)&   -0.357\sym{***}& (0.0253)&  -0.0491         & (0.0406)&    79.38         &  (64.40)\\
+UK=1            &    0.278\sym{***}& (0.0357)&  -0.0907\sym{**} & (0.0413)&   -0.187\sym{***}& (0.0318)&   0.0282         & (0.0435)&    318.7\sym{***}&  (65.67)\\
+Shock=1         &  -0.0125         & (0.0515)&  -0.0248         & (0.0605)&   0.0374         & (0.0576)&   0.0321         & (0.0513)&   -212.8\sym{***}&  (69.08)\\
+Shock, yes=1    &   0.0392         & (0.0684)&  -0.0145         & (0.0772)&  -0.0247         & (0.0667)&  -0.0300         & (0.0670)&    741.7\sym{***}&  (138.5)\\
+Status=1        &   0.0508         & (0.0490)&  -0.0255         & (0.0566)&  -0.0253         & (0.0553)&  0.00446         & (0.0612)&   -338.8\sym{***}&  (80.85)\\
+Status, 200 ECU=1&  -0.0287         & (0.0551)&  -0.0358         & (0.0675)&   0.0644         & (0.0742)&  -0.0398         & (0.0755)&    523.6\sym{***}&  (118.0)\\
+Non-fixed=1     &  0.00148         & (0.0358)&  -0.0576         & (0.0406)&   0.0561         & (0.0380)&  -0.0461         & (0.0441)&   -123.8\sym{*}  &  (70.50)\\
+Constant        &                  &         &                  &         &                  &         &    0.527\sym{***}& (0.0810)&    271.6\sym{**} &  (129.4)\\
+\hline
+Observations    &     1071         &         &     1071         &         &     1071         &         &      401         &         &      401         &         \\
+D20=D30         &    0.445         &         &    0.995         &         &    0.466         &         &    0.251         &         &    0.301         &         \\
+D20=D40         &    0.599         &         &    0.459         &         &    0.677         &         &   0.0599         &         &    0.159         &         \\
+D20=D50         &    0.474         &         &    0.739         &         &    0.318         &         &    0.634         &         &    0.626         &         \\
+D30=D40         &    0.334         &         &    0.468         &         &    0.939         &         &    0.180         &         &    0.352         &         \\
+D30=D50         &    0.715         &         &    0.740         &         &    0.481         &         &    0.352         &         &    0.414         &         \\
+D40=D50         &    0.312         &         &    0.839         &         &    0.597         &         &   0.0742         &         &    0.181         &         \\
+Russia=UK       &0.00000181         &         & 2.55e-18         &         & 6.27e-08         &         &   0.0547         &         & 0.000488         &         \\
+\hline\hline
+\multicolumn{11}{p{18cm}}{\tiny The first three columns report average marginal effects for multinomial logistic regression (dependent variable is whether the subject declared 0\%, 100\%, or something in between, in a given round). Standard errors are clustered by subject. Fourth and fifth columns report OLS regressions, the dependent variables are the fraction and the amount of income not declared in a given round; only partial lying decisions are considered. We only include subjects who partially cheated in at least 8 rounds, and declarations strictly between 0\% and 100\%. Standard errors are clustered by subject. RET rank is the national rank, between 0 and 1, of subject's national performance at the real effort task. RET Deviation is the difference between actual number of correct additions and one predicted from subject and period FE. DG frac is the fraction of the 1000 ECU donated in the dictator game.}\\
+\multicolumn{11}{l}{\tiny \sym{*} \(p<0.1\), \sym{**} \(p<0.05\), \sym{***} \(p<0.01\)}\\
+\end{tabular}

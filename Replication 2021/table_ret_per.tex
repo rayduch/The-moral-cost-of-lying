@@ -1,0 +1,34 @@
+{
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l*{4}{cc}}
+\hline\hline
+                &\multicolumn{2}{c}{Chile}   &\multicolumn{2}{c}{Russia}  &\multicolumn{2}{c}{UK}      &\multicolumn{2}{c}{All}     \\
+\hline
+Male            &    1.603\sym{***}&  (0.315)&    1.511\sym{***}&  (0.300)&    1.228\sym{***}&  (0.354)&    1.376\sym{***}&  (0.200)\\
+Age             &  -0.0519\sym{*}  & (0.0290)&  -0.0245         & (0.0412)&  -0.0972\sym{***}& (0.0198)&  -0.0959\sym{***}& (0.0151)\\
+Period          &    0.155\sym{***}& (0.0155)&    0.164\sym{***}& (0.0165)&    0.107\sym{***}& (0.0151)&    0.138\sym{***}&(0.00868)\\
+DG frac         &    0.287         &  (0.899)&   -2.534\sym{***}&  (0.693)&   -3.214\sym{***}&  (0.810)&   -2.447\sym{***}&  (0.479)\\
+Deadweight loss &                  &         &                  &         &    2.384\sym{***}&  (0.790)&    2.165\sym{***}&  (0.626)\\
+Redistribution  &                  &         &                  &         &    1.119         &  (0.741)&    0.818         &  (0.499)\\
+Russia          &                  &         &                  &         &                  &         &    2.465\sym{***}&  (0.288)\\
+UK              &                  &         &                  &         &                  &         &    3.121\sym{***}&  (0.327)\\
+Shock           &    0.512         &  (0.570)&    0.581         &  (0.489)&    1.944\sym{***}&  (0.740)&    0.942\sym{***}&  (0.328)\\
+L.Shock=Yes     &   -0.182         &  (0.290)&   -0.449\sym{*}  &  (0.264)&   -0.403         &  (0.318)&   -0.347\sym{**} &  (0.177)\\
+Status          &    1.072\sym{*}  &  (0.564)&    0.748         &  (0.558)&    1.399\sym{*}  &  (0.731)&    0.835\sym{**} &  (0.357)\\
+Status, 200 ECU &   -0.791         &  (0.612)&  -0.0364         &  (0.750)&    0.765         &  (0.816)&   0.0840         &  (0.466)\\
+Non-fixed       &    1.659\sym{***}&  (0.488)&    1.224\sym{***}&  (0.424)&   0.0254         &  (0.627)&    0.663\sym{**} &  (0.275)\\
+L.Dec. others, 1000&   0.0817         & (0.0846)&   -0.215\sym{*}  &  (0.112)&    0.172         &  (0.111)&   0.0199         & (0.0672)\\
+Civicness       &    0.136         &  (0.165)&   -0.247\sym{*}  &  (0.142)&   -0.348\sym{*}  &  (0.188)&   -0.215\sym{**} & (0.0988)\\
+Trust           &    0.648\sym{**} &  (0.320)&   -0.517         &  (0.322)&   -0.673\sym{*}  &  (0.363)&   -0.265         &  (0.206)\\
+SafeChoices     &  -0.0677         & (0.0848)&   0.0534         & (0.0788)&  -0.0427         & (0.0888)&  0.00506         & (0.0520)\\
+Ideology        &   0.0903         & (0.0729)&  -0.0836         & (0.0739)&    0.168\sym{**} & (0.0803)&   0.0848\sym{*}  & (0.0462)\\
+Income          &   -0.235         &  (0.544)&   -0.616         &  (0.782)&   -0.246         &  (0.520)&   -0.159         &  (0.356)\\
+Constant        &    6.528\sym{***}&  (1.248)&    11.22\sym{***}&  (1.173)&    12.83\sym{***}&  (1.117)&    9.195\sym{***}&  (0.761)\\
+\hline
+Observations    &     2106         &         &     2304         &         &     2988         &         &     7398         &         \\
+\(R^{2}\)       &    0.173         &         &    0.157         &         &    0.181         &         &    0.270         &         \\
+\hline\hline
+\multicolumn{9}{l}{\footnotesize OLS regressions. Dependent variable is parformance in a round. Standard errors are clustered by subject. DG frac is the fraction of the 1000 ECU donated in the dictator game. Norms is the social norms index (see Table \ref{tab:norms}). SafeChoices if the number (0-10) of safe choices on the lottery task. Income is the number of the individual's income bracket, rescaled between 0 and 1 (for Chile and the UK), and the individual's perceived income decile, rescaled between 0 and 1 (for Russia).}\\
+\multicolumn{9}{l}{\footnotesize \sym{*} \(p<0.10\), \sym{**} \(p<0.05\), \sym{***} \(p<0.01\)}\\
+\end{tabular}
+}
